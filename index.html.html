@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>O.K.P — Oru Kalyanam Pole</title>
+<meta name="description" content="O.K.P — Oru Kalyanam Pole. A wedding that feels like one.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Allura&family=Cormorant+Garamond:wght@400;500;600;700&family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#f8efd9;
+  --paper-deep:#f1dfbb;
+  --red:#b20f3b;
+  --red-dark:#8f0c31;
+  --ink:#403322;
+  --gold:#b99a57;
+}
+
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;
+  color:var(--ink);
+  background:
+    radial-gradient(circle at 15% 10%, rgba(255,255,255,.8), transparent 25%),
+    radial-gradient(circle at 85% 20%, rgba(255,255,255,.55), transparent 28%),
+    linear-gradient(135deg,#fbf4e3 0%,var(--paper) 48%,#f5e5c5 100%);
+  font-family:'Cormorant Garamond',Georgia,serif;
+  overflow-x:hidden;
+  position:relative;
+}
+body:before{
+  content:"";
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  opacity:.16;
+  background-image:
+    radial-gradient(rgba(70,40,15,.35) .6px, transparent .7px),
+    radial-gradient(rgba(255,255,255,.7) .7px, transparent .8px);
+  background-size:7px 7px,11px 11px;
+  z-index:20;
+  mix-blend-mode:multiply;
+}
+body:after{
+  content:"✿  ❀  ✿  ❀  ✿";
+  position:fixed;
+  top:-18px;
+  left:50%;
+  transform:translateX(-50%);
+  width:100%;
+  text-align:center;
+  color:rgba(178,15,59,.18);
+  font-size:46px;
+  letter-spacing:22px;
+  pointer-events:none;
+  z-index:1;
+}
+
+.topbar{
+  text-align:center;
+  padding:24px 15px 9px;
+  font:500 11px/1.4 'Montserrat',sans-serif;
+  letter-spacing:5px;
+  color:var(--red-dark);
+}
+
+nav{
+  width:min(1180px,92%);
+  margin:0 auto;
+  padding:12px 20px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  border-top:1px solid rgba(178,15,59,.25);
+  border-bottom:1px solid rgba(178,15,59,.25);
+  position:relative;
+  z-index:5;
+}
+.brand{
+  color:var(--red);
+  text-decoration:none;
+  font-size:25px;
+  font-weight:700;
+  line-height:1;
+}
+.brand span{
+  display:block;
+  margin-top:4px;
+  font:500 8px 'Montserrat',sans-serif;
+  letter-spacing:3px;
+}
+.links{display:flex;gap:18px;align-items:center}
+.links a{
+  color:var(--ink);
+  text-decoration:none;
+  font:500 10px 'Montserrat',sans-serif;
+  letter-spacing:1.2px;
+}
+.links a:hover{color:var(--red)}
+.links .rsvp{
+  color:var(--paper);
+  background:var(--red);
+  padding:9px 14px;
+}
+.menu{display:none;background:none;border:0;color:var(--red);font-size:25px}
+
+.hero{
+  min-height:790px;
+  width:min(1080px,94%);
+  margin:0 auto;
+  position:relative;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  padding:65px 20px 90px;
+}
+.hero:before,.hero:after{
+  position:absolute;
+  color:var(--red);
+  opacity:.82;
+  font-size:70px;
+  line-height:1;
+}
+.hero:before{content:"❀";left:1%;top:13%}
+.hero:after{content:"❀";right:1%;top:25%}
+
+.hero-paper{
+  width:min(850px,100%);
+  position:relative;
+  padding:25px 25px 35px;
+}
+.hero-paper:before{
+  content:"✿  ✿  ✿";
+  display:block;
+  color:rgba(178,15,59,.68);
+  font-size:22px;
+  letter-spacing:13px;
+  margin-bottom:28px;
+}
+.eyebrow{
+  margin:0 0 20px;
+  font:500 12px 'Montserrat',sans-serif;
+  letter-spacing:4px;
+  color:var(--red-dark);
+}
+.hero h1{
+  margin:0;
+  color:var(--red);
+  font-size:clamp(130px,20vw,230px);
+  line-height:.62;
+  font-weight:700;
+  letter-spacing:-13px;
+  text-shadow:0 2px 0 rgba(255,255,255,.45);
+}
+.hero h2{
+  margin:45px 0 8px;
+  color:var(--red);
+  font:700 clamp(42px,6vw,72px)/.9 Allura,cursive;
+}
+.lead{
+  margin:8px 0 30px;
+  font-size:23px;
+  line-height:1.4;
+}
+.date{
+  color:var(--red-dark);
+  font:500 11px 'Montserrat',sans-serif;
+  letter-spacing:3px;
+  margin:24px 0;
+}
+.button{
+  display:inline-block;
+  color:var(--paper);
+  background:var(--red);
+  padding:15px 26px;
+  text-decoration:none;
+  font:600 10px 'Montserrat',sans-serif;
+  letter-spacing:2px;
+  border:1px solid var(--red-dark);
+  box-shadow:4px 4px 0 rgba(178,15,59,.12);
+}
+.button:hover{background:var(--red-dark)}
+
+.stamp{
+  position:absolute;
+  right:2%;
+  bottom:10%;
+  border:1px solid var(--red);
+  color:var(--red);
+  width:74px;height:74px;
+  border-radius:50%;
+  display:grid;
+  place-items:center;
+  text-align:center;
+  font:600 9px/1.2 'Montserrat',sans-serif;
+  letter-spacing:1px;
+  transform:rotate(9deg);
+}
+
+.intro{
+  width:min(850px,90%);
+  margin:0 auto;
+  text-align:center;
+  padding:70px 20px 90px;
+  border-top:1px solid rgba(178,15,59,.25);
+}
+.intro h2{
+  margin:0 auto 22px;
+  color:var(--red-dark);
+  font-size:clamp(43px,6vw,68px);
+  line-height:.9;
+  font-weight:600;
+}
+.intro p:not(.eyebrow){
+  max-width:680px;
+  margin:0 auto;
+  font-size:21px;
+  line-height:1.5;
+}
+.ornament{
+  margin-top:36px;
+  color:var(--red);
+  font-size:24px;
+  letter-spacing:14px;
+}
+
+.cards{
+  width:min(1100px,92%);
+  margin:0 auto 100px;
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:24px;
+}
+.cards a{
+  display:block;
+  padding:42px 30px;
+  min-height:250px;
+  color:var(--ink);
+  text-decoration:none;
+  text-align:center;
+  border:1px solid rgba(178,15,59,.28);
+  background:rgba(255,248,229,.35);
+  position:relative;
+}
+.cards a:before{
+  content:"";
+  position:absolute;
+  inset:8px;
+  border:1px solid rgba(178,15,59,.13);
+  pointer-events:none;
+}
+.cards a:hover{
+  background:rgba(255,248,229,.7);
+  transform:translateY(-3px);
+}
+.cards span{
+  color:var(--red);
+  font:500 10px 'Montserrat',sans-serif;
+  letter-spacing:3px;
+}
+.cards h3{
+  margin:18px 0 12px;
+  color:var(--red-dark);
+  font-size:28px;
+  letter-spacing:2px;
+}
+.cards p{
+  margin:0;
+  font-size:18px;
+  line-height:1.45;
+}
+
+.quote{
+  text-align:center;
+  width:min(900px,90%);
+  margin:0 auto 100px;
+  padding:75px 20px;
+  border-top:1px solid rgba(178,15,59,.2);
+  border-bottom:1px solid rgba(178,15,59,.2);
+}
+.quote p{
+  margin:0;
+  color:var(--red-dark);
+  font-size:clamp(30px,4vw,46px);
+  line-height:1.15;
+}
+.quote small{
+  display:block;
+  margin-top:20px;
+  font:500 10px 'Montserrat',sans-serif;
+  letter-spacing:2px;
+  opacity:.7;
+}
+
+footer{
+  text-align:center;
+  padding:55px 20px 65px;
+  color:var(--red-dark);
+  border-top:1px solid rgba(178,15,59,.22);
+  font-size:22px;
+  letter-spacing:3px;
+}
+footer strong{
+  font-size:45px;
+  letter-spacing:-2px;
+}
+footer small{
+  display:block;
+  margin-top:14px;
+  font:500 8px 'Montserrat',sans-serif;
+  letter-spacing:3px;
+}
+
+@media(max-width:850px){
+  .links{display:none}
+  .menu{display:block}
+  nav{padding:12px 8px}
+  .hero{min-height:690px;padding-top:35px}
+  .hero h1{font-size:clamp(105px,28vw,170px);letter-spacing:-9px}
+  .hero h2{margin-top:35px}
+  .hero:before{left:0;top:8%}
+  .hero:after{right:0;top:18%}
+  .cards{grid-template-columns:1fr}
+  .cards a{min-height:auto}
+  .stamp{right:4%;bottom:7%;width:62px;height:62px}
+}
+@media(max-width:500px){
+  .topbar{letter-spacing:3px;font-size:9px}
+  .hero{min-height:650px;padding:30px 8px 80px}
+  .hero-paper:before{font-size:17px;letter-spacing:7px}
+  .lead{font-size:18px}
+  .date{font-size:9px;letter-spacing:2px}
+  .button{padding:13px 18px}
+  .intro{padding:55px 12px 65px}
+  .intro p:not(.eyebrow){font-size:18px}
+  .quote{padding:55px 12px;margin-bottom:65px}
+  body:after{font-size:32px;letter-spacing:10px}
+}
+</style>
+</head>
+<body>
+<div class="topbar">ISTEDA COMMUNITY PRESENTS</div>
+<nav>
+  <a class="brand" href="index.html">O.K.P <span>ORU KALYANAM POLE</span></a>
+  <button class="menu">☰</button>
+  <div class="links">
+    <a href="index.html">Home</a><a href="story.html">Our Story</a><a href="programme.html">Programme</a>
+    <a href="teams.html">Teams</a><a href="house.html">Wedding House</a><a href="food.html">Food</a>
+    <a href="gallery.html">Gallery</a><a class="rsvp" href="rsvp.html">RSVP</a>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="hero-paper">
+    <p class="eyebrow">A WEDDING. A WEEKEND. A LITTLE CHAOS.</p>
+    <h1>O.K.P</h1>
+    <h2>Oru Kalyanam Pole</h2>
+    <p class="lead">ഒരു കല്യാണം പോലെ… <br>but not exactly a wedding.</p>
+    <div class="date">THE WEDDING WEEKEND · DUBAI · 2026</div>
+    <a class="button" href="programme.html">ENTER THE WEDDING →</a>
+  </div>
+  <div class="stamp">ADMIT<br>ONE</div>
+</header>
+
+<section class="intro">
+  <p class="eyebrow">WELCOME TO THE HOUSE</p>
+  <h2>For one weekend,<br>we make-believe.</h2>
+  <p>One villa. Two teams. One imaginary wedding. Old-school Malabar warmth, family-style chaos, music, food and memories — all packed into one unforgettable weekend.</p>
+  <div class="ornament">✦ ✦ ✦</div>
+</section>
+
+<section class="cards">
+  <a href="story.html"><span>01</span><h3>OUR STORY</h3><p>Every wedding needs a story. Ours just happens to be completely ours.</p></a>
+  <a href="programme.html"><span>02</span><h3>THE PROGRAMME</h3><p>From Saturday evening arrival to the final wedding lunch.</p></a>
+  <a href="teams.html"><span>03</span><h3>THE FAMILIES</h3><p>Choose your side. Bride team or Groom team?</p></a>
+</section>
+
+<section class="quote">
+  <p>“കല്യാണം ആണെന്ന് പറഞ്ഞാൽ<br>ഇത് അതിലും വലിയ പരിപാടിയാ.”</p>
+  <small>— Somebody from the family, probably</small>
+</section>
+
+<footer>
+  <strong>O.K.P</strong><br>ORU KALYANAM POLE<br><small>AN ISTEDA COMMUNITY EXPERIENCE · DUBAI</small>
+</footer>
+<script src="script.js"></script>
+</body>
+</html>
