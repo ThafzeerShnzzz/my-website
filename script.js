@@ -8,7 +8,29 @@ document.addEventListener("DOMContentLoaded",function(){
     });
     menu.querySelectorAll("a").forEach(a=>a.addEventListener("click",()=>menu.classList.remove("mobile-open")));
   }
+
+  // Minimal falling-petal effect to match the wedding-invitation aesthetic.
+  const petals=document.createElement("div");
+  petals.className="falling-petals";
+  petals.setAttribute("aria-hidden","true");
+  document.body.appendChild(petals);
+
+  const symbols=["✿","❀","❁","·"];
+  const count=12;
+  for(let i=0;i<count;i++){
+    const petal=document.createElement("span");
+    petal.className="falling-petal";
+    petal.textContent=symbols[Math.floor(Math.random()*symbols.length)];
+    petal.style.left=(Math.random()*100)+"vw";
+    petal.style.animationDelay=(Math.random()*10)+"s";
+    petal.style.animationDuration=(13+Math.random()*10)+"s";
+    petal.style.fontSize=(7+Math.random()*7)+"px";
+    petal.style.opacity=(0.18+Math.random()*0.28).toFixed(2);
+    petal.style.setProperty("--drift",(Math.random()*70-35)+"px");
+    petals.appendChild(petal);
+  }
 });
+
 function submitRSVP(e){
   e.preventDefault();
   const f=e.target;
