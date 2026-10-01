@@ -393,14 +393,14 @@ footer small{
 }
 
 /* Minimal drifting petals */
-.falling-petals{position:fixed;inset:0;overflow:hidden;pointer-events:none;z-index:5}
+.falling-petals{position:fixed;inset:0;overflow:hidden;pointer-events:none;z-index:25}
 .falling-petal{position:absolute;top:-25px;color:var(--red);font-family:'Cormorant Garamond',serif;line-height:1;animation:petal-fall linear infinite;will-change:transform,opacity}
 .falling-petal:nth-child(3n){color:var(--gold)}
 .falling-petal:nth-child(4n){color:var(--red-dark)}
 @keyframes petal-fall{0%{transform:translate3d(0,-30px,0) rotate(0deg)}25%{transform:translate3d(calc(var(--drift)*.35),25vh,0) rotate(80deg)}50%{transform:translate3d(calc(var(--drift)*-.25),52vh,0) rotate(160deg)}75%{transform:translate3d(calc(var(--drift)*.55),78vh,0) rotate(240deg)}100%{transform:translate3d(var(--drift),110vh,0) rotate(320deg)}}
 
 /* Subtle floating wedding rings */
-.wedding-rings{position:fixed;inset:0;overflow:hidden;pointer-events:none;z-index:4}
+.wedding-rings{position:fixed;inset:0;overflow:hidden;pointer-events:none;z-index:24}
 .wedding-ring{position:absolute;width:24px;height:24px;border:1px solid rgba(185,154,87,.55);border-radius:50%;opacity:.13;animation:ring-float ease-in-out infinite;will-change:transform,opacity}
 .wedding-ring:before{content:"";position:absolute;inset:3px;border:1px solid rgba(178,15,59,.28);border-radius:50%}
 .wedding-ring:after{content:"✦";position:absolute;top:-11px;left:7px;color:#c8a65d;font:11px 'Cormorant Garamond',serif;opacity:.95;text-shadow:0 0 4px rgba(185,154,87,.8),0 0 10px rgba(185,154,87,.45);animation:ring-sparkle 2.8s ease-in-out infinite}
