@@ -16,7 +16,7 @@ document.addEventListener("DOMContentLoaded",function(){
   document.body.appendChild(petals);
 
   const symbols=["✿","❀","❁","·"];
-  const count=12;
+  const count=7;
   for(let i=0;i<count;i++){
     const petal=document.createElement("span");
     petal.className="falling-petal";
