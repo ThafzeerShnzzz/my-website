@@ -392,6 +392,20 @@ footer small{
   letter-spacing:3px;
 }
 
+/* Minimal drifting petals */
+.falling-petals{position:fixed;inset:0;overflow:hidden;pointer-events:none;z-index:5}
+.falling-petal{position:absolute;top:-25px;color:var(--red);font-family:'Cormorant Garamond',serif;line-height:1;animation:petal-fall linear infinite;will-change:transform,opacity}
+.falling-petal:nth-child(3n){color:var(--gold)}
+.falling-petal:nth-child(4n){color:var(--red-dark)}
+@keyframes petal-fall{0%{transform:translate3d(0,-30px,0) rotate(0deg)}25%{transform:translate3d(calc(var(--drift)*.35),25vh,0) rotate(80deg)}50%{transform:translate3d(calc(var(--drift)*-.25),52vh,0) rotate(160deg)}75%{transform:translate3d(calc(var(--drift)*.55),78vh,0) rotate(240deg)}100%{transform:translate3d(var(--drift),110vh,0) rotate(320deg)}}
+
+/* Subtle floating wedding rings */
+.wedding-rings{position:fixed;inset:0;overflow:hidden;pointer-events:none;z-index:4}
+.wedding-ring{position:absolute;width:24px;height:24px;border:1px solid rgba(185,154,87,.55);border-radius:50%;opacity:.13;animation:ring-float ease-in-out infinite;will-change:transform,opacity}
+.wedding-ring:before{content:"";position:absolute;inset:3px;border:1px solid rgba(178,15,59,.28);border-radius:50%}
+.wedding-ring:after{content:"✦";position:absolute;top:-10px;left:8px;color:var(--gold);font:9px 'Cormorant Garamond',serif;opacity:.65}
+@keyframes ring-float{0%,100%{margin-top:0;opacity:.04}25%{margin-top:-13px;opacity:.14}50%{margin-top:4px;opacity:.10}75%{margin-top:17px;opacity:.06}}
+
 /* MOBILE */
 
 @media(max-width:850px){
@@ -676,15 +690,53 @@ document.addEventListener("DOMContentLoaded", function () {
   const button = document.getElementById("menuBtn");
   const menu = document.getElementById("mobileMenu");
 
-  button.onclick = function () {
-    menu.classList.toggle("active");
-
-    if (menu.classList.contains("active")) {
-      button.innerHTML = "✕";
-    } else {
+  if(button&&menu){
+    button.onclick = function () {
+      menu.classList.toggle("active");
+      button.innerHTML = menu.classList.contains("active") ? "✕" : "☰";
+    };
+    menu.querySelectorAll("a").forEach(a => a.addEventListener("click", () => {
+      menu.classList.remove("active");
       button.innerHTML = "☰";
-    }
-  };
+    }));
+  }
+
+  // Minimal falling-petal effect.
+  const petals=document.createElement("div");
+  petals.className="falling-petals";
+  petals.setAttribute("aria-hidden","true");
+  document.body.appendChild(petals);
+
+  const symbols=["✿","❀","❁","·"];
+  for(let i=0;i<12;i++){
+    const petal=document.createElement("span");
+    petal.className="falling-petal";
+    petal.textContent=symbols[Math.floor(Math.random()*symbols.length)];
+    petal.style.left=(Math.random()*100)+"vw";
+    petal.style.animationDelay=(Math.random()*10)+"s";
+    petal.style.animationDuration=(13+Math.random()*10)+"s";
+    petal.style.fontSize=(7+Math.random()*7)+"px";
+    petal.style.opacity=(0.18+Math.random()*0.28).toFixed(2);
+    petal.style.setProperty("--drift",(Math.random()*70-35)+"px");
+    petals.appendChild(petal);
+  }
+
+  // Subtle floating wedding-ring outlines.
+  const rings=document.createElement("div");
+  rings.className="wedding-rings";
+  rings.setAttribute("aria-hidden","true");
+  document.body.appendChild(rings);
+
+  for(let i=0;i<3;i++){
+    const ring=document.createElement("span");
+    ring.className="wedding-ring";
+    ring.style.left=(12+Math.random()*76)+"vw";
+    ring.style.top=(18+Math.random()*65)+"vh";
+    ring.style.animationDelay=(Math.random()*12)+"s";
+    ring.style.animationDuration=(17+Math.random()*8)+"s";
+    ring.style.transform="scale("+(0.75+Math.random()*0.5).toFixed(2)+") rotate(-25deg)";
+    rings.appendChild(ring);
+  }
 
 });
 </script>
