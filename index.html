@@ -96,12 +96,27 @@ nav{
   line-height:1;
 }
 
-.brand .nav-logo{
-  display:block;
+.brand-spacer{
   width:112px;
-  height:54px;
-  object-fit:contain;
-  object-position:left center;
+  height:1px;
+  flex:0 0 112px;
+}
+
+.hero-kicker{
+  text-align:center;
+  padding-top:18px;
+}
+
+.hero-kicker .topbar{
+  padding:0;
+  margin:0;
+}
+
+.staycation-line{
+  margin-top:9px;
+  font:500 10px/1.4 'Montserrat',sans-serif;
+  letter-spacing:4px;
+  color:var(--red-dark);
 }
 
 .links{
@@ -552,13 +567,9 @@ footer small{
 
 <body>
 
-<div class="topbar">ISTEDA COMMUNITY PRESENTS</div>
-
 <nav>
 
-  <a class="brand" href="index.html" aria-label="O.K.P — Oru Kalyanam Pole">
-    <img class="nav-logo" src="okp1.png" alt="O.K.P — Oru Kalyanam Pole">
-  </a>
+  <div class="brand-spacer" aria-hidden="true"></div>
 
   <button class="menu" id="menuBtn" aria-label="Open menu">☰</button>
 
@@ -574,6 +585,11 @@ footer small{
   </div>
 
 </nav>
+
+<div class="hero-kicker">
+  <div class="topbar">ISTEDA COMMUNITY PRESENTS</div>
+  <div class="staycation-line">STAYCATION 3.0</div>
+</div>
 
 <header class="hero">
 
@@ -694,7 +710,7 @@ document.addEventListener("DOMContentLoaded", function () {
   document.body.appendChild(petals);
 
   const symbols=["✿","❀","❁","·"];
-  for(let i=0;i<6;i++){
+  for(let i=0;i<10;i++){
     const petal=document.createElement("span");
     petal.className="falling-petal";
     petal.textContent=symbols[Math.floor(Math.random()*symbols.length)];
