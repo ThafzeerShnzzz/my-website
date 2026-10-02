@@ -96,11 +96,12 @@ nav{
   line-height:1;
 }
 
-.brand span{
+.brand .nav-logo{
   display:block;
-  margin-top:4px;
-  font:500 8px 'Montserrat',sans-serif;
-  letter-spacing:3px;
+  width:112px;
+  height:54px;
+  object-fit:contain;
+  object-position:left center;
 }
 
 .links{
@@ -380,9 +381,11 @@ footer{
   letter-spacing:3px;
 }
 
-footer strong{
-  font-size:45px;
-  letter-spacing:-2px;
+footer .footer-logo{
+  display:block;
+  width:min(220px,62vw);
+  height:auto;
+  margin:0 auto 12px;
 }
 
 footer small{
@@ -553,9 +556,8 @@ footer small{
 
 <nav>
 
-  <a class="brand" href="index.html">
-    O.K.P
-    <span>ORU KALYANAM POLE</span>
+  <a class="brand" href="index.html" aria-label="O.K.P — Oru Kalyanam Pole">
+    <img class="nav-logo" src="okp1.png" alt="O.K.P — Oru Kalyanam Pole">
   </a>
 
   <button class="menu" id="menuBtn" aria-label="Open menu">☰</button>
@@ -660,10 +662,7 @@ Just one unforgettable weekend where, for a little while, we make-believe.
 
 <footer>
 
-  <strong>O.K.P</strong><br>
-  ORU KALYANAM POLE
-
-  <br>
+  <img class="footer-logo" src="okp1.png" alt="O.K.P — Oru Kalyanam Pole">
 
   <small>
     AN ISTEDA COMMUNITY EXPERIENCE · DUBAI · U.A.E
