@@ -113,7 +113,7 @@ nav{
 }
 
 .staycation-line{
-  margin-top:9px;
+  margin:0 0 8px;
   font:500 10px/1.4 'Montserrat',sans-serif;
   letter-spacing:4px;
   color:var(--red-dark);
@@ -588,13 +588,13 @@ footer small{
 
 <div class="hero-kicker">
   <div class="topbar">ISTEDA COMMUNITY PRESENTS</div>
-  <div class="staycation-line">STAYCATION 3.0</div>
 </div>
 
 <header class="hero">
 
   <div class="hero-paper">
 
+    <div class="staycation-line">STAYCATION 3.0</div>
     <img class="hero-logo" src="okp1.png" alt="O.K.P — Oru Kalyanam Pole">
 
     <a class="button" href="programme.html">
@@ -718,6 +718,7 @@ document.addEventListener("DOMContentLoaded", function () {
     petal.style.animationDelay=(Math.random()*10)+"s";
     petal.style.animationDuration=(13+Math.random()*10)+"s";
     petal.style.fontSize=(7+Math.random()*7)+"px";
+    if(i>=7) petal.style.fontSize=(18+Math.random()*12)+"px";
     petal.style.opacity=(0.18+Math.random()*0.28).toFixed(2);
     petal.style.setProperty("--drift",(Math.random()*70-35)+"px");
     petals.appendChild(petal);
