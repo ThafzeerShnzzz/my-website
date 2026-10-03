@@ -570,11 +570,11 @@ footer small{
 .index-cta{transition:transform .28s ease,box-shadow .28s ease;}
 .index-cta:hover{transform:translateY(-2px);}
 .index-cta:hover .arrow,.index-cta:hover span:last-child{transform:translateX(4px);}
-.index-stamp{transform-origin:50% 50%;animation:indexStampSway 6s ease-in-out 1.7s infinite;}
+.index-stamp{transform-origin:50% 50%;animation:indexStampAttention 1.65s ease-in-out 1.2s infinite;}
 @keyframes indexSoftFade{to{opacity:1}}
 @keyframes indexSoftRise{to{opacity:1;transform:translateY(0)}}
 @keyframes indexLogoRise{to{opacity:1;transform:translateY(0)}}
-@keyframes indexStampSway{0%,100%{transform:rotate(-2deg)}50%{transform:rotate(2deg)}}
+@keyframes indexStampAttention{0%,58%,100%{transform:rotate(-2deg) translateX(0)}62%{transform:rotate(-1deg) translateX(-2px)}66%{transform:rotate(1deg) translateX(2px)}70%{transform:rotate(-1.5deg) translateX(-2px)}74%{transform:rotate(1deg) translateX(2px)}78%{transform:rotate(-2deg) translateX(0)}}
 @media (prefers-reduced-motion:reduce){
  .index-present,.index-staycation,.index-logo-enter{opacity:1;transform:none;animation:none}
  .index-stamp{animation:none}
