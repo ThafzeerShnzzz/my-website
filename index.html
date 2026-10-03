@@ -582,33 +582,33 @@ footer small{
 }
 
 
-.registration-cta{
-  display:inline-flex;align-items:center;justify-content:center;
-  margin:10px 6px 0;padding:13px 24px;border:1px solid var(--red);
-  color:var(--red);background:transparent;text-decoration:none;
-  font:600 10px 'Montserrat',sans-serif;letter-spacing:2px;
-  transition:transform .28s ease,background .28s ease,color .28s ease;
+
+
+
+/* Minimal Isteda social + registration */
+.top-instagram{
+  display:inline-flex;align-items:center;gap:6px;margin-top:8px;
+  color:var(--red);text-decoration:none;
+  font:500 8px 'Montserrat',sans-serif;letter-spacing:1.4px;opacity:.78;
 }
-.registration-cta:hover{transform:translateY(-2px);background:var(--red);color:var(--paper);}
-.isteda-contact{padding:58px 20px 46px;text-align:center;border-top:1px solid rgba(178,15,59,.16);}
-.contact-inner{max-width:620px;margin:0 auto;}
-.contact-kicker{font:600 9px 'Montserrat',sans-serif;letter-spacing:4px;color:var(--red);margin-bottom:10px;}
-.isteda-contact h3{margin:0 0 9px;font-size:26px;font-weight:600;letter-spacing:.5px;}
-.isteda-contact p{margin:0 auto 20px;font-size:15px;opacity:.75;}
-.instagram-button{display:inline-flex;align-items:center;gap:9px;padding:10px 16px;border:1px solid rgba(178,15,59,.35);border-radius:999px;color:var(--red);text-decoration:none;font:600 10px 'Montserrat',sans-serif;letter-spacing:1px;transition:transform .25s ease,border-color .25s ease;}
-.instagram-button:hover{transform:translateY(-2px);border-color:var(--red);}
-.instagram-button svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;}
-.instagram-button svg circle:last-child{fill:currentColor;stroke:none;}
-.contact-links{margin-top:19px;font:500 11px 'Montserrat',sans-serif;letter-spacing:.6px;}
-.contact-links a,.contact-mail{color:inherit;text-decoration:none;}
-.contact-mail{display:inline-block;margin-top:9px;font:500 11px 'Montserrat',sans-serif;letter-spacing:.5px;}
-.contact-links a:hover,.contact-mail:hover{text-decoration:underline;}
+.top-instagram svg,.footer-instagram svg{width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:1.7;}
+.top-instagram svg circle:last-child,.footer-instagram svg circle:last-child{fill:currentColor;stroke:none;}
+.registration-match{
+  display:inline-flex;align-items:center;justify-content:center;
+  margin-left:8px;padding:12px 20px;border:1px solid rgba(178,15,59,.5);
+  color:var(--red);background:transparent;text-decoration:none;
+  font:600 9px 'Montserrat',sans-serif;letter-spacing:1.7px;
+  transition:transform .25s ease,background .25s ease,color .25s ease;
+}
+.registration-match:hover{transform:translateY(-2px);background:var(--red);color:var(--paper);}
+.footer-connect{margin:5px auto 13px;text-align:center;}
+.footer-connect>span{display:block;margin-bottom:7px;font:500 8px 'Montserrat',sans-serif;letter-spacing:2.8px;opacity:.62;}
+.footer-instagram{display:inline-flex;align-items:center;gap:6px;color:var(--red);text-decoration:none;font:600 9px 'Montserrat',sans-serif;letter-spacing:.8px;}
+.footer-contact{margin-top:8px;font:400 8px 'Montserrat',sans-serif;letter-spacing:.35px;opacity:.62;}
+.footer-contact a{color:inherit;text-decoration:none;}
 @media(max-width:520px){
- .registration-cta{margin-top:9px;padding:12px 17px;font-size:9px;}
- .isteda-contact{padding:46px 18px 38px;}
- .isteda-contact h3{font-size:22px;}
- .contact-links span{display:none;}
- .contact-links a{display:block;margin:7px 0;}
+  .registration-match{margin:8px 0 0;padding:11px 16px;}
+  .footer-contact{max-width:290px;margin:8px auto 0;line-height:1.8;}
 }
 
 </style>
@@ -637,6 +637,10 @@ footer small{
 
 <div class="hero-kicker">
   <div class="topbar index-present">ISTEDA COMMUNITY PRESENTS</div>
+  <a class="top-instagram" href="https://www.instagram.com/isteda_community?stkn=ZW85NmQ3OHI3Mjk2&utm_source=qr" target="_blank" rel="noopener" aria-label="Follow Isteda Community on Instagram">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"></rect><circle cx="12" cy="12" r="4"></circle><circle cx="17.4" cy="6.7" r="1"></circle></svg>
+    <span>FOLLOW @ISTEDA_COMMUNITY</span>
+  </a>
 </div>
 
 <header class="hero">
@@ -651,6 +655,7 @@ footer small{
     <a class="button" href="programme.html">
       ABOUT THE WEDDING →
     </a>
+      <a class="registration-match" href="rsvp.html">REGISTRATION →</a>
 
   </div>
 
@@ -728,25 +733,17 @@ Just one unforgettable weekend where, for a little while, we make-believe.
 </section>
 
 
-<section class="isteda-contact" aria-label="Isteda Community contact">
-  <div class="contact-inner">
-    <div class="contact-kicker">ISTEDA COMMUNITY</div>
-    <h3>STAY CONNECTED WITH US</h3>
-    <p>Follow our community, or DM us for event enquiries.</p>
-    <a class="instagram-button" href="https://www.instagram.com/isteda_community?stkn=ZW85NmQ3OHI3Mjk2&utm_source=qr" target="_blank" rel="noopener" aria-label="Follow Isteda Community on Instagram">
-      <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"></rect><circle cx="12" cy="12" r="4"></circle><circle cx="17.4" cy="6.7" r="1"></circle></svg>
-      <span>@isteda_community</span>
-    </a>
-    <div class="contact-links">
-      <a href="tel:+971557863681">+971 55 786 3681</a><span> | </span><a href="tel:+971545390425">+971 54 539 0425</a>
-    </div>
-    <a class="contact-mail" href="mailto:communityisteda@gmail.com">communityisteda@gmail.com</a>
-  </div>
-</section>
-
 <footer>
 
   <img class="footer-logo" src="okp1.png" alt="O.K.P — Oru Kalyanam Pole">
+    <div class="footer-connect">
+      <span>STAY CONNECTED</span>
+      <a class="footer-instagram" href="https://www.instagram.com/isteda_community?stkn=ZW85NmQ3OHI3Mjk2&utm_source=qr" target="_blank" rel="noopener" aria-label="Isteda Community Instagram">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"></rect><circle cx="12" cy="12" r="4"></circle><circle cx="17.4" cy="6.7" r="1"></circle></svg>
+        @isteda_community
+      </a>
+      <div class="footer-contact"><a href="tel:+971557863681">+971 55 786 3681</a> · <a href="tel:+971545390425">+971 54 539 0425</a> · <a href="mailto:communityisteda@gmail.com">communityisteda@gmail.com</a></div>
+    </div>
 
   <small>
     AN ISTEDA COMMUNITY EXPERIENCE · DUBAI · U.A.E
