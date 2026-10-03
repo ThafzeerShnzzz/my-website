@@ -581,6 +581,36 @@ footer small{
  .index-cta{transition:none}
 }
 
+
+.registration-cta{
+  display:inline-flex;align-items:center;justify-content:center;
+  margin:10px 6px 0;padding:13px 24px;border:1px solid var(--red);
+  color:var(--red);background:transparent;text-decoration:none;
+  font:600 10px 'Montserrat',sans-serif;letter-spacing:2px;
+  transition:transform .28s ease,background .28s ease,color .28s ease;
+}
+.registration-cta:hover{transform:translateY(-2px);background:var(--red);color:var(--paper);}
+.isteda-contact{padding:58px 20px 46px;text-align:center;border-top:1px solid rgba(178,15,59,.16);}
+.contact-inner{max-width:620px;margin:0 auto;}
+.contact-kicker{font:600 9px 'Montserrat',sans-serif;letter-spacing:4px;color:var(--red);margin-bottom:10px;}
+.isteda-contact h3{margin:0 0 9px;font-size:26px;font-weight:600;letter-spacing:.5px;}
+.isteda-contact p{margin:0 auto 20px;font-size:15px;opacity:.75;}
+.instagram-button{display:inline-flex;align-items:center;gap:9px;padding:10px 16px;border:1px solid rgba(178,15,59,.35);border-radius:999px;color:var(--red);text-decoration:none;font:600 10px 'Montserrat',sans-serif;letter-spacing:1px;transition:transform .25s ease,border-color .25s ease;}
+.instagram-button:hover{transform:translateY(-2px);border-color:var(--red);}
+.instagram-button svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;}
+.instagram-button svg circle:last-child{fill:currentColor;stroke:none;}
+.contact-links{margin-top:19px;font:500 11px 'Montserrat',sans-serif;letter-spacing:.6px;}
+.contact-links a,.contact-mail{color:inherit;text-decoration:none;}
+.contact-mail{display:inline-block;margin-top:9px;font:500 11px 'Montserrat',sans-serif;letter-spacing:.5px;}
+.contact-links a:hover,.contact-mail:hover{text-decoration:underline;}
+@media(max-width:520px){
+ .registration-cta{margin-top:9px;padding:12px 17px;font-size:9px;}
+ .isteda-contact{padding:46px 18px 38px;}
+ .isteda-contact h3{font-size:22px;}
+ .contact-links span{display:none;}
+ .contact-links a{display:block;margin:7px 0;}
+}
+
 </style>
 </head>
 
@@ -616,9 +646,7 @@ footer small{
     <div class="staycation-line index-staycation">STAYCATION 3.0</div>
     <div class="hero-logo-wrap index-logo-enter">
       <img class="hero-logo" src="okp1.png" alt="O.K.P — Oru Kalyanam Pole">
-      <span class="earring-mask" aria-hidden="true"></span>
-      <img class="earring-swing" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAA1CAYAAABSrotqAAAFhklEQVR4nO2XW2icRRSAvzPz/3vLrWmuTS/ZamxM0dpKm15UvFfUvCiI+CK+6YMPXhClfVEE8YJ4eVKKCiIFW6GI2gdBQcEbChVLQ6rRok2iadLUXDa72d1/jg/7b7tWN5ssqy96YJjDzOz5Zv45c85Z+F/+lxpLBIgDUcArnUjv6tbMru7kcg16lZeUEQUtbGhZYqoGIoBc9q8A0zuTd4TqS+mdyVW1Bsr5AwqvKjyncELhkVoCpUzvAzPAHLCi1kBT0mR+RzKOchrlSZTdKIn5HcmWWgGLIAuY0/3JXYoMg3SDzIDMgdwJ8sX8jvX1tQDaInRnQ8yPGtkHdCmg8IrCkVC/SOHppQD/4hDnSVMIZaI/+VTCyL0lc78Aq4vzoewH7q778kRQzmClh28Ac3Jr9yO+cOlc4B71RKZ8kbQVUuGGm4BY2F4AXgM+Lmew0glbf7p83QPtvt1bYV2pHAeuqv/qxES5E5SVoS3r7mn3vcccMg4ShNElF/bFZed/vl7gk3I2FwWuiXjP/JoN9grEUoE7BOTSTg8DKIwq8g7IRyC/gQye24j8XBVwNnBv+Ia6rOrxHIzPBm6/EdodTDj4Pac6pJABXgeGgQkKzjRdFXDf+MwLzdbe/8N87uU6kd3H5rMHfZFNqcB9EKhO5xQTKJJyelDhyvCpDCsMVAW8eUViu4D/QyZ3woqsOZJaGBGlbj7QscAx7ZwaVZX7fjw1iGJQBlE2oByrCtjpezvSTj+7JBHpCVRHeuORZoCM00kgnleMAzk0lTIK3wdKADQC31YFjBrTk1N+9kScQ2abPRt3SEZE8iIS0YKDxAEbqIwH0K7ImCKzVQGt0OCUMwZRgahFsgpTFlzpvgCjaEYK+u8UssjygShpC/VOdcYinVmnM0ZpsYhvlAYDigKFt9AYPtQ4UFcVMKf85BtJnszmR4AWIK0QrbemT0SawsAdEqUzF+gkShKlbLpaFHgmH3wUEbnivTOpMYXZ7qi3RWHSCmsFmkzIu74p4Rnoc5BViCm0VwUczuSPKZJ+eNXK2xcc79Zbc1ugetQTuVAKQRuA57tbtwNqhS4K97e1KuDOhti+6bx7q8W3j5/KB4ciYgbyKmMG2QCCiDSB0On7A3nl86jYAZAWkPerAhpkVZ2R60RpW+XZPU6ZiogMqIIqxMTcaJDWqMhdOceIgWtUGVVlspzNRdPThxevub6/PnaY5RW880B8xTfDf3uYRRPw7qGR70a2XPB2nTUDWdXPVZkK0JTq2Y16nkhCBN9CnRVZJ9ANvFnOZsWM/2su+PQCa25QxQdaAT+A2UB12kHawrynuIiRRoHTplA2Hi5nsFLG71gd8eyBnq5rG61ZmTDSsdK3jzo4NRe4dz0hHjNmt4GuvOoeQY5aYRIYbP5meKYaYDvn3rYCMrRp/b0dvveEgykDLQqTWacPdR4Z3s+fQ15VJyxGDC1d+8zatrZLEtGOiMjcnpMTg1+nMtkQpn9npFQq3WFp9DqrDzTXb+v0vWcVxr9OZbYuFQaVC+GiIQ11B+RaPXurQIeBjQd6uuyiFqoAUgLMX9kQDzxkK8oQin91Q6KPJZ5uKcAgbA7IA/m3L1y9CfhNCw6DJ9K/VNhSgHDOWRQIIsbcAnIcpC0sCbfVElj8u3bWQw3cBGTDsQVgey2BtqSZ9zesbVToV8iEnjSqsPH05RtitQJKSTMbY9FtYTm4EPruKIpVpfcfAcaM9IXjxcp6NOz7zv9hLYASKClgjEIKAhincJ89tQSe1feOnjqYdnq7QkcxGigcUPhqqcBK0kIhgLcCzUAC8MY39z44sblXJ7b0vrhcg5WC90oKHloMawsUPmEwsbm3Hsi3fXs8XUvgihCoFCJOFsiF+pLD2X9L/gDePxYKp56FagAAAABJRU5ErkJggg==" alt="" aria-hidden="true">
-    </div>
+      </div>
 
     <a class="button" href="programme.html">
       ABOUT THE WEDDING →
@@ -697,6 +725,23 @@ Just one unforgettable weekend where, for a little while, we make-believe.
     — Somebody from the family, probably
   </small>
 
+</section>
+
+
+<section class="isteda-contact" aria-label="Isteda Community contact">
+  <div class="contact-inner">
+    <div class="contact-kicker">ISTEDA COMMUNITY</div>
+    <h3>STAY CONNECTED WITH US</h3>
+    <p>Follow our community, or DM us for event enquiries.</p>
+    <a class="instagram-button" href="https://www.instagram.com/isteda_community?stkn=ZW85NmQ3OHI3Mjk2&utm_source=qr" target="_blank" rel="noopener" aria-label="Follow Isteda Community on Instagram">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"></rect><circle cx="12" cy="12" r="4"></circle><circle cx="17.4" cy="6.7" r="1"></circle></svg>
+      <span>@isteda_community</span>
+    </a>
+    <div class="contact-links">
+      <a href="tel:+971557863681">+971 55 786 3681</a><span> | </span><a href="tel:+971545390425">+971 54 539 0425</a>
+    </div>
+    <a class="contact-mail" href="mailto:communityisteda@gmail.com">communityisteda@gmail.com</a>
+  </div>
 </section>
 
 <footer>
