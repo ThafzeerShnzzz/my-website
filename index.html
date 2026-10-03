@@ -562,6 +562,25 @@ footer small{
     letter-spacing:10px;
   }
 }
+
+/* Minimal homepage motion */
+.index-present{opacity:0;animation:indexSoftFade .8s ease-out .12s forwards;}
+.index-staycation{opacity:0;transform:translateY(8px);animation:indexSoftRise .85s cubic-bezier(.22,.61,.36,1) .45s forwards;}
+.index-logo-enter{opacity:0;transform:translateY(18px);animation:indexLogoRise 1.05s cubic-bezier(.22,.61,.36,1) .68s forwards;}
+.index-cta{transition:transform .28s ease,box-shadow .28s ease;}
+.index-cta:hover{transform:translateY(-2px);}
+.index-cta:hover .arrow,.index-cta:hover span:last-child{transform:translateX(4px);}
+.index-stamp{transform-origin:50% 50%;animation:indexStampSway 6s ease-in-out 1.7s infinite;}
+@keyframes indexSoftFade{to{opacity:1}}
+@keyframes indexSoftRise{to{opacity:1;transform:translateY(0)}}
+@keyframes indexLogoRise{to{opacity:1;transform:translateY(0)}}
+@keyframes indexStampSway{0%,100%{transform:rotate(-2deg)}50%{transform:rotate(2deg)}}
+@media (prefers-reduced-motion:reduce){
+ .index-present,.index-staycation,.index-logo-enter{opacity:1;transform:none;animation:none}
+ .index-stamp{animation:none}
+ .index-cta{transition:none}
+}
+
 </style>
 </head>
 
@@ -587,15 +606,15 @@ footer small{
 </nav>
 
 <div class="hero-kicker">
-  <div class="topbar">ISTEDA COMMUNITY PRESENTS</div>
+  <div class="topbar index-present">ISTEDA COMMUNITY PRESENTS</div>
 </div>
 
 <header class="hero">
 
   <div class="hero-paper">
 
-    <div class="staycation-line">STAYCATION 3.0</div>
-    <div class="hero-logo-wrap">
+    <div class="staycation-line index-staycation">STAYCATION 3.0</div>
+    <div class="hero-logo-wrap index-logo-enter">
       <img class="hero-logo" src="okp1.png" alt="O.K.P — Oru Kalyanam Pole">
       <span class="earring-mask" aria-hidden="true"></span>
       <img class="earring-swing" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAA1CAYAAABSrotqAAAFhklEQVR4nO2XW2icRRSAvzPz/3vLrWmuTS/ZamxM0dpKm15UvFfUvCiI+CK+6YMPXhClfVEE8YJ4eVKKCiIFW6GI2gdBQcEbChVLQ6rRok2iadLUXDa72d1/jg/7b7tWN5ssqy96YJjDzOz5Zv45c85Z+F/+lxpLBIgDUcArnUjv6tbMru7kcg16lZeUEQUtbGhZYqoGIoBc9q8A0zuTd4TqS+mdyVW1Bsr5AwqvKjyncELhkVoCpUzvAzPAHLCi1kBT0mR+RzKOchrlSZTdKIn5HcmWWgGLIAuY0/3JXYoMg3SDzIDMgdwJ8sX8jvX1tQDaInRnQ8yPGtkHdCmg8IrCkVC/SOHppQD/4hDnSVMIZaI/+VTCyL0lc78Aq4vzoewH7q778kRQzmClh28Ac3Jr9yO+cOlc4B71RKZ8kbQVUuGGm4BY2F4AXgM+Lmew0glbf7p83QPtvt1bYV2pHAeuqv/qxES5E5SVoS3r7mn3vcccMg4ShNElF/bFZed/vl7gk3I2FwWuiXjP/JoN9grEUoE7BOTSTg8DKIwq8g7IRyC/gQye24j8XBVwNnBv+Ia6rOrxHIzPBm6/EdodTDj4Pac6pJABXgeGgQkKzjRdFXDf+MwLzdbe/8N87uU6kd3H5rMHfZFNqcB9EKhO5xQTKJJyelDhyvCpDCsMVAW8eUViu4D/QyZ3woqsOZJaGBGlbj7QscAx7ZwaVZX7fjw1iGJQBlE2oByrCtjpezvSTj+7JBHpCVRHeuORZoCM00kgnleMAzk0lTIK3wdKADQC31YFjBrTk1N+9kScQ2abPRt3SEZE8iIS0YKDxAEbqIwH0K7ImCKzVQGt0OCUMwZRgahFsgpTFlzpvgCjaEYK+u8UssjygShpC/VOdcYinVmnM0ZpsYhvlAYDigKFt9AYPtQ4UFcVMKf85BtJnszmR4AWIK0QrbemT0SawsAdEqUzF+gkShKlbLpaFHgmH3wUEbnivTOpMYXZ7qi3RWHSCmsFmkzIu74p4Rnoc5BViCm0VwUczuSPKZJ+eNXK2xcc79Zbc1ugetQTuVAKQRuA57tbtwNqhS4K97e1KuDOhti+6bx7q8W3j5/KB4ciYgbyKmMG2QCCiDSB0On7A3nl86jYAZAWkPerAhpkVZ2R60RpW+XZPU6ZiogMqIIqxMTcaJDWqMhdOceIgWtUGVVlspzNRdPThxevub6/PnaY5RW880B8xTfDf3uYRRPw7qGR70a2XPB2nTUDWdXPVZkK0JTq2Y16nkhCBN9CnRVZJ9ANvFnOZsWM/2su+PQCa25QxQdaAT+A2UB12kHawrynuIiRRoHTplA2Hi5nsFLG71gd8eyBnq5rG61ZmTDSsdK3jzo4NRe4dz0hHjNmt4GuvOoeQY5aYRIYbP5meKYaYDvn3rYCMrRp/b0dvveEgykDLQqTWacPdR4Z3s+fQ15VJyxGDC1d+8zatrZLEtGOiMjcnpMTg1+nMtkQpn9npFQq3WFp9DqrDzTXb+v0vWcVxr9OZbYuFQaVC+GiIQ11B+RaPXurQIeBjQd6uuyiFqoAUgLMX9kQDzxkK8oQin91Q6KPJZ5uKcAgbA7IA/m3L1y9CfhNCw6DJ9K/VNhSgHDOWRQIIsbcAnIcpC0sCbfVElj8u3bWQw3cBGTDsQVgey2BtqSZ9zesbVToV8iEnjSqsPH05RtitQJKSTMbY9FtYTm4EPruKIpVpfcfAcaM9IXjxcp6NOz7zv9hLYASKClgjEIKAhincJ89tQSe1feOnjqYdnq7QkcxGigcUPhqqcBK0kIhgLcCzUAC8MY39z44sblXJ7b0vrhcg5WC90oKHloMawsUPmEwsbm3Hsi3fXs8XUvgihCoFCJOFsiF+pLD2X9L/gDePxYKp56FagAAAABJRU5ErkJggg==" alt="" aria-hidden="true">
@@ -607,7 +626,7 @@ footer small{
 
   </div>
 
-  <div class="stamp">
+  <div class="stamp index-stamp">
     LIMITED INVITES<br>ONLY
   </div>
 
