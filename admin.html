@@ -91,10 +91,11 @@ recoveryForm.addEventListener('submit',async e=>{
  setTimeout(()=>{recoveryView.style.display='none';dashboard.style.display='block';loadRows();},700);
 });
 loginForm.addEventListener('submit',async e=>{
- e.preventDefault();loginError.textContent='';
+ e.preventDefault();loginError.style.color='';loginError.textContent='Signing in...';
  const {data,error}=await db.auth.signInWithPassword({email:emailInput.value.trim(),password:passwordInput.value});
- if(error){loginError.textContent='Login failed. Check your email and password.';return}
+ if(error){loginError.textContent='Login failed: '+error.message;return}
  if(!ADMIN_UIDS.includes(data.user.id)){await db.auth.signOut();loginError.textContent='This account is not authorized for O.K.P admin access.';return}
+ loginError.style.color='#25703a';loginError.textContent='Login successful. Opening dashboard...';
  loginView.style.display='none';dashboard.style.display='block';loadRows();
 });
 magicLinkBtn.onclick=async()=>{
