@@ -24,7 +24,7 @@ table{width:100%;border-collapse:collapse;min-width:1180px}th{position:sticky;to
 <main class="admin-wrap">
 <section id="loginView">
  <div class="admin-head"><img src="okp1.png" alt="O.K.P"><h1>Registration Review</h1><p>Authorized Isteda admins only.</p></div>
- <form class="login-card" id="loginForm">
+ <form class="login-card" id="loginForm" action="javascript:void(0);">
   <p class="eyebrow">ADMIN LOGIN</p>
   <label>EMAIL</label><input id="email" type="email" autocomplete="email" required>
   <label>PASSWORD</label><input id="password" type="password" autocomplete="current-password" required>
@@ -90,14 +90,15 @@ recoveryForm.addEventListener('submit',async e=>{
  recoveryMode=false;history.replaceState(null,'',location.pathname);
  setTimeout(()=>{recoveryView.style.display='none';dashboard.style.display='block';loadRows();},700);
 });
-loginForm.addEventListener('submit',async e=>{
- e.preventDefault();loginError.style.color='';loginError.textContent='Signing in...';
+loginForm.onsubmit=async function(e){
+ e.preventDefault();e.stopPropagation();loginError.style.color='';loginError.textContent='Signing in...';
  const {data,error}=await db.auth.signInWithPassword({email:emailInput.value.trim(),password:passwordInput.value});
  if(error){loginError.textContent='Login failed: '+error.message;return}
  if(!ADMIN_UIDS.includes(data.user.id)){await db.auth.signOut();loginError.textContent='This account is not authorized for O.K.P admin access.';return}
  loginError.style.color='#25703a';loginError.textContent='Login successful. Opening dashboard...';
- loginView.style.display='none';dashboard.style.display='block';loadRows();
-});
+ loginView.style.display='none';dashboard.style.display='block';await loadRows();
+ return false;
+};
 magicLinkBtn.onclick=async()=>{
  loginError.style.color='';loginError.textContent='';
  const email=emailInput.value.trim();
