@@ -55,6 +55,17 @@ table{width:100%;border-collapse:collapse;min-width:1180px}th{position:sticky;to
 </main>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
+window.addEventListener('DOMContentLoaded',function(){
+  var b=document.getElementById('directLoginBtn');
+  var m=document.getElementById('loginError');
+  if(b){b.addEventListener('click',function(){if(m&&!m.textContent)m.textContent='LOGIN BUTTON CLICKED — connecting...';});}
+});
+window.addEventListener('error',function(e){
+  var m=document.getElementById('loginError');
+  if(m)m.textContent='PAGE ERROR: '+(e.message||'JavaScript failed to load');
+});
+</script>
+<script>
 const URL='https://fbdkfzstxufvmjnkzzif.supabase.co';
 const KEY='sb_publishable_X1jt3-YBCSZ0Pmk0cMV4ng_TqN9LNYm';
 const ADMIN_UIDS=['465f75b4-9e4d-4f41-9fd7-37aa91175874','edd5746f-c472-4e01-8fa8-cf62adaeaeed'];
