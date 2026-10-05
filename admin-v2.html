@@ -4,152 +4,32 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>O.K.P Admin</title>
+<title>O.K.P · Private Access</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;1,600&display=swap" rel="stylesheet">
 
 <style>
-body{
-  margin:0;
-  background:#f8efd9;
-  color:#4b2a24;
-  font-family:Georgia,serif;
-}
-
-.topbar{
-  background:#a70e39;
-  color:white;
-  text-align:center;
-  padding:10px;
-  font:600 11px Arial,sans-serif;
-  letter-spacing:2px;
-}
-
-.wrap{
-  max-width:430px;
-  margin:55px auto;
-  padding:20px;
-}
-
-.logo{
-  display:block;
-  width:120px;
-  max-height:100px;
-  object-fit:contain;
-  margin:0 auto 10px;
-}
-
-h1{
-  text-align:center;
-  color:#a70e39;
-  font-size:38px;
-  margin:10px 0;
-}
-
-.subtitle{
-  text-align:center;
-  margin-bottom:30px;
-}
-
-.card{
-  background:#fff9e9;
-  border:1px solid #d8a6a0;
-  padding:28px;
-}
-
-label{
-  display:block;
-  margin:17px 0 6px;
-  color:#a70e39;
-  font:bold 11px Arial,sans-serif;
-  letter-spacing:1px;
-}
-
-input{
-  width:100%;
-  box-sizing:border-box;
-  padding:13px;
-  border:1px solid #d8a6a0;
-  background:white;
-  font-size:15px;
-}
-
-button{
-  width:100%;
-  margin-top:20px;
-  padding:14px;
-  border:0;
-  background:#bd0d42;
-  color:white;
-  font:bold 12px Arial,sans-serif;
-  letter-spacing:1px;
-  cursor:pointer;
-}
-
-button:disabled{
-  opacity:.6;
-  cursor:wait;
-}
-
-#message{
-  margin-top:15px;
-  font:13px Arial,sans-serif;
-  line-height:1.5;
-}
-
-.ok{
-  color:#25703a;
-}
-
-.error{
-  color:#a00020;
-}
+*{box-sizing:border-box}body{margin:0;min-height:100vh;background:#f4efe5;color:#211d1c;font-family:Manrope,sans-serif}.page{min-height:100vh;display:grid;grid-template-columns:1.08fr .92fr}.visual{position:relative;background:#72132f;color:#fff;padding:48px;display:flex;flex-direction:column;overflow:hidden}.visual:before{content:"";position:absolute;width:480px;height:480px;border:1px solid rgba(255,255,255,.10);border-radius:50%;right:-190px;top:-150px}.visual:after{content:"";position:absolute;width:320px;height:320px;border:1px solid rgba(255,255,255,.08);border-radius:50%;left:-150px;bottom:-120px}.community{font-size:10px;font-weight:800;letter-spacing:3px;opacity:.75}.visualcopy{margin:auto 0;max-width:540px;position:relative;z-index:1}.logo{width:150px;max-height:115px;object-fit:contain;filter:brightness(0) invert(1);margin-bottom:28px}.visual h1{font:600 58px/1.02 "Playfair Display",serif;margin:0}.visual h1 i{font-weight:600}.visual p{font-size:13px;line-height:1.8;opacity:.65;max-width:420px;margin-top:20px}.edition{font-size:9px;letter-spacing:2px;opacity:.5}.loginarea{display:flex;align-items:center;justify-content:center;padding:45px}.wrap{width:100%;max-width:410px}.eyebrow{font-size:10px;font-weight:800;letter-spacing:2px;color:#9a6e7a}.wrap h2{font:600 38px/1.1 "Playfair Display",serif;color:#481624;margin:10px 0}.subtitle{font-size:12px;color:#80736f;margin:0 0 36px}.card{background:#fff;border:1px solid #e7ddd2;border-radius:20px;padding:27px;box-shadow:0 18px 55px rgba(67,45,38,.08)}label{display:block;margin:17px 0 7px;color:#695b57;font-size:9px;font-weight:800;letter-spacing:1.2px}input{width:100%;padding:14px 15px;border:1px solid #ded4c9;border-radius:11px;background:#fbfaf7;font:13px Manrope;outline:none;transition:.2s}input:focus{border-color:#8f1739;background:#fff;box-shadow:0 0 0 3px rgba(143,23,57,.07)}button{width:100%;margin-top:22px;padding:14px;border:0;border-radius:11px;background:#8f1739;color:#fff;font:800 10px Manrope;letter-spacing:1.2px;cursor:pointer;transition:.2s}button:hover{transform:translateY(-1px);background:#74122e}button:disabled{opacity:.6;cursor:wait;transform:none}#message{margin-top:14px;font-size:11px;line-height:1.5;text-align:center}.ok{color:#28703c}.error{color:#a00020}.secure{text-align:center;margin-top:17px;font-size:9px;color:#a09691;letter-spacing:.4px}
+@media(max-width:820px){.page{display:block}.visual{min-height:270px;padding:28px}.visualcopy{margin:35px 0 20px}.logo{width:100px;margin-bottom:14px}.visual h1{font-size:38px}.visual p{display:none}.edition{display:none}.loginarea{padding:35px 18px 55px}.wrap h2{font-size:32px}.card{padding:23px}}
 </style>
 </head>
 
 <body>
-
-<div class="topbar">
-ISTEDA COMMUNITY · PRIVATE ADMIN
-</div>
-
-<div class="wrap">
-
-<img src="okp1.png" class="logo" alt="O.K.P">
-
-<h1>Registration Review</h1>
-
-<p class="subtitle">
-Authorized Isteda admins only.
-</p>
-
+<div class="page">
+<section class="visual">
+<div class="community">ISTEDA COMMUNITY · PRIVATE</div>
+<div class="visualcopy"><img src="okp1.png" class="logo" alt="O.K.P"><h1>Wedding House<br><i>Control Room.</i></h1><p>Behind every beautiful wedding house is someone keeping the chaos beautifully organised.</p></div>
+<div class="edition">O.K.P · ORU KALYANAM POLE · STAYCATION 3.0</div>
+</section>
+<section class="loginarea"><div class="wrap">
+<div class="eyebrow">ADMIN ACCESS</div>
+<h2>Welcome back.</h2>
+<p class="subtitle">Sign in to review registrations and payment confirmations.</p>
 <div class="card">
-
-<label>EMAIL</label>
-
-<input
-  id="email"
-  type="email"
-  autocomplete="email"
->
-
-<label>PASSWORD</label>
-
-<input
-  id="password"
-  type="password"
-  autocomplete="current-password"
->
-
-<button id="loginButton" type="button">
-LOGIN →
-</button>
-
+<label>EMAIL ADDRESS</label><input id="email" type="email" autocomplete="email" placeholder="Enter your admin email">
+<label>PASSWORD</label><input id="password" type="password" autocomplete="current-password" placeholder="Enter your password">
+<button id="loginButton" type="button">ENTER THE WEDDING HOUSE →</button>
 <div id="message"></div>
-
-</div>
-
-</div>
-
-
+</div><div class="secure">PRIVATE ACCESS · AUTHORIZED ISTEDA ADMINS ONLY</div>
+</div></section></div>
 <script>
 
 const SUPABASE_URL =
