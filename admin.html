@@ -57,7 +57,7 @@ table{width:100%;border-collapse:collapse;min-width:1180px}th{position:sticky;to
 <script>
 const URL='https://fbdkfzstxufvmjnkzzif.supabase.co';
 const KEY='sb_publishable_X1jt3-YBCSZ0Pmk0cMV4ng_TqN9LNYm';
-const ADMIN_UID='465f75b4-9e4d-4f41-9fd7-37aa91175874';
+const ADMIN_UIDS=['465f75b4-9e4d-4f41-9fd7-37aa91175874','edd5746f-c472-4e01-8fa8-cf62adaeaeed'];
 const db=supabase.createClient(URL,KEY,{auth:{detectSessionInUrl:true,persistSession:true}});
 const $=id=>document.getElementById(id);
 const loginView=$('loginView'),recoveryView=$('recoveryView'),recoveryForm=$('recoveryForm'),recoveryError=$('recoveryError'),newPassword=$('newPassword'),confirmPassword=$('confirmPassword'),dashboard=$('dashboard'),loginForm=$('loginForm'),loginError=$('loginError'),emailInput=$('email'),passwordInput=$('password'),magicLinkBtn=$('magicLinkBtn'),logoutBtn=$('logout'),dashError=$('dashError'),totalCount=$('totalCount'),pendingCount=$('pendingCount'),approvedCount=$('approvedCount'),rejectedCount=$('rejectedCount'),searchInput=$('search'),filterInput=$('filter'),refreshBtn=$('refresh'),rows=$('rows'),empty=$('empty');
@@ -73,7 +73,7 @@ async function init(){
  if(hash.get('type')==='recovery'||query.get('type')==='recovery'){showRecovery();}
  const {data:{session}}=await db.auth.getSession();
  if(recoveryMode&&session)return;
- if(session&&session.user.id===ADMIN_UID){loginView.style.display='none';recoveryView.style.display='none';dashboard.style.display='block';loadRows();}
+ if(session&&ADMIN_UIDS.includes(session.user.id)){loginView.style.display='none';recoveryView.style.display='none';dashboard.style.display='block';loadRows();}
  else {if(session)await db.auth.signOut();loginView.style.display='block';recoveryView.style.display='none';dashboard.style.display='none';}
 }
 db.auth.onAuthStateChange((event,session)=>{
@@ -94,7 +94,7 @@ loginForm.addEventListener('submit',async e=>{
  e.preventDefault();loginError.textContent='';
  const {data,error}=await db.auth.signInWithPassword({email:emailInput.value.trim(),password:passwordInput.value});
  if(error){loginError.textContent='Login failed. Check your email and password.';return}
- if(data.user.id!==ADMIN_UID){await db.auth.signOut();loginError.textContent='This account is not authorized for O.K.P admin access.';return}
+ if(!ADMIN_UIDS.includes(data.user.id)){await db.auth.signOut();loginError.textContent='This account is not authorized for O.K.P admin access.';return}
  loginView.style.display='none';dashboard.style.display='block';loadRows();
 });
 magicLinkBtn.onclick=async()=>{
