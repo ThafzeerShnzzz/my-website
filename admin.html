@@ -24,16 +24,16 @@ table{width:100%;border-collapse:collapse;min-width:1180px}th{position:sticky;to
 <main class="admin-wrap">
 <section id="loginView">
  <div class="admin-head"><img src="okp1.png" alt="O.K.P"><h1>Registration Review</h1><p>Authorized Isteda admins only.</p></div>
- <form class="login-card" id="loginForm" action="javascript:void(0);">
+ <div class="login-card" id="loginForm">
   <p class="eyebrow">ADMIN LOGIN</p>
   <label>EMAIL</label><input id="email" type="email" autocomplete="email" required>
   <label>PASSWORD</label><input id="password" type="password" autocomplete="current-password" required>
-  <button class="admin-btn" style="width:100%;margin-top:20px" type="submit">LOGIN →</button>
+  <button class="admin-btn" style="width:100%;margin-top:20px" type="button" id="directLoginBtn">LOGIN →</button>
   <div style="text-align:center;margin:15px 0;font:600 9px Montserrat,sans-serif;letter-spacing:1px;opacity:.65">OR</div>
   <button class="admin-btn secondary" id="magicLinkBtn" style="width:100%" type="button">EMAIL ME A LOGIN LINK ✉</button>
   <p style="font-size:14px;line-height:1.4;margin:12px 0 0;opacity:.75">Forgot your password? Enter your admin email above and use the login link instead.</p>
   <p id="loginError" class="admin-error"></p>
- </form>
+ </div>
 </section>
 <section id="recoveryView" style="display:none">
  <div class="admin-head"><img src="okp1.png" alt="O.K.P"><h1>Set New Password</h1><p>Create a new password for your O.K.P admin account.</p></div>
@@ -90,15 +90,14 @@ recoveryForm.addEventListener('submit',async e=>{
  recoveryMode=false;history.replaceState(null,'',location.pathname);
  setTimeout(()=>{recoveryView.style.display='none';dashboard.style.display='block';loadRows();},700);
 });
-loginForm.onsubmit=async function(e){
- e.preventDefault();e.stopPropagation();loginError.style.color='';loginError.textContent='Signing in...';
+async function directLogin(){loginError.style.color='';loginError.textContent='Signing in...';
  const {data,error}=await db.auth.signInWithPassword({email:emailInput.value.trim(),password:passwordInput.value});
  if(error){loginError.textContent='Login failed: '+error.message;return}
  if(!ADMIN_UIDS.includes(data.user.id)){await db.auth.signOut();loginError.textContent='This account is not authorized for O.K.P admin access.';return}
  loginError.style.color='#25703a';loginError.textContent='Login successful. Opening dashboard...';
  loginView.style.display='none';dashboard.style.display='block';await loadRows();
- return false;
-};
+}
+directLoginBtn.onclick=directLogin;
 magicLinkBtn.onclick=async()=>{
  loginError.style.color='';loginError.textContent='';
  const email=emailInput.value.trim();
