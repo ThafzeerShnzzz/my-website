@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>O.K.P Admin</title>
+
+<style>
+body{
+  margin:0;
+  background:#f8efd9;
+  color:#4b2a24;
+  font-family:Georgia,serif;
+}
+
+.topbar{
+  background:#a70e39;
+  color:white;
+  text-align:center;
+  padding:10px;
+  font:600 11px Arial,sans-serif;
+  letter-spacing:2px;
+}
+
+.wrap{
+  max-width:430px;
+  margin:55px auto;
+  padding:20px;
+}
+
+.logo{
+  display:block;
+  width:120px;
+  max-height:100px;
+  object-fit:contain;
+  margin:0 auto 10px;
+}
+
+h1{
+  text-align:center;
+  color:#a70e39;
+  font-size:38px;
+  margin:10px 0;
+}
+
+.subtitle{
+  text-align:center;
+  margin-bottom:30px;
+}
+
+.card{
+  background:#fff9e9;
+  border:1px solid #d8a6a0;
+  padding:28px;
+}
+
+label{
+  display:block;
+  margin:17px 0 6px;
+  color:#a70e39;
+  font:bold 11px Arial,sans-serif;
+  letter-spacing:1px;
+}
+
+input{
+  width:100%;
+  box-sizing:border-box;
+  padding:13px;
+  border:1px solid #d8a6a0;
+  background:white;
+  font-size:15px;
+}
+
+button{
+  width:100%;
+  margin-top:20px;
+  padding:14px;
+  border:0;
+  background:#bd0d42;
+  color:white;
+  font:bold 12px Arial,sans-serif;
+  letter-spacing:1px;
+  cursor:pointer;
+}
+
+button:disabled{
+  opacity:.6;
+  cursor:wait;
+}
+
+#message{
+  margin-top:15px;
+  font:13px Arial,sans-serif;
+  line-height:1.5;
+}
+
+.ok{
+  color:#25703a;
+}
+
+.error{
+  color:#a00020;
+}
+</style>
+</head>
+
+<body>
+
+<div class="topbar">
+ISTEDA COMMUNITY · PRIVATE ADMIN
+</div>
+
+<div class="wrap">
+
+<img src="okp1.png" class="logo" alt="O.K.P">
+
+<h1>Registration Review</h1>
+
+<p class="subtitle">
+Authorized Isteda admins only.
+</p>
+
+<div class="card">
+
+<label>EMAIL</label>
+
+<input
+  id="email"
+  type="email"
+  autocomplete="email"
+>
+
+<label>PASSWORD</label>
+
+<input
+  id="password"
+  type="password"
+  autocomplete="current-password"
+>
+
+<button id="loginButton" type="button">
+LOGIN →
+</button>
+
+<div id="message"></div>
+
+</div>
+
+</div>
+
+
+<script>
+
+const SUPABASE_URL =
+'https://fbdkfzstxufvmjnkzzif.supabase.co';
+
+const SUPABASE_KEY =
+'sb_publishable_X1jt3-YBCSZ0Pmk0cMV4ng_TqN9LNYm';
+
+const ADMIN_USERS = [
+'465f75b4-9e4d-4f41-9fd7-37aa91175874',
+'edd5746f-c472-4e01-8fa8-cf62adaeaeed'
+];
+
+
+const button =
+document.getElementById('loginButton');
+
+const message =
+document.getElementById('message');
+
+
+button.addEventListener('click', login);
+
+
+async function login(){
+
+  const email =
+  document.getElementById('email').value.trim();
+
+  const password =
+  document.getElementById('password').value;
+
+
+  if(!email || !password){
+
+    message.className='error';
+
+    message.textContent =
+    'Please enter your email and password.';
+
+    return;
+  }
+
+
+  button.disabled=true;
+
+  button.textContent='SIGNING IN...';
+
+  message.className='';
+
+  message.textContent=
+  'Connecting to O.K.P Admin...';
+
+
+  try{
+
+    const response = await fetch(
+
+      SUPABASE_URL +
+      '/auth/v1/token?grant_type=password',
+
+      {
+
+        method:'POST',
+
+        headers:{
+
+          'apikey':SUPABASE_KEY,
+
+          'Content-Type':'application/json'
+
+        },
+
+        body:JSON.stringify({
+
+          email:email,
+
+          password:password
+
+        })
+
+      }
+
+    );
+
+
+    const data =
+    await response.json();
+
+
+    if(!response.ok){
+
+      throw new Error(
+
+        data.error_description ||
+        data.msg ||
+        'Login failed'
+
+      );
+
+    }
+
+
+    if(
+      !data.user ||
+      !ADMIN_USERS.includes(data.user.id)
+    ){
+
+      throw new Error(
+      'This account is not authorized for O.K.P Admin.'
+      );
+
+    }
+
+
+    sessionStorage.setItem(
+      'okp_admin_token',
+      data.access_token
+    );
+
+
+    message.className='ok';
+
+    message.textContent=
+    'LOGIN SUCCESSFUL ✓';
+
+
+    button.textContent=
+    'LOGIN SUCCESSFUL ✓';
+
+
+    setTimeout(()=>{
+
+      window.location.href=
+      'admin.html';
+
+    },1000);
+
+
+  }
+
+  catch(error){
+
+    message.className='error';
+
+    message.textContent=
+    'LOGIN ERROR: ' + error.message;
+
+
+    button.disabled=false;
+
+    button.textContent=
+    'LOGIN →';
+
+  }
+
+}
+
+</script>
+
+</body>
+</html>
