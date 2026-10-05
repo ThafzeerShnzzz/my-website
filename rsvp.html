@@ -64,11 +64,20 @@ document.getElementById('rsvpForm').addEventListener('submit',async function(e){
   payment_reference:String(data.get('payment_reference')||'').trim(),
   payment_proof:proofPath
  };
- const {error}=await okpSupabase.from('registrations').insert([registration]);
+ const {data:newCode,error}=await okpSupabase.rpc('submit_okp_rsvp',{
+  p_name:registration.Name,
+  p_whatsapp:registration.Whatsapp,
+  p_preferred_family:registration.Preferred_family,
+  p_new_to_community:registration.new_to_our_Community,
+  p_heard_about_us:registration.how_u_heard_about_us,
+  p_care_of:registration.care_of,
+  p_payment_reference:registration.payment_reference,
+  p_payment_proof:registration.payment_proof
+ });
  if(error){console.error(error);status.textContent='RSVP could not be submitted. Please contact the Isteda team.';button.disabled=false;button.textContent='SUBMIT RSVP FOR VERIFICATION →';return}
  form.style.display='none';
  document.getElementById('pendingCard').style.display='block';
- document.getElementById('cardCode').textContent='REGISTRATION RECEIVED';
+ document.getElementById('cardCode').textContent=newCode||'REGISTRATION RECEIVED';
  document.getElementById('cardName').textContent=registration.Name;
 });
 </script></body></html>
