@@ -49,11 +49,11 @@ document.getElementById('rsvpForm').addEventListener('submit',async function(e){
   payment_reference:String(data.get('payment_reference')||'').trim(),
   payment_proof:proofPath
  };
- const {data:inserted,error}=await okpSupabase.from('registrations').insert([registration]).select('registration_code').single();
+ const {error}=await okpSupabase.from('registrations').insert([registration]);
  if(error){console.error(error);status.textContent='RSVP could not be submitted. Please contact the Isteda team.';button.disabled=false;button.textContent='SUBMIT RSVP FOR VERIFICATION →';return}
  form.style.display='none';
  document.getElementById('pendingCard').style.display='block';
- document.getElementById('cardCode').textContent=(inserted&&inserted.registration_code)||'O.K.P';
+ document.getElementById('cardCode').textContent='REGISTRATION RECEIVED';
  document.getElementById('cardName').textContent=registration.Name;
 });
 </script></body></html>
