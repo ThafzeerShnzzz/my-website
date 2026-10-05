@@ -7,38 +7,53 @@
 <label>WHAT SHOULD THE WEDDING HOUSE CALL YOU?<input required name="name" placeholder="Your name" autocomplete="name"></label>
 <label>DROP YOUR WHATSAPP 📱<input required name="whatsapp" type="tel" placeholder="+971 5X XXX XXXX" autocomplete="tel"></label>
 <label>WHICH FAMILY ARE YOU CLAIMING? 👀<select required name="preferred_family"><option value="" disabled selected>Choose your side</option><option value="Bride's Family">Bride's Family 💃</option><option value="Groom's Family">Groom's Family 🕺</option><option value="Any">Throw me anywhere, I'll adjust 😂</option></select></label>
-<label>PAYMENT STATUS 💸<input name="payment_status_display" value="PENDING PAYMENT" readonly aria-readonly="true"></label>
-<p style="margin-top:-10px;opacity:.72;font-size:.9rem">Registration first, kaash later 😌 Payment confirmation will be updated by the Isteda team.</p>
+<label>WHO ARE YOU COMING THROUGH? 👀<input name="care_of" placeholder="C/O Name / Isteda Member Name"></label>
 <label>FIRST TIME WITH THE ISTEDA FAMILY? 👀<select required name="new_to_community"><option value="" disabled selected>Tell us</option><option value="Yes">Yes, I'm the new relative 👀</option><option value="No">No, I'm already family ❤️</option></select></label>
 <label>WHO LEAKED THE WEDDING NEWS TO YOU? 😂<select required name="heard_about_us"><option value="" disabled selected>Choose one</option><option value="Friend / Family">Friend / Family</option><option value="Instagram">Instagram</option><option value="WhatsApp">WhatsApp</option><option value="Isteda Member">Isteda Member</option><option value="Other">I don't even know, I just ended up here 😂</option></select></label>
-<button class="button" id="rsvpSubmit" type="submit">CONFIRM RSVP →</button><p id="success" class="success" role="status" aria-live="polite"></p>
+<div style="border:1px solid rgba(178,15,59,.28);padding:22px;background:rgba(255,248,229,.38)">
+<p class="eyebrow" style="margin-bottom:10px">SECURE YOUR SPOT 💸</p>
+<p style="margin:0 0 14px;font-size:18px;line-height:1.45">Payment is required to confirm your registration. The final O.K.P payment link will be available here soon.</p>
+<button class="button" type="button" disabled style="width:100%;opacity:.58;cursor:not-allowed">PAYMENT LINK COMING SOON</button>
+</div>
+<label>PAYMENT REFERENCE / TRANSACTION ID<input required name="payment_reference" placeholder="Enter the reference shown after payment"></label>
+<label>PAYMENT PROOF 📸<input required name="payment_proof_file" type="file" accept="image/jpeg,image/png,application/pdf"><span style="display:block;margin-top:7px;opacity:.7;font-size:9px">Upload JPG, PNG or PDF · Max 5 MB</span></label>
+<label>PAYMENT STATUS 💸<input value="VERIFICATION PENDING" readonly aria-readonly="true"></label>
+<button class="button" id="rsvpSubmit" type="submit">SUBMIT RSVP FOR VERIFICATION →</button>
+<p id="success" class="success" role="status" aria-live="polite"></p>
 </form>
-<div class="ticket"><div><small>ISTEDA COMMUNITY</small><img class="ticket-logo" src="okp1.png" alt="O.K.P — Oru Kalyanam Pole"></div><div class="ticket-admit">ADMIT<br>ONE</div></div>
+<div class="ticket" id="pendingCard" style="display:none;max-width:650px">
+<div><small>ISTEDA COMMUNITY · O.K.P</small><img class="ticket-logo" src="okp1.png" alt="O.K.P — Oru Kalyanam Pole"><p id="cardName" style="margin:12px 0 5px;font-size:22px"></p><strong id="cardCode" style="font-size:30px;line-height:1">O.K.P</strong><p style="margin:12px 0 5px"><b>⏳ PAYMENT VERIFICATION PENDING</b></p><p style="max-width:430px;line-height:1.45">Your RSVP has been received. Your spot will be officially confirmed after payment verification. Once verified, you'll be added to your assigned <b>Family WhatsApp group</b> — and from there, the wedding chaos begins. 👀😂</p><small>This card is not valid for admission until payment is verified.</small></div><div class="ticket-admit">STATUS<br>PENDING</div></div>
 </main><footer><img class="footer-logo" src="okp1.png" alt="O.K.P — Oru Kalyanam Pole"><small>AN ISTEDA COMMUNITY EXPERIENCE · DUBAI</small></footer><script src="script.js"></script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script>
 const OKP_SUPABASE_URL='https://fbdkfzstxufvmjnkzzif.supabase.co';
 const OKP_SUPABASE_KEY='sb_publishable_X1jt3-YBCSZ0Pmk0cMV4ng_TqN9LNYm';
 const okpSupabase=supabase.createClient(OKP_SUPABASE_URL,OKP_SUPABASE_KEY);
+const cleanFileName=n=>n.replace(/[^a-zA-Z0-9._-]/g,'_');
 document.getElementById('rsvpForm').addEventListener('submit',async function(e){
-  e.preventDefault();
-  const form=e.currentTarget, button=document.getElementById('rsvpSubmit'), status=document.getElementById('success');
-  button.disabled=true; button.textContent='SENDING...'; status.textContent='';
-  const data=new FormData(form);
-  const registration={
-    Name:String(data.get('name')||'').trim(),
-    Whatsapp:String(data.get('whatsapp')||'').trim(),
-    Preferred_family:String(data.get('preferred_family')||''),
-    "Payment status":'pending',
-    new_to_our_Community:String(data.get('new_to_community')||''),
-    how_u_heard_about_us:String(data.get('heard_about_us')||'')
-  };
-  const {error}=await okpSupabase.from('registrations').insert([registration]);
-  if(error){
-    console.error(error);
-    status.textContent='Something went wrong. Please try again or chat with us.';
-    button.disabled=false; button.textContent='CONFIRM RSVP →'; return;
-  }
-  form.reset();
-  status.textContent="RSVP CONFIRMED ❤️ Welcome to the wedding house! Payment status: PENDING.";
-  button.textContent='RSVP CONFIRMED ✓';
+ e.preventDefault();
+ const form=e.currentTarget,button=document.getElementById('rsvpSubmit'),status=document.getElementById('success'),data=new FormData(form),file=data.get('payment_proof_file');
+ if(!file||!file.size){status.textContent='Please upload your payment proof.';return}
+ if(file.size>5*1024*1024){status.textContent='Payment proof must be 5 MB or smaller.';return}
+ button.disabled=true;button.textContent='UPLOADING & SUBMITTING...';status.textContent='';
+ const whatsapp=String(data.get('whatsapp')||'').trim();
+ const proofPath=Date.now()+'_'+whatsapp.replace(/\D/g,'')+'_'+cleanFileName(file.name);
+ const {error:uploadError}=await okpSupabase.storage.from('payment-proofs').upload(proofPath,file,{upsert:false,contentType:file.type});
+ if(uploadError){console.error(uploadError);status.textContent='Payment proof upload failed. Please try again.';button.disabled=false;button.textContent='SUBMIT RSVP FOR VERIFICATION →';return}
+ const registration={
+  Name:String(data.get('name')||'').trim(),
+  Whatsapp:whatsapp,
+  Preferred_family:String(data.get('preferred_family')||''),
+  "Payment status":'verification_pending',
+  new_to_our_Community:String(data.get('new_to_community')||''),
+  how_u_heard_about_us:String(data.get('heard_about_us')||''),
+  care_of:String(data.get('care_of')||'').trim(),
+  payment_reference:String(data.get('payment_reference')||'').trim(),
+  payment_proof:proofPath
+ };
+ const {data:inserted,error}=await okpSupabase.from('registrations').insert([registration]).select('registration_code').single();
+ if(error){console.error(error);status.textContent='RSVP could not be submitted. Please contact the Isteda team.';button.disabled=false;button.textContent='SUBMIT RSVP FOR VERIFICATION →';return}
+ form.style.display='none';
+ document.getElementById('pendingCard').style.display='block';
+ document.getElementById('cardCode').textContent=(inserted&&inserted.registration_code)||'O.K.P';
+ document.getElementById('cardName').textContent=registration.Name;
 });
 </script></body></html>
