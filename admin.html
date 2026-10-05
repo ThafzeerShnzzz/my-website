@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>O.K.P Admin — Registration Review</title>
+<link rel="stylesheet" href="style.css">
+<style>
+.admin-wrap{width:min(1450px,96%);margin:0 auto;padding:45px 0 80px}
+.admin-head{text-align:center;margin-bottom:32px}.admin-head img{width:125px}.admin-head h1{font-size:46px;color:var(--red-dark);margin:8px 0}.admin-head p{font-size:18px;margin:0}
+.login-card{max-width:430px;margin:50px auto;padding:32px;border:1px solid rgba(178,15,59,.28);background:rgba(255,248,229,.6)}
+.login-card label{display:block;font:600 9px 'Montserrat',sans-serif;letter-spacing:1.5px;color:var(--red-dark);margin:15px 0 6px}
+.login-card input,.admin-search{width:100%;padding:13px;border:1px solid rgba(178,15,59,.28);background:#fffaf0;font:15px 'Montserrat',sans-serif}
+.admin-btn{border:0;background:var(--red);color:white;padding:13px 18px;font:600 9px 'Montserrat',sans-serif;letter-spacing:1.2px;cursor:pointer}.admin-btn.secondary{background:transparent;color:var(--red-dark);border:1px solid var(--red-dark)}.admin-btn.reject{background:#5d5144}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:25px 0}.stat{padding:18px;text-align:center;border:1px solid rgba(178,15,59,.22);background:rgba(255,248,229,.55)}.stat b{display:block;font-size:30px;color:var(--red-dark)}.stat span{font:600 8px 'Montserrat',sans-serif;letter-spacing:1.5px}
+.tools{display:flex;gap:10px;align-items:center;margin:18px 0}.tools .admin-search{max-width:390px}.filter{padding:11px;border:1px solid rgba(178,15,59,.25);background:#fffaf0}
+.table-box{overflow:auto;border:1px solid rgba(178,15,59,.25);background:rgba(255,248,229,.58)}
+table{width:100%;border-collapse:collapse;min-width:1180px}th{position:sticky;top:0;background:#f2dfba;color:var(--red-dark);font:600 8px 'Montserrat',sans-serif;letter-spacing:1px;text-align:left;padding:13px 10px}td{padding:12px 10px;border-top:1px solid rgba(178,15,59,.13);font:14px 'Montserrat',sans-serif;vertical-align:middle}.code{font-weight:700;color:var(--red-dark)}.status{font-weight:700;font-size:11px}.pending{color:#9a6900}.approved{color:#25703a}.rejected{color:#8d2525}.row-actions{display:flex;gap:5px}.row-actions button,.proof-btn{white-space:nowrap;padding:8px 9px;border:1px solid rgba(178,15,59,.35);background:#fff8e5;color:var(--red-dark);font:600 8px 'Montserrat',sans-serif;cursor:pointer}
+.empty{text-align:center;padding:35px;font-size:18px}.admin-error{color:#9b1c1c;font:12px 'Montserrat',sans-serif;margin-top:12px}.top-actions{display:flex;justify-content:space-between;align-items:center}
+@media(max-width:700px){.stats{grid-template-columns:1fr 1fr}.tools{flex-direction:column;align-items:stretch}.tools .admin-search{max-width:none}.admin-head h1{font-size:37px}}
+</style>
+</head>
+<body>
+<div class="topbar">ISTEDA COMMUNITY · PRIVATE ADMIN</div>
+<main class="admin-wrap">
+<section id="loginView">
+ <div class="admin-head"><img src="okp1.png" alt="O.K.P"><h1>Registration Review</h1><p>Authorized Isteda admins only.</p></div>
+ <form class="login-card" id="loginForm">
+  <p class="eyebrow">ADMIN LOGIN</p>
+  <label>EMAIL</label><input id="email" type="email" autocomplete="email" required>
+  <label>PASSWORD</label><input id="password" type="password" autocomplete="current-password" required>
+  <button class="admin-btn" style="width:100%;margin-top:20px" type="submit">LOGIN →</button>
+  <p id="loginError" class="admin-error"></p>
+ </form>
+</section>
+<section id="dashboard" style="display:none">
+ <div class="top-actions"><div><p class="eyebrow" style="margin:0">O.K.P ADMIN</p><h1 style="margin:5px 0;color:var(--red-dark)">Registration Review</h1></div><button class="admin-btn secondary" id="logout">LOG OUT</button></div>
+ <div class="stats"><div class="stat"><b id="totalCount">0</b><span>TOTAL</span></div><div class="stat"><b id="pendingCount">0</b><span>PENDING</span></div><div class="stat"><b id="approvedCount">0</b><span>APPROVED</span></div><div class="stat"><b id="rejectedCount">0</b><span>REJECTED</span></div></div>
+ <div class="tools"><input class="admin-search" id="search" placeholder="Search name, WhatsApp, OKP number, C/O..."><select class="filter" id="filter"><option value="all">All registrations</option><option value="verification_pending">Pending only</option><option value="approved">Approved only</option><option value="rejected">Rejected only</option></select><button class="admin-btn secondary" id="refresh">REFRESH</button></div>
+ <p id="dashError" class="admin-error"></p>
+ <div class="table-box"><table><thead><tr><th>OKP ID</th><th>NAME</th><th>WHATSAPP</th><th>C/O</th><th>PREFERENCE</th><th>PAYMENT REF</th><th>PROOF</th><th>STATUS</th><th>ACTION</th></tr></thead><tbody id="rows"></tbody></table><div id="empty" class="empty" style="display:none">No registrations found.</div></div>
+</section>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const URL='https://fbdkfzstxufvmjnkzzif.supabase.co';
+const KEY='sb_publishable_X1jt3-YBCSZ0Pmk0cMV4ng_TqN9LNYm';
+const ADMIN_UID='465f75b4-9e4d-4f41-9fd7-37aa91175874';
+const db=supabase.createClient(URL,KEY);
+let registrations=[];
+const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const statusLabel=s=>s==='approved'?'APPROVED ✓':s==='rejected'?'REJECTED':'PENDING';
+async function showSession(){
+ const {data:{session}}=await db.auth.getSession();
+ if(session && session.user.id===ADMIN_UID){loginView.style.display='none';dashboard.style.display='block';loadRows();}
+ else {if(session) await db.auth.signOut();loginView.style.display='block';dashboard.style.display='none';}
+}
+loginForm.addEventListener('submit',async e=>{
+ e.preventDefault();loginError.textContent='';
+ const {data,error}=await db.auth.signInWithPassword({email:email.value.trim(),password:password.value});
+ if(error){loginError.textContent='Login failed. Check your email and password.';return}
+ if(data.user.id!==ADMIN_UID){await db.auth.signOut();loginError.textContent='This account is not authorized for O.K.P admin access.';return}
+ showSession();
+});
+logout.onclick=async()=>{await db.auth.signOut();location.reload()};
+async function loadRows(){
+ dashError.textContent='';
+ const {data,error}=await db.from('registrations').select('id,Name,Whatsapp,Preferred_family,"Payment status",care_of,registration_code,payment_proof,payment_reference,created at').order('id',{ascending:false});
+ if(error){console.error(error);dashError.textContent='Could not load registrations. Check admin permissions.';return}
+ registrations=data||[];updateStats();render();
+}
+function updateStats(){
+ totalCount.textContent=registrations.length;
+ pendingCount.textContent=registrations.filter(r=>r['Payment status']==='verification_pending').length;
+ approvedCount.textContent=registrations.filter(r=>r['Payment status']==='approved').length;
+ rejectedCount.textContent=registrations.filter(r=>r['Payment status']==='rejected').length;
+}
+function render(){
+ const q=search.value.trim().toLowerCase(),f=filter.value;
+ const list=registrations.filter(r=>(f==='all'||r['Payment status']===f)&&[r.Name,r.Whatsapp,r.registration_code,r.care_of,r.payment_reference].some(v=>String(v||'').toLowerCase().includes(q)));
+ rows.innerHTML=list.map(r=>`<tr>
+ <td class="code">${esc(r.registration_code)}</td><td>${esc(r.Name)}</td><td>${esc(r.Whatsapp)}</td><td>${esc(r.care_of||'—')}</td><td>${esc(r.Preferred_family||'—')}</td><td>${esc(r.payment_reference||'—')}</td>
+ <td><button class="proof-btn" onclick="viewProof(${r.id})">VIEW 📸</button></td>
+ <td><span class="status ${r['Payment status']==='approved'?'approved':r['Payment status']==='rejected'?'rejected':'pending'}">${statusLabel(r['Payment status'])}</span></td>
+ <td><div class="row-actions"><button onclick="setStatus(${r.id},'approved')">✓ APPROVE</button><button onclick="setStatus(${r.id},'rejected')">✕ REJECT</button></div></td></tr>`).join('');
+ empty.style.display=list.length?'none':'block';
+}
+search.oninput=render;filter.onchange=render;refresh.onclick=loadRows;
+async function viewProof(id){
+ const r=registrations.find(x=>x.id===id);if(!r||!r.payment_proof)return;
+ const {data,error}=await db.storage.from('payment-proofs').createSignedUrl(r.payment_proof,120);
+ if(error||!data?.signedUrl){alert('Could not open payment proof.');return}
+ window.open(data.signedUrl,'_blank','noopener');
+}
+async function setStatus(id,status){
+ const r=registrations.find(x=>x.id===id);if(!r)return;
+ if(!confirm((status==='approved'?'Approve ':'Reject ')+(r.Name||r.registration_code)+'?'))return;
+ const {error}=await db.from('registrations').update({'Payment status':status}).eq('id',id);
+ if(error){console.error(error);alert('Status update failed.');return}
+ r['Payment status']=status;updateStats();render();
+}
+showSession();
+</script>
+</body></html>
