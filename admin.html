@@ -55,42 +55,46 @@ table{width:100%;border-collapse:collapse;min-width:1180px}th{position:sticky;to
 const URL='https://fbdkfzstxufvmjnkzzif.supabase.co';
 const KEY='sb_publishable_X1jt3-YBCSZ0Pmk0cMV4ng_TqN9LNYm';
 const ADMIN_UID='465f75b4-9e4d-4f41-9fd7-37aa91175874';
-const db=supabase.createClient(URL,KEY);
+const db=supabase.createClient(URL,KEY,{auth:{detectSessionInUrl:true,persistSession:true}});
 const $=id=>document.getElementById(id);
 const loginView=$('loginView'),recoveryView=$('recoveryView'),recoveryForm=$('recoveryForm'),recoveryError=$('recoveryError'),newPassword=$('newPassword'),confirmPassword=$('confirmPassword'),dashboard=$('dashboard'),loginForm=$('loginForm'),loginError=$('loginError'),emailInput=$('email'),passwordInput=$('password'),logoutBtn=$('logout'),dashError=$('dashError'),totalCount=$('totalCount'),pendingCount=$('pendingCount'),approvedCount=$('approvedCount'),rejectedCount=$('rejectedCount'),searchInput=$('search'),filterInput=$('filter'),refreshBtn=$('refresh'),rows=$('rows'),empty=$('empty');
-let registrations=[];
-const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+let registrations=[],recoveryMode=false;
+const esc=v=>String(v??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
 const statusLabel=s=>s==='approved'?'APPROVED ✓':s==='rejected'?'REJECTED':'PENDING';
-let recoveryMode=false;
+function showRecovery(){
+ recoveryMode=true;loginView.style.display='none';dashboard.style.display='none';recoveryView.style.display='block';
+}
+async function init(){
+ const hash=new URLSearchParams(location.hash.replace(/^#/,''));
+ const query=new URLSearchParams(location.search);
+ if(hash.get('type')==='recovery'||query.get('type')==='recovery'){showRecovery();}
+ const {data:{session}}=await db.auth.getSession();
+ if(recoveryMode&&session)return;
+ if(session&&session.user.id===ADMIN_UID){loginView.style.display='none';recoveryView.style.display='none';dashboard.style.display='block';loadRows();}
+ else {if(session)await db.auth.signOut();loginView.style.display='block';recoveryView.style.display='none';dashboard.style.display='none';}
+}
 db.auth.onAuthStateChange((event,session)=>{
- if(event==='PASSWORD_RECOVERY'){
-  recoveryMode=true;loginView.style.display='none';dashboard.style.display='none';recoveryView.style.display='block';
- }
+ if(event==='PASSWORD_RECOVERY'){showRecovery();return}
+ if(event==='SIGNED_IN'&&session&&recoveryMode){showRecovery();}
 });
 recoveryForm.addEventListener('submit',async e=>{
- e.preventDefault();recoveryError.textContent='';
+ e.preventDefault();recoveryError.style.color='';recoveryError.textContent='';
  if(newPassword.value!==confirmPassword.value){recoveryError.textContent='Passwords do not match.';return}
  if(newPassword.value.length<8){recoveryError.textContent='Use at least 8 characters.';return}
  const {error}=await db.auth.updateUser({password:newPassword.value});
  if(error){recoveryError.textContent=error.message;return}
- recoveryError.style.color='#25703a';recoveryError.textContent='Password updated. Opening dashboard...';
- setTimeout(()=>{recoveryMode=false;recoveryView.style.display='none';showSession();history.replaceState(null,'',location.pathname)},700);
+ recoveryError.style.color='#25703a';recoveryError.textContent='Password updated successfully. Opening dashboard...';
+ recoveryMode=false;history.replaceState(null,'',location.pathname);
+ setTimeout(()=>{recoveryView.style.display='none';dashboard.style.display='block';loadRows();},700);
 });
-async function showSession(){
- await new Promise(r=>setTimeout(r,150));
- if(recoveryMode)return;
- const {data:{session}}=await db.auth.getSession();
- if(session && session.user.id===ADMIN_UID){loginView.style.display='none';dashboard.style.display='block';loadRows();}
- else {if(session) await db.auth.signOut();recoveryView.style.display='none';loginView.style.display='block';dashboard.style.display='none';}
-}
 loginForm.addEventListener('submit',async e=>{
  e.preventDefault();loginError.textContent='';
  const {data,error}=await db.auth.signInWithPassword({email:emailInput.value.trim(),password:passwordInput.value});
  if(error){loginError.textContent='Login failed. Check your email and password.';return}
  if(data.user.id!==ADMIN_UID){await db.auth.signOut();loginError.textContent='This account is not authorized for O.K.P admin access.';return}
- showSession();
+ loginView.style.display='none';dashboard.style.display='block';loadRows();
 });
-logoutBtn.onclick=async()=>{await db.auth.signOut();location.reload()};
+logoutBtn.onclick=async()=>{await db.auth.signOut();location.href='admin.html'};
 async function loadRows(){
  dashError.textContent='Loading registrations...';
  const {data,error}=await db.from('registrations').select('id,Name,Whatsapp,Preferred_family,"Payment status",care_of,registration_code,payment_proof,payment_reference').order('id',{ascending:false});
@@ -106,11 +110,7 @@ function updateStats(){
 function render(){
  const q=searchInput.value.trim().toLowerCase(),f=filterInput.value;
  const list=registrations.filter(r=>(f==='all'||r['Payment status']===f)&&[r.Name,r.Whatsapp,r.registration_code,r.care_of,r.payment_reference].some(v=>String(v||'').toLowerCase().includes(q)));
- rows.innerHTML=list.map(r=>`<tr>
- <td class="code">${esc(r.registration_code)}</td><td>${esc(r.Name)}</td><td>${esc(r.Whatsapp)}</td><td>${esc(r.care_of||'—')}</td><td>${esc(r.Preferred_family||'—')}</td><td>${esc(r.payment_reference||'—')}</td>
- <td><button class="proof-btn" onclick="viewProof(${r.id})">VIEW 📸</button></td>
- <td><span class="status ${r['Payment status']==='approved'?'approved':r['Payment status']==='rejected'?'rejected':'pending'}">${statusLabel(r['Payment status'])}</span></td>
- <td><div class="row-actions"><button onclick="setStatus(${r.id},'approved')">✓ APPROVE</button><button onclick="setStatus(${r.id},'rejected')">✕ REJECT</button></div></td></tr>`).join('');
+ rows.innerHTML=list.map(r=>`<tr><td class="code">${esc(r.registration_code)}</td><td>${esc(r.Name)}</td><td>${esc(r.Whatsapp)}</td><td>${esc(r.care_of||'—')}</td><td>${esc(r.Preferred_family||'—')}</td><td>${esc(r.payment_reference||'—')}</td><td><button class="proof-btn" onclick="viewProof(${r.id})">VIEW 📸</button></td><td><span class="status ${r['Payment status']==='approved'?'approved':r['Payment status']==='rejected'?'rejected':'pending'}">${statusLabel(r['Payment status'])}</span></td><td><div class="row-actions"><button onclick="setStatus(${r.id},'approved')">✓ APPROVE</button><button onclick="setStatus(${r.id},'rejected')">✕ REJECT</button></div></td></tr>`).join('');
  empty.style.display=list.length?'none':'block';
 }
 searchInput.oninput=render;filterInput.onchange=render;refreshBtn.onclick=loadRows;
@@ -127,6 +127,6 @@ async function setStatus(id,status){
  if(error){console.error(error);alert('Status update failed.');return}
  r['Payment status']=status;updateStats();render();
 }
-showSession();
+init();
 </script>
 </body></html>
