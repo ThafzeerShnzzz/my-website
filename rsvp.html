@@ -24,12 +24,12 @@ document.getElementById('rsvpForm').addEventListener('submit',async function(e){
   button.disabled=true; button.textContent='SENDING...'; status.textContent='';
   const data=new FormData(form);
   const registration={
-    name:String(data.get('name')||'').trim(),
-    whatsapp:String(data.get('whatsapp')||'').trim(),
-    preferred_family:String(data.get('preferred_family')||''),
-    payment_status:'pending',
-    new_to_community:String(data.get('new_to_community')||''),
-    heard_about_us:String(data.get('heard_about_us')||'')
+    Name:String(data.get('name')||'').trim(),
+    Whatsapp:String(data.get('whatsapp')||'').trim(),
+    Preferred_family:String(data.get('preferred_family')||''),
+    "Payment status":'pending',
+    new_to_our_Community:String(data.get('new_to_community')||''),
+    how_u_heard_about_us:String(data.get('heard_about_us')||'')
   };
   const {error}=await okpSupabase.from('registrations').insert([registration]);
   if(error){
