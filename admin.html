@@ -29,6 +29,9 @@ table{width:100%;border-collapse:collapse;min-width:1180px}th{position:sticky;to
   <label>EMAIL</label><input id="email" type="email" autocomplete="email" required>
   <label>PASSWORD</label><input id="password" type="password" autocomplete="current-password" required>
   <button class="admin-btn" style="width:100%;margin-top:20px" type="submit">LOGIN →</button>
+  <div style="text-align:center;margin:15px 0;font:600 9px Montserrat,sans-serif;letter-spacing:1px;opacity:.65">OR</div>
+  <button class="admin-btn secondary" id="magicLinkBtn" style="width:100%" type="button">EMAIL ME A LOGIN LINK ✉</button>
+  <p style="font-size:14px;line-height:1.4;margin:12px 0 0;opacity:.75">Forgot your password? Enter your admin email above and use the login link instead.</p>
   <p id="loginError" class="admin-error"></p>
  </form>
 </section>
@@ -57,7 +60,7 @@ const KEY='sb_publishable_X1jt3-YBCSZ0Pmk0cMV4ng_TqN9LNYm';
 const ADMIN_UID='465f75b4-9e4d-4f41-9fd7-37aa91175874';
 const db=supabase.createClient(URL,KEY,{auth:{detectSessionInUrl:true,persistSession:true}});
 const $=id=>document.getElementById(id);
-const loginView=$('loginView'),recoveryView=$('recoveryView'),recoveryForm=$('recoveryForm'),recoveryError=$('recoveryError'),newPassword=$('newPassword'),confirmPassword=$('confirmPassword'),dashboard=$('dashboard'),loginForm=$('loginForm'),loginError=$('loginError'),emailInput=$('email'),passwordInput=$('password'),logoutBtn=$('logout'),dashError=$('dashError'),totalCount=$('totalCount'),pendingCount=$('pendingCount'),approvedCount=$('approvedCount'),rejectedCount=$('rejectedCount'),searchInput=$('search'),filterInput=$('filter'),refreshBtn=$('refresh'),rows=$('rows'),empty=$('empty');
+const loginView=$('loginView'),recoveryView=$('recoveryView'),recoveryForm=$('recoveryForm'),recoveryError=$('recoveryError'),newPassword=$('newPassword'),confirmPassword=$('confirmPassword'),dashboard=$('dashboard'),loginForm=$('loginForm'),loginError=$('loginError'),emailInput=$('email'),passwordInput=$('password'),magicLinkBtn=$('magicLinkBtn'),logoutBtn=$('logout'),dashError=$('dashError'),totalCount=$('totalCount'),pendingCount=$('pendingCount'),approvedCount=$('approvedCount'),rejectedCount=$('rejectedCount'),searchInput=$('search'),filterInput=$('filter'),refreshBtn=$('refresh'),rows=$('rows'),empty=$('empty');
 let registrations=[],recoveryMode=false;
 const esc=v=>String(v??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
 const statusLabel=s=>s==='approved'?'APPROVED ✓':s==='rejected'?'REJECTED':'PENDING';
@@ -94,6 +97,16 @@ loginForm.addEventListener('submit',async e=>{
  if(data.user.id!==ADMIN_UID){await db.auth.signOut();loginError.textContent='This account is not authorized for O.K.P admin access.';return}
  loginView.style.display='none';dashboard.style.display='block';loadRows();
 });
+magicLinkBtn.onclick=async()=>{
+ loginError.style.color='';loginError.textContent='';
+ const email=emailInput.value.trim();
+ if(!email){loginError.textContent='Enter your admin email first.';return}
+ magicLinkBtn.disabled=true;magicLinkBtn.textContent='SENDING LOGIN LINK...';
+ const {error}=await db.auth.signInWithOtp({email,options:{emailRedirectTo:'https://thafzeershnzzz.github.io/my-website/admin.html'}});
+ magicLinkBtn.disabled=false;magicLinkBtn.textContent='EMAIL ME A LOGIN LINK ✉';
+ if(error){loginError.textContent=error.message.includes('rate')?'Email limit reached. Please wait before trying again.':error.message;return}
+ loginError.style.color='#25703a';loginError.textContent='Login link sent. Open the newest email from Supabase.';
+};
 logoutBtn.onclick=async()=>{await db.auth.signOut();location.href='admin.html'};
 async function loadRows(){
  dashError.textContent='Loading registrations...';
