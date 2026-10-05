@@ -32,6 +32,16 @@ table{width:100%;border-collapse:collapse;min-width:1180px}th{position:sticky;to
   <p id="loginError" class="admin-error"></p>
  </form>
 </section>
+<section id="recoveryView" style="display:none">
+ <div class="admin-head"><img src="okp1.png" alt="O.K.P"><h1>Set New Password</h1><p>Create a new password for your O.K.P admin account.</p></div>
+ <form class="login-card" id="recoveryForm">
+  <p class="eyebrow">PASSWORD RECOVERY</p>
+  <label>NEW PASSWORD</label><input id="newPassword" type="password" minlength="8" required>
+  <label>CONFIRM NEW PASSWORD</label><input id="confirmPassword" type="password" minlength="8" required>
+  <button class="admin-btn" style="width:100%;margin-top:20px" type="submit">UPDATE PASSWORD →</button>
+  <p id="recoveryError" class="admin-error"></p>
+ </form>
+</section>
 <section id="dashboard" style="display:none">
  <div class="top-actions"><div><p class="eyebrow" style="margin:0">O.K.P ADMIN</p><h1 style="margin:5px 0;color:var(--red-dark)">Registration Review</h1></div><button class="admin-btn secondary" id="logout">LOG OUT</button></div>
  <div class="stats"><div class="stat"><b id="totalCount">0</b><span>TOTAL</span></div><div class="stat"><b id="pendingCount">0</b><span>PENDING</span></div><div class="stat"><b id="approvedCount">0</b><span>APPROVED</span></div><div class="stat"><b id="rejectedCount">0</b><span>REJECTED</span></div></div>
@@ -47,14 +57,31 @@ const KEY='sb_publishable_X1jt3-YBCSZ0Pmk0cMV4ng_TqN9LNYm';
 const ADMIN_UID='465f75b4-9e4d-4f41-9fd7-37aa91175874';
 const db=supabase.createClient(URL,KEY);
 const $=id=>document.getElementById(id);
-const loginView=$('loginView'),dashboard=$('dashboard'),loginForm=$('loginForm'),loginError=$('loginError'),emailInput=$('email'),passwordInput=$('password'),logoutBtn=$('logout'),dashError=$('dashError'),totalCount=$('totalCount'),pendingCount=$('pendingCount'),approvedCount=$('approvedCount'),rejectedCount=$('rejectedCount'),searchInput=$('search'),filterInput=$('filter'),refreshBtn=$('refresh'),rows=$('rows'),empty=$('empty');
+const loginView=$('loginView'),recoveryView=$('recoveryView'),recoveryForm=$('recoveryForm'),recoveryError=$('recoveryError'),newPassword=$('newPassword'),confirmPassword=$('confirmPassword'),dashboard=$('dashboard'),loginForm=$('loginForm'),loginError=$('loginError'),emailInput=$('email'),passwordInput=$('password'),logoutBtn=$('logout'),dashError=$('dashError'),totalCount=$('totalCount'),pendingCount=$('pendingCount'),approvedCount=$('approvedCount'),rejectedCount=$('rejectedCount'),searchInput=$('search'),filterInput=$('filter'),refreshBtn=$('refresh'),rows=$('rows'),empty=$('empty');
 let registrations=[];
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const statusLabel=s=>s==='approved'?'APPROVED ✓':s==='rejected'?'REJECTED':'PENDING';
+let recoveryMode=false;
+db.auth.onAuthStateChange((event,session)=>{
+ if(event==='PASSWORD_RECOVERY'){
+  recoveryMode=true;loginView.style.display='none';dashboard.style.display='none';recoveryView.style.display='block';
+ }
+});
+recoveryForm.addEventListener('submit',async e=>{
+ e.preventDefault();recoveryError.textContent='';
+ if(newPassword.value!==confirmPassword.value){recoveryError.textContent='Passwords do not match.';return}
+ if(newPassword.value.length<8){recoveryError.textContent='Use at least 8 characters.';return}
+ const {error}=await db.auth.updateUser({password:newPassword.value});
+ if(error){recoveryError.textContent=error.message;return}
+ recoveryError.style.color='#25703a';recoveryError.textContent='Password updated. Opening dashboard...';
+ setTimeout(()=>{recoveryMode=false;recoveryView.style.display='none';showSession();history.replaceState(null,'',location.pathname)},700);
+});
 async function showSession(){
+ await new Promise(r=>setTimeout(r,150));
+ if(recoveryMode)return;
  const {data:{session}}=await db.auth.getSession();
  if(session && session.user.id===ADMIN_UID){loginView.style.display='none';dashboard.style.display='block';loadRows();}
- else {if(session) await db.auth.signOut();loginView.style.display='block';dashboard.style.display='none';}
+ else {if(session) await db.auth.signOut();recoveryView.style.display='none';loginView.style.display='block';dashboard.style.display='none';}
 }
 loginForm.addEventListener('submit',async e=>{
  e.preventDefault();loginError.textContent='';
