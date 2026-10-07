@@ -77,3 +77,13 @@ nav{width:min(1180px,92%);margin:0 auto;padding:12px 20px;display:flex;align-ite
 .photo-4{right:5%;top:365px;transform:rotate(-2deg)}
 @media(max-width:1250px){.experience-photo{width:145px}.photo-1{left:1%}.photo-2{left:2%}.photo-3{right:1%}.photo-4{right:2%}}
 @media(max-width:1000px){.programme-showcase{position:relative;top:auto;left:auto;right:auto;display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:-25px auto 55px;pointer-events:auto}.experience-photo{position:relative;left:auto!important;right:auto!important;top:auto!important;width:100%;max-width:230px;justify-self:center;transform:none!important}.photo-placeholder-inner{min-height:190px}}
+
+/* Programme photo rail: keep side spaces available down the full schedule */
+@media(min-width:1001px){
+  .programme-showcase{top:390px;bottom:80px;min-height:1250px}
+  .photo-1{left:2.5%;top:30px}
+  .photo-2{left:4.5%;top:430px}
+  .photo-3{right:3%;top:120px}
+  .photo-4{right:5%;top:570px}
+  .programme-showcase:after{content:"";position:absolute;left:0;right:0;top:900px;height:520px;pointer-events:none}
+}
