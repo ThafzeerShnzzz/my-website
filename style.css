@@ -37,3 +37,22 @@ nav{width:min(1180px,92%);margin:0 auto;padding:12px 20px;display:flex;align-ite
 
 /* O.K.P family team photos */
 .team-photo.team-photo-image{height:auto;aspect-ratio:3/2;overflow:hidden;background:transparent;padding:0}.team-photo.team-photo-image img{width:100%;height:100%;display:block;object-fit:cover;object-position:center}
+
+/* Mobile chapter discovery */
+@media(max-width:850px){
+  nav{position:sticky;top:0;background:rgba(248,239,217,.96);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+  .menu{display:flex;align-items:center;gap:7px;font:600 10px 'Montserrat',sans-serif;letter-spacing:1.3px;border:1px solid rgba(178,15,59,.28);padding:9px 11px;color:var(--red-dark);background:rgba(255,248,229,.75)}
+  .menu::after{content:"MENU"}
+  .menu.menu-open::after{content:"CLOSE"}
+  .links{top:calc(100% + 1px);max-height:78vh;overflow:auto;padding:8px 14px 16px}
+  .links a{font-size:11px;letter-spacing:1.5px;padding:15px 10px}
+  .links a::before{display:inline-block;width:24px;margin-right:5px;color:var(--red);font:500 9px 'Montserrat',sans-serif;opacity:.7}
+  .links a[href="index.html"]::before{content:"00"}
+  .links a[href="story.html"]::before{content:"01"}
+  .links a[href="programme.html"]::before{content:"02"}
+  .links a[href="teams.html"]::before{content:"03"}
+  .links a[href="house.html"]::before{content:"04"}
+  .links a[href="food.html"]::before{content:"05"}
+  .links a[href="gallery.html"]::before{content:"06"}
+  .links a[href="rsvp.html"]::before{content:"07"}
+}
