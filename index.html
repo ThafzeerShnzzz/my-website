@@ -430,11 +430,26 @@ footer small{
 
   nav{
     padding:12px 8px;
+    position:sticky;
+    top:0;
+    background:rgba(248,239,217,.96);
+    backdrop-filter:blur(8px);
+    -webkit-backdrop-filter:blur(8px);
   }
 
   .menu{
-    display:block;
+    display:flex;
+    align-items:center;
+    gap:7px;
+    border:1px solid rgba(178,15,59,.3);
+    background:rgba(255,248,229,.82);
+    color:var(--red-dark);
+    padding:9px 11px;
+    font:600 10px 'Montserrat',sans-serif;
+    letter-spacing:1.3px;
   }
+  .menu:after{content:"MENU"}
+  .menu.open:after{content:"CLOSE"}
 
   .links{
     display:flex;
@@ -770,11 +785,14 @@ document.addEventListener("DOMContentLoaded", function () {
   if(button&&menu){
     button.onclick = function () {
       menu.classList.toggle("active");
-      button.innerHTML = menu.classList.contains("active") ? "✕" : "☰";
+      const open=menu.classList.contains("active");
+      button.innerHTML = open ? "✕" : "☰";
+      button.classList.toggle("open",open);
     };
     menu.querySelectorAll("a").forEach(a => a.addEventListener("click", () => {
       menu.classList.remove("active");
       button.innerHTML = "☰";
+      button.classList.remove("open");
     }));
   }
 
