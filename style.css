@@ -107,3 +107,17 @@ nav{width:min(1180px,92%);margin:0 auto;padding:12px 20px;display:flex;align-ite
 .experience-photo.photo-4>img{object-position:center}
 @media(max-width:1320px) and (min-width:1001px){.experience-photo.photo-4{width:230px}}
 @media(max-width:1000px){.experience-photo.photo-4{width:100%;max-width:330px;aspect-ratio:16/10}}
+
+/* Programme photo composition correction: keep photos as side-margin collage */
+@media(min-width:1321px){
+  .experience-photo{width:clamp(210px,14vw,245px)}
+  .experience-photo.photo-4{width:clamp(235px,16vw,285px)}
+  .photo-1{left:2.2%;top:30px}
+  .photo-2{right:3.2%;top:110px}
+  .photo-3{left:5%;top:430px}
+  .photo-4{right:1.8%;top:510px}
+  .photo-5{left:1.5%;top:830px}
+  .photo-6{right:5%;top:940px}
+  .photo-7{left:5.5%;top:1240px}
+  .photo-8{right:2%;top:1370px}
+}
