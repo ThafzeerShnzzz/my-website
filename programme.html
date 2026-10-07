@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Programme — O.K.P</title><link rel="stylesheet" href="style.css?v=20261007-3"><style>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Programme — O.K.P</title><link rel="stylesheet" href="style.css?v=20261007-4"><style>
 /* Programme readability hotfix: keep photography out of the copy column */
 @media (min-width:1001px){
   .programme-showcase{width:100vw!important;left:50%!important;right:auto!important;transform:translateX(-50%)!important;overflow:hidden!important}
@@ -14,6 +14,45 @@
   .photo-2:after,.photo-4:after,.photo-6:after,.photo-8:after{
     content:""!important;position:absolute!important;inset:0!important;
     background:linear-gradient(270deg,transparent 0 48%,rgba(248,239,217,.72) 72%,#f8efd9 96%)!important;
+  }
+}
+
+/* Smooth editorial dissolve: remove visible vertical seams */
+@media (min-width:1001px){
+  .experience-photo{overflow:visible!important}
+  .experience-photo img{
+    -webkit-mask-image:none!important;
+    mask-image:none!important;
+  }
+
+  /* LEFT photos dissolve gradually across a wide inner zone */
+  .photo-1:after,.photo-3:after,.photo-5:after,.photo-7:after{
+    inset:-2px -90px -2px -2px!important;
+    background:linear-gradient(90deg,
+      rgba(248,239,217,0) 0%,
+      rgba(248,239,217,0) 42%,
+      rgba(248,239,217,.10) 53%,
+      rgba(248,239,217,.30) 63%,
+      rgba(248,239,217,.58) 73%,
+      rgba(248,239,217,.80) 82%,
+      rgba(248,239,217,.94) 90%,
+      #f8efd9 97%,
+      #f8efd9 100%)!important;
+  }
+
+  /* RIGHT photos dissolve gradually across a wide inner zone */
+  .photo-2:after,.photo-4:after,.photo-6:after,.photo-8:after{
+    inset:-2px -2px -2px -90px!important;
+    background:linear-gradient(270deg,
+      rgba(248,239,217,0) 0%,
+      rgba(248,239,217,0) 42%,
+      rgba(248,239,217,.10) 53%,
+      rgba(248,239,217,.30) 63%,
+      rgba(248,239,217,.58) 73%,
+      rgba(248,239,217,.80) 82%,
+      rgba(248,239,217,.94) 90%,
+      #f8efd9 97%,
+      #f8efd9 100%)!important;
   }
 }
 </style></head>
