@@ -95,3 +95,9 @@ nav{width:min(1180px,92%);margin:0 auto;padding:12px 20px;display:flex;align-ite
 .haldi-subprogram{margin-top:14px;padding-left:14px;border-left:2px solid rgba(178,15,59,.32)}
 .haldi-subprogram h4{margin:7px 0;color:var(--red-dark);font:600 13px 'Montserrat',sans-serif;letter-spacing:1.4px}
 .haldi-subprogram h4:before{content:"— ";color:var(--gold)}
+
+/* Haldi sub-program: one bold highlighted line */
+.haldi-subprogram{display:flex;align-items:center;gap:8px;margin-top:14px;padding:0;border-left:0;flex-wrap:nowrap}
+.haldi-subprogram h4{margin:0;padding:7px 10px;background:var(--red);color:var(--paper);font:700 10px 'Montserrat',sans-serif;letter-spacing:.8px;white-space:nowrap}
+.haldi-subprogram h4:before{content:none}
+@media(max-width:500px){.haldi-subprogram{gap:4px}.haldi-subprogram h4{padding:6px 5px;font-size:7px;letter-spacing:.25px}}
