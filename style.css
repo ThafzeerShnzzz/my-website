@@ -86,15 +86,3 @@ nav{width:min(1180px,92%);margin:0 auto;padding:12px 20px;display:flex;align-ite
  .photo-placeholder-inner{min-height:220px}
 }
 @media(max-width:520px){.programme-showcase{gap:12px 10px}.experience-photo{padding:6px}.photo-placeholder-inner{min-height:165px}.photo-placeholder-inner small{font-size:7px;letter-spacing:.7px}}
-
-/* Celebration treatment: photos may softly overlap the programme without hiding it */
-@media(min-width:1001px){
-  .schedule{position:relative;z-index:3}
-  .programme-showcase{z-index:2}
-  .experience-photo{overflow:hidden;transition:transform .3s ease,box-shadow .3s ease}
-  .experience-photo:after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(90deg,transparent 64%,rgba(248,239,217,.72) 88%,rgba(248,239,217,.96) 100%)}
-  .photo-2:after,.photo-4:after,.photo-6:after,.photo-8:after{background:linear-gradient(270deg,transparent 64%,rgba(248,239,217,.72) 88%,rgba(248,239,217,.96) 100%)}
-  .experience-photo:hover{box-shadow:0 16px 38px rgba(178,15,59,.14)}
-  .photo-1,.photo-3,.photo-5,.photo-7{margin-left:8px}
-  .photo-2,.photo-4,.photo-6,.photo-8{margin-right:8px}
-}
