@@ -166,3 +166,11 @@ nav{width:min(1180px,92%);margin:0 auto;padding:12px 20px;display:flex;align-ite
  .experience-photo:nth-child(3n+2){transform:rotate(2deg)!important}
  .experience-photo:nth-child(3n){transform:rotate(-1deg)!important}
 }
+
+/* Keep original site width — collage must never widen the document */
+html,body{max-width:100%;overflow-x:hidden}
+.page{overflow-x:clip}
+.programme-showcase{overflow:visible;max-width:100%}
+@media(min-width:1321px){
+ .photo-1{left:1%;}.photo-4{right:1%;}.photo-5{left:1%;}.photo-8{right:1%;}
+}
