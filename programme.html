@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Programme — O.K.P</title><link rel="stylesheet" href="style.css?v=20261007-7"><style>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Programme — O.K.P</title><link rel="stylesheet" href="style.css?v=20261007-8"><style>
 /* Programme readability hotfix: keep photography out of the copy column */
 @media (min-width:1001px){
   .programme-showcase{width:100vw!important;left:50%!important;right:auto!important;transform:translateX(-50%)!important;overflow:hidden!important}
@@ -130,6 +130,37 @@
   .photo-6{top:1595px!important;height:300px!important}
   .photo-7{top:1900px!important;height:285px!important}
   .photo-8{top:2185px!important;height:290px!important}
+}
+
+/* Match all inner photo fades to the clean red-marked transition */
+@media (min-width:1001px){
+  /* left images: remove the visible inner vertical edge */
+  .photo-1:after,.photo-3:after,.photo-5:after,.photo-7:after{
+    inset:0!important;
+    background:linear-gradient(90deg,
+      transparent 0%,
+      transparent 38%,
+      rgba(248,239,217,.08) 50%,
+      rgba(248,239,217,.22) 60%,
+      rgba(248,239,217,.42) 70%,
+      rgba(248,239,217,.64) 80%,
+      rgba(248,239,217,.84) 90%,
+      #f8efd9 100%)!important;
+  }
+
+  /* right images: same soft transition, mirrored */
+  .photo-2:after,.photo-4:after,.photo-6:after,.photo-8:after{
+    inset:0!important;
+    background:linear-gradient(270deg,
+      transparent 0%,
+      transparent 38%,
+      rgba(248,239,217,.08) 50%,
+      rgba(248,239,217,.22) 60%,
+      rgba(248,239,217,.42) 70%,
+      rgba(248,239,217,.64) 80%,
+      rgba(248,239,217,.84) 90%,
+      #f8efd9 100%)!important;
+  }
 }
 </style></head>
 <body><div class="topbar">ISTEDA COMMUNITY PRESENTS</div><nav><a class="brand" href="index.html" aria-label="O.K.P — Oru Kalyanam Pole"><img src="okp1.png" alt="O.K.P — Oru Kalyanam Pole"></a><button class="menu">☰</button><div class="links"><a href="index.html">Home</a><a href="story.html">Our Story</a><a class="active" href="programme.html">Programme</a><a href="teams.html">Teams</a><a href="house.html">Wedding House</a><a href="food.html">Food</a><a href="gallery.html">Gallery</a><a class="rsvp" href="rsvp.html">RSVP</a></div></nav>
