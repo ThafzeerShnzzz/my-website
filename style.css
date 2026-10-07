@@ -86,3 +86,8 @@ nav{width:min(1180px,92%);margin:0 auto;padding:12px 20px;display:flex;align-ite
  .photo-placeholder-inner{min-height:220px}
 }
 @media(max-width:520px){.programme-showcase{gap:12px 10px}.experience-photo{padding:6px}.photo-placeholder-inner{min-height:165px}.photo-placeholder-inner small{font-size:7px;letter-spacing:.7px}}
+
+/* Haldi marketing highlights */
+.haldi-highlights{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.haldi-highlights span{display:inline-flex;align-items:center;gap:5px;padding:8px 10px;border:1px solid rgba(178,15,59,.22);background:rgba(255,250,240,.72);color:var(--red-dark);font:600 9px 'Montserrat',sans-serif;letter-spacing:.8px;box-shadow:0 4px 12px rgba(64,51,34,.05)}
+@media(max-width:500px){.haldi-highlights{gap:6px}.haldi-highlights span{padding:7px 8px;font-size:8px;letter-spacing:.5px}}
