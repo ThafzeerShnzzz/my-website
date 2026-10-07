@@ -196,3 +196,54 @@ nav{width:min(1180px,92%);margin:0 auto;padding:12px 20px;display:flex;align-ite
  .photo-1:after,.photo-3:after,.photo-5:after,.photo-7:after{background:linear-gradient(90deg,transparent 50%,rgba(248,239,217,.92))}
  .photo-2:after,.photo-4:after,.photo-6:after,.photo-8:after{background:linear-gradient(270deg,transparent 50%,rgba(248,239,217,.92))}
 }
+
+/* Programme — event editorial composition */
+@media(min-width:1001px){
+  .programme-showcase{
+    left:50%;right:auto;width:min(1420px,100vw);transform:translateX(-50%);
+    top:410px;bottom:-500px;overflow:hidden;z-index:1;
+  }
+  .schedule{position:relative;z-index:5;max-width:760px}
+  .experience-photo{
+    border:0!important;padding:0!important;background:transparent!important;
+    box-shadow:none!important;border-radius:0!important;overflow:hidden!important;
+    opacity:1;
+  }
+  .experience-photo>img{width:100%;height:100%;object-fit:cover;display:block}
+  .experience-photo:before{
+    content:"";position:absolute;inset:0;z-index:2;pointer-events:none;
+    background:linear-gradient(to bottom,rgba(248,239,217,.04),rgba(248,239,217,.08));
+  }
+  /* alternating full editorial crops */
+  .photo-1{left:0;top:10px;width:46%;height:360px;aspect-ratio:auto;transform:none}
+  .photo-2{right:0;top:250px;width:43%;height:390px;aspect-ratio:auto;transform:none}
+  .photo-3{left:0;top:610px;width:45%;height:370px;aspect-ratio:auto;transform:none}
+  .photo-4{right:0;top:880px;width:47%;height:350px;aspect-ratio:auto;transform:none}
+  .photo-5{left:0;top:1210px;width:46%;height:370px;aspect-ratio:auto;transform:none}
+  .photo-6{right:0;top:1450px;width:45%;height:390px;aspect-ratio:auto;transform:none}
+  .photo-7{left:0;top:1770px;width:47%;height:350px;aspect-ratio:auto;transform:none}
+  .photo-8{right:0;top:1990px;width:46%;height:370px;aspect-ratio:auto;transform:none}
+
+  /* photographs dissolve into the paper behind the programme copy */
+  .photo-1:after,.photo-3:after,.photo-5:after,.photo-7:after{
+    content:"";position:absolute;inset:-1px;z-index:3;pointer-events:none;
+    background:
+      linear-gradient(90deg,transparent 0%,transparent 48%,rgba(248,239,217,.52) 72%,var(--paper) 100%),
+      linear-gradient(0deg,var(--paper) 0%,transparent 18%,transparent 82%,var(--paper) 100%);
+  }
+  .photo-2:after,.photo-4:after,.photo-6:after,.photo-8:after{
+    content:"";position:absolute;inset:-1px;z-index:3;pointer-events:none;
+    background:
+      linear-gradient(270deg,transparent 0%,transparent 48%,rgba(248,239,217,.52) 72%,var(--paper) 100%),
+      linear-gradient(0deg,var(--paper) 0%,transparent 18%,transparent 82%,var(--paper) 100%);
+  }
+  /* editorial schedule: no card, copy floats through photography */
+  .day{position:relative}
+  .event{position:relative}
+}
+@media(max-width:1000px){
+  .programme-showcase{display:block;margin:0 auto 45px}
+  .experience-photo{position:relative!important;width:92%!important;max-width:620px!important;height:260px!important;aspect-ratio:auto!important;margin:-22px auto 38px!important;transform:none!important;border:0!important;padding:0!important;box-shadow:none!important;overflow:hidden}
+  .experience-photo>img{width:100%;height:100%;object-fit:cover}
+  .experience-photo:after{content:"";position:absolute;inset:0;background:linear-gradient(0deg,var(--paper) 0%,transparent 22%,transparent 78%,var(--paper) 100%);pointer-events:none}
+}
