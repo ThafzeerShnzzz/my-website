@@ -359,3 +359,8 @@ nav{width:min(1180px,92%);margin:0 auto;padding:12px 20px;display:flex;align-ite
  .house-courtyard-copy{left:28px;right:28px;top:auto;bottom:34px;transform:none}
  .house-courtyard-copy h2{font-size:37px}.house-closing{padding:0 18px;margin-top:75px}.house-quote{font-size:34px}
 }
+
+/* Wedding House: keep courtyard photo inside the normal page width */
+.house-courtyard{margin:90px 0!important;width:100%!important}
+.house-courtyard img{width:100%!important;height:auto!important;object-fit:contain!important}
+@media(max-width:800px){.house-courtyard{margin:65px 0!important}.house-courtyard img{height:auto!important}}
