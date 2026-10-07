@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Programme — O.K.P</title><link rel="stylesheet" href="style.css?v=20261007-4"><style>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Programme — O.K.P</title><link rel="stylesheet" href="style.css?v=20261007-5"><style>
 /* Programme readability hotfix: keep photography out of the copy column */
 @media (min-width:1001px){
   .programme-showcase{width:100vw!important;left:50%!important;right:auto!important;transform:translateX(-50%)!important;overflow:hidden!important}
@@ -52,6 +52,49 @@
       rgba(248,239,217,.80) 82%,
       rgba(248,239,217,.94) 90%,
       #f8efd9 97%,
+      #f8efd9 100%)!important;
+  }
+}
+
+/* Ultra-soft paper dissolve — no visible photo boundary */
+@media (min-width:1001px){
+  .experience-photo{overflow:visible!important}
+
+  .photo-1:after,.photo-3:after,.photo-5:after,.photo-7:after{
+    inset:-8px -180px -8px -8px!important;
+    background:linear-gradient(90deg,
+      rgba(248,239,217,0) 0%,
+      rgba(248,239,217,0) 24%,
+      rgba(248,239,217,.03) 34%,
+      rgba(248,239,217,.08) 43%,
+      rgba(248,239,217,.16) 51%,
+      rgba(248,239,217,.27) 59%,
+      rgba(248,239,217,.40) 66%,
+      rgba(248,239,217,.54) 72%,
+      rgba(248,239,217,.67) 78%,
+      rgba(248,239,217,.78) 83%,
+      rgba(248,239,217,.87) 88%,
+      rgba(248,239,217,.93) 92%,
+      rgba(248,239,217,.97) 96%,
+      #f8efd9 100%)!important;
+  }
+
+  .photo-2:after,.photo-4:after,.photo-6:after,.photo-8:after{
+    inset:-8px -8px -8px -180px!important;
+    background:linear-gradient(270deg,
+      rgba(248,239,217,0) 0%,
+      rgba(248,239,217,0) 24%,
+      rgba(248,239,217,.03) 34%,
+      rgba(248,239,217,.08) 43%,
+      rgba(248,239,217,.16) 51%,
+      rgba(248,239,217,.27) 59%,
+      rgba(248,239,217,.40) 66%,
+      rgba(248,239,217,.54) 72%,
+      rgba(248,239,217,.67) 78%,
+      rgba(248,239,217,.78) 83%,
+      rgba(248,239,217,.87) 88%,
+      rgba(248,239,217,.93) 92%,
+      rgba(248,239,217,.97) 96%,
       #f8efd9 100%)!important;
   }
 }
