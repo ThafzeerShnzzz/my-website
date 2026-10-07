@@ -247,3 +247,56 @@ nav{width:min(1180px,92%);margin:0 auto;padding:12px 20px;display:flex;align-ite
   .experience-photo>img{width:100%;height:100%;object-fit:cover}
   .experience-photo:after{content:"";position:absolute;inset:0;background:linear-gradient(0deg,var(--paper) 0%,transparent 22%,transparent 78%,var(--paper) 100%);pointer-events:none}
 }
+
+/* Directional editorial fades based on user markup:
+   right-side photos fade outward to the RIGHT,
+   left-side photos fade outward to the LEFT. */
+@media(min-width:1001px){
+  .experience-photo:after{
+    content:"";
+    position:absolute;
+    inset:0;
+    z-index:3;
+    pointer-events:none;
+  }
+
+  /* LEFT-side images: strongest fade at LEFT outer edge */
+  .photo-1:after,
+  .photo-3:after,
+  .photo-5:after,
+  .photo-7:after{
+    background:
+      linear-gradient(90deg,
+        var(--paper) 0%,
+        rgba(248,239,217,.88) 10%,
+        rgba(248,239,217,.42) 22%,
+        rgba(248,239,217,0) 42%
+      ),
+      linear-gradient(0deg,
+        var(--paper) 0%,
+        rgba(248,239,217,0) 16%,
+        rgba(248,239,217,0) 84%,
+        var(--paper) 100%
+      );
+  }
+
+  /* RIGHT-side images: strongest fade at RIGHT outer edge */
+  .photo-2:after,
+  .photo-4:after,
+  .photo-6:after,
+  .photo-8:after{
+    background:
+      linear-gradient(270deg,
+        var(--paper) 0%,
+        rgba(248,239,217,.88) 10%,
+        rgba(248,239,217,.42) 22%,
+        rgba(248,239,217,0) 42%
+      ),
+      linear-gradient(0deg,
+        var(--paper) 0%,
+        rgba(248,239,217,0) 16%,
+        rgba(248,239,217,0) 84%,
+        var(--paper) 100%
+      );
+  }
+}
