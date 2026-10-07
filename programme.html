@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Programme — O.K.P</title><link rel="stylesheet" href="style.css?v=20261007-4"><style>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Programme — O.K.P</title><link rel="stylesheet" href="style.css?v=20261007-6"><style>
 /* Programme readability hotfix: keep photography out of the copy column */
 @media (min-width:1001px){
   .programme-showcase{width:100vw!important;left:50%!important;right:auto!important;transform:translateX(-50%)!important;overflow:hidden!important}
@@ -56,6 +56,68 @@
   }
 }
 
+
+/* Clean editorial layout: photos end before copy, then softly dissolve */
+@media (min-width:1001px){
+  .programme-showcase{
+    width:100vw!important;
+    left:50%!important;
+    transform:translateX(-50%)!important;
+    overflow:hidden!important;
+  }
+  .schedule{max-width:760px!important;position:relative!important;z-index:20!important}
+
+  .experience-photo{
+    overflow:hidden!important;
+    box-shadow:none!important;
+    border:0!important;
+    transform:none!important;
+  }
+
+  /* Leave a real paper gap before the text column */
+  .photo-1,.photo-3,.photo-5,.photo-7{
+    left:0!important;
+    right:auto!important;
+    width:calc((100vw - 760px)/2 - 18px)!important;
+  }
+  .photo-2,.photo-4,.photo-6,.photo-8{
+    right:0!important;
+    left:auto!important;
+    width:calc((100vw - 760px)/2 - 18px)!important;
+  }
+
+  /* Fade only the last part of each image nearest the text */
+  .photo-1:after,.photo-3:after,.photo-5:after,.photo-7:after{
+    inset:0!important;
+    background:linear-gradient(90deg,
+      transparent 0%,
+      transparent 62%,
+      rgba(248,239,217,.18) 72%,
+      rgba(248,239,217,.48) 82%,
+      rgba(248,239,217,.78) 91%,
+      #f8efd9 100%)!important;
+  }
+  .photo-2:after,.photo-4:after,.photo-6:after,.photo-8:after{
+    inset:0!important;
+    background:linear-gradient(270deg,
+      transparent 0%,
+      transparent 62%,
+      rgba(248,239,217,.18) 72%,
+      rgba(248,239,217,.48) 82%,
+      rgba(248,239,217,.78) 91%,
+      #f8efd9 100%)!important;
+  }
+
+  /* stagger images between copy rows instead of cutting through key text */
+  .photo-1{top:35px!important;height:330px!important}
+  .photo-2{top:390px!important;height:330px!important}
+  .photo-3{top:760px!important;height:320px!important}
+  .photo-4{top:1100px!important;height:310px!important}
+  .photo-5{top:1435px!important;height:320px!important}
+  .photo-6{top:1770px!important;height:320px!important}
+  .photo-7{top:2100px!important;height:300px!important}
+  .photo-8{top:2420px!important;height:310px!important}
+}
 </style></head>
 <body><div class="topbar">ISTEDA COMMUNITY PRESENTS</div><nav><a class="brand" href="index.html" aria-label="O.K.P — Oru Kalyanam Pole"><img src="okp1.png" alt="O.K.P — Oru Kalyanam Pole"></a><button class="menu">☰</button><div class="links"><a href="index.html">Home</a><a href="story.html">Our Story</a><a class="active" href="programme.html">Programme</a><a href="teams.html">Teams</a><a href="house.html">Wedding House</a><a href="food.html">Food</a><a href="gallery.html">Gallery</a><a class="rsvp" href="rsvp.html">RSVP</a></div></nav>
 <main class="page">
