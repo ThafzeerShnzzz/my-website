@@ -121,3 +121,22 @@ nav{width:min(1180px,92%);margin:0 auto;padding:12px 20px;display:flex;align-ite
   .photo-7{left:5.5%;top:1240px}
   .photo-8{right:2%;top:1370px}
 }
+
+/* Final programme celebration collage */
+@media(min-width:1321px){
+ .programme-showcase{top:390px;bottom:-650px}
+ .experience-photo{padding:8px;background:#fffaf0;box-shadow:0 12px 26px rgba(64,51,34,.10);border:1px solid rgba(178,15,59,.14)}
+ .experience-photo>img{width:100%;height:100%;display:block;object-fit:cover}
+ .photo-1{left:1.2%;top:25px;width:250px;aspect-ratio:4/3;transform:rotate(-3deg)}
+ .photo-2{right:2%;top:135px;width:235px;aspect-ratio:4/5;transform:rotate(2.5deg)}
+ .photo-3{left:4.8%;top:390px;width:225px;aspect-ratio:4/5;transform:rotate(2deg)}
+ .photo-4{right:.8%;top:570px;width:300px;aspect-ratio:16/10;transform:rotate(-3deg)}
+ .photo-5{left:.8%;top:790px;width:260px;aspect-ratio:3/4;transform:rotate(-2deg)}
+ .photo-6{right:4.2%;top:960px;width:235px;aspect-ratio:4/5;transform:rotate(3deg)}
+ .photo-7{left:5%;top:1210px;width:285px;aspect-ratio:16/10;transform:rotate(2.5deg)}
+ .photo-8{right:1.2%;top:1390px;width:255px;aspect-ratio:4/3;transform:rotate(-2.5deg)}
+}
+@media(max-width:1320px) and (min-width:1001px){
+ .experience-photo{width:175px}
+ .experience-photo.photo-4,.experience-photo.photo-7{width:210px;aspect-ratio:16/10}
+}
