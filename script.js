@@ -4,9 +4,11 @@ document.addEventListener("DOMContentLoaded",function(){
   if(button&&menu){
     button.addEventListener("click",function(){
       menu.classList.toggle("mobile-open");
-      button.textContent=menu.classList.contains("mobile-open")?"✕":"☰";
+      const open=menu.classList.contains("mobile-open");
+      button.textContent=open?"✕":"☰";
+      button.classList.toggle("menu-open",open);
     });
-    menu.querySelectorAll("a").forEach(a=>a.addEventListener("click",()=>menu.classList.remove("mobile-open")));
+    menu.querySelectorAll("a").forEach(a=>a.addEventListener("click",()=>{menu.classList.remove("mobile-open");button.classList.remove("menu-open");button.textContent="☰";}));
   }
 
   // Minimal falling-petal effect to match the wedding-invitation aesthetic.
