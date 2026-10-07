@@ -56,3 +56,11 @@ nav{width:min(1180px,92%);margin:0 auto;padding:12px 20px;display:flex;align-ite
   .links a[href="gallery.html"]::before{content:"06"}
   .links a[href="rsvp.html"]::before{content:"07"}
 }
+
+/* Chapter next navigation */
+.chapter-next{width:min(850px,92%);margin:70px auto 0;padding:26px 0;border-top:1px solid rgba(178,15,59,.25);border-bottom:1px solid rgba(178,15,59,.25);text-align:center}
+.chapter-next span{display:block;margin-bottom:10px;color:var(--gold);font:600 9px 'Montserrat',sans-serif;letter-spacing:3px}
+.chapter-next a{color:var(--red-dark);text-decoration:none;font:600 16px 'Montserrat',sans-serif;letter-spacing:1.5px}
+.chapter-next b{display:inline-block;margin-left:8px;color:var(--red);font-size:20px;transition:transform .2s ease}
+.chapter-next a:hover b{transform:translateX(4px)}
+@media(max-width:850px){.chapter-next{margin:45px auto 0;padding:22px 10px}.chapter-next a{font-size:13px}}
