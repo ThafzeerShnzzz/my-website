@@ -166,3 +166,33 @@ nav{width:min(1180px,92%);margin:0 auto;padding:12px 20px;display:flex;align-ite
  .experience-photo:nth-child(3n+2){transform:rotate(2deg)!important}
  .experience-photo:nth-child(3n){transform:rotate(-1deg)!important}
 }
+
+/* Programme immersive photo storytelling — photos support the schedule, not wall frames */
+@media(min-width:1321px){
+ .programme-showcase{left:50%;right:auto;width:min(1500px,100vw);transform:translateX(-50%);overflow:hidden;z-index:1}
+ .schedule{position:relative;z-index:4}
+ .experience-photo{border:0;padding:0;background:none;box-shadow:none;overflow:hidden;border-radius:2px}
+ .experience-photo:after{content:"";position:absolute;inset:0;pointer-events:none}
+ .experience-photo>img{width:100%;height:100%;display:block;object-fit:cover}
+ /* broad editorial images instead of small hanging frames */
+ .photo-1{left:0;top:0;width:390px;aspect-ratio:16/10;transform:rotate(-1.5deg);opacity:.96}
+ .photo-2{right:0;top:190px;width:380px;aspect-ratio:4/3;transform:rotate(1.2deg)}
+ .photo-3{left:0;top:480px;width:410px;aspect-ratio:16/10;transform:rotate(.8deg)}
+ .photo-4{right:0;top:720px;width:430px;aspect-ratio:16/10;transform:rotate(-1deg)}
+ .photo-5{left:0;top:990px;width:420px;aspect-ratio:16/10;transform:rotate(-.8deg)}
+ .photo-6{right:0;top:1210px;width:405px;aspect-ratio:16/10;transform:rotate(1deg)}
+ .photo-7{left:0;top:1470px;width:430px;aspect-ratio:16/10;transform:rotate(.8deg)}
+ .photo-8{right:0;top:1690px;width:420px;aspect-ratio:16/10;transform:rotate(-1deg)}
+ /* fade only the edge nearest the programme text */
+ .photo-1:after,.photo-3:after,.photo-5:after,.photo-7:after{background:linear-gradient(90deg,transparent 58%,rgba(248,239,217,.94) 100%)}
+ .photo-2:after,.photo-4:after,.photo-6:after,.photo-8:after{background:linear-gradient(270deg,transparent 58%,rgba(248,239,217,.94) 100%)}
+}
+@media(min-width:1001px) and (max-width:1320px){
+ .programme-showcase{overflow:hidden}
+ .experience-photo{border:0;padding:0;box-shadow:none}
+ .experience-photo:after{content:"";position:absolute;inset:0;pointer-events:none}
+ .photo-1,.photo-3,.photo-5,.photo-7{left:0;width:220px}
+ .photo-2,.photo-4,.photo-6,.photo-8{right:0;width:220px}
+ .photo-1:after,.photo-3:after,.photo-5:after,.photo-7:after{background:linear-gradient(90deg,transparent 50%,rgba(248,239,217,.92))}
+ .photo-2:after,.photo-4:after,.photo-6:after,.photo-8:after{background:linear-gradient(270deg,transparent 50%,rgba(248,239,217,.92))}
+}
