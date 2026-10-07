@@ -300,3 +300,22 @@ nav{width:min(1180px,92%);margin:0 auto;padding:12px 20px;display:flex;align-ite
       );
   }
 }
+
+/* Readability correction: photos stay in the margins and never sit behind programme copy */
+@media(min-width:1001px){
+  .schedule{position:relative;z-index:10;max-width:760px}
+  .programme-showcase{z-index:1}
+  .experience-photo{z-index:1!important}
+
+  /* Keep the centre text corridor completely clear */
+  .photo-1,.photo-3,.photo-5,.photo-7{left:0!important;right:auto!important;width:calc((100% - 780px)/2 + 95px)!important}
+  .photo-2,.photo-4,.photo-6,.photo-8{right:0!important;left:auto!important;width:calc((100% - 780px)/2 + 95px)!important}
+
+  /* Fade the INNER edge into paper before it reaches the text */
+  .photo-1:after,.photo-3:after,.photo-5:after,.photo-7:after{
+    background:linear-gradient(90deg,transparent 0%,transparent 48%,rgba(248,239,217,.82) 76%,var(--paper) 100%)!important;
+  }
+  .photo-2:after,.photo-4:after,.photo-6:after,.photo-8:after{
+    background:linear-gradient(270deg,transparent 0%,transparent 48%,rgba(248,239,217,.82) 76%,var(--paper) 100%)!important;
+  }
+}
