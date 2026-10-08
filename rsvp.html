@@ -76,10 +76,10 @@ document.getElementById('rsvpForm').addEventListener('submit',async function(e){
  if(!file||!file.size){status.textContent='Please upload your payment proof.';return}
  if(file.size>5*1024*1024){status.textContent='Payment proof must be 5 MB or smaller.';return}
  button.disabled=true;button.textContent='UPLOADING & SUBMITTING...';status.textContent='';
- let whatsapp=String(data.get('whatsapp')||'').trim().replace(/[\\s()-]/g,'');
- if(/^05\\d{8}$/.test(whatsapp))whatsapp='+971'+whatsapp.slice(1);
- else if(/^9715\\d{8}$/.test(whatsapp))whatsapp='+'+whatsapp;
- else if(!/^\\+9715\\d{8}$/.test(whatsapp)){status.textContent='Enter a valid UAE WhatsApp number: 0551234567 or +971551234567.';button.disabled=false;button.textContent='SUBMIT RSVP FOR VERIFICATION →';return}
+ let whatsapp=String(data.get('whatsapp')||'').trim().replace(/[\s()-]/g,'');
+ if(/^05\d{8}$/.test(whatsapp))whatsapp='+971'+whatsapp.slice(1);
+ else if(/^9715\d{8}$/.test(whatsapp))whatsapp='+'+whatsapp;
+ else if(!/^\+9715\d{8}$/.test(whatsapp)){status.textContent='Enter a valid UAE WhatsApp number: 0551234567 or +971551234567.';button.disabled=false;button.textContent='SUBMIT RSVP FOR VERIFICATION →';return}
  const proofPath=Date.now()+'_'+whatsapp.replace(/\D/g,'')+'_'+cleanFileName(file.name);
  const {error:uploadError}=await okpSupabase.storage.from('payment-proofs').upload(proofPath,file,{upsert:false,contentType:file.type});
  if(uploadError){console.error(uploadError);status.textContent='Payment proof upload failed. Please try again.';button.disabled=false;button.textContent='SUBMIT RSVP FOR VERIFICATION →';return}
