@@ -657,7 +657,7 @@ footer small{
 .surprise-top{display:none}
 .surprise-close{position:absolute;right:4px;top:4px;background:rgba(25,15,18,.65);border:0;border-radius:50%;width:36px;height:36px;font-size:25px;color:white;cursor:pointer;line-height:1;z-index:3}
 .surprise-frame{position:relative;display:flex;align-items:center;justify-content:center;width:100%;min-height:120px;overflow:hidden}
-.surprise-photo{display:block;max-width:100%;max-height:94dvh;object-fit:contain;animation:surpriseSlideIn 1s ease-in-out both}
+.surprise-photo{display:block;max-width:100%;max-height:94dvh;object-fit:contain;animation:surpriseSlideIn 2s ease-in-out both}
 @keyframes surpriseSlideIn{from{opacity:0;transform:scale(.88)}to{opacity:1;transform:scale(1)}}}
 @media(prefers-reduced-motion:reduce){.surprise-photo{animation:none}}
 .surprise-nav{display:none}
@@ -910,8 +910,8 @@ document.addEventListener("DOMContentLoaded", function () {
  const close=document.getElementById('surpriseClose');
  let index=0,previousFocus=null,startX=null,timer=null;
  slides.forEach((slide,i)=>{const b=document.createElement('button');b.type='button';b.setAttribute('aria-label','Show '+slide.title);b.addEventListener('click',()=>show(i));dots.appendChild(b)});
- function show(i){index=(i+slides.length)%slides.length;photo.style.animation='none';void photo.offsetWidth;photo.src=slides[index].src;photo.style.animation='surpriseSlideIn 1s ease-in-out both';photo.alt='O.K.P '+slides[index].title+' poster';title.textContent=slides[index].title+' · '+(index+1)+' / '+slides.length;[...dots.children].forEach((b,j)=>{b.classList.toggle('active',j===index);b.setAttribute('aria-current',j===index?'true':'false')})}
- function open(){previousFocus=document.activeElement;show(0);overlay.hidden=false;document.body.style.overflow='hidden';timer=setInterval(()=>show(index+1),4000);close.focus()}
+ function show(i){index=(i+slides.length)%slides.length;photo.style.animation='none';void photo.offsetWidth;photo.src=slides[index].src;photo.style.animation='surpriseSlideIn 2s ease-in-out both';photo.alt='O.K.P '+slides[index].title+' poster';title.textContent=slides[index].title+' · '+(index+1)+' / '+slides.length;[...dots.children].forEach((b,j)=>{b.classList.toggle('active',j===index);b.setAttribute('aria-current',j===index?'true':'false')})}
+ function open(){previousFocus=document.activeElement;show(0);overlay.hidden=false;document.body.style.overflow='hidden';timer=setInterval(()=>show(index+1),5000);close.focus()}
  function shut(){clearInterval(timer);timer=null;overlay.hidden=true;document.body.style.overflow='';(previousFocus||gift).focus()}
  gift.addEventListener('click',open);close.addEventListener('click',shut);
  document.getElementById('surprisePrev').addEventListener('click',()=>show(index-1));
