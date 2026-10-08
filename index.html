@@ -687,9 +687,9 @@ footer small{
 
 
 /* Minimal golden dust scroll invitation on first screen */
-.okp-scroll-invite{position:absolute;left:50%;bottom:14px;transform:translateX(-50%);z-index:6;display:flex;flex-direction:column;align-items:center;gap:5px;text-decoration:none;color:var(--gold);font:500 9px 'Montserrat',sans-serif;letter-spacing:2.4px;white-space:nowrap}
+.okp-scroll-invite{display:none;position:absolute;left:50%;bottom:14px;transform:translateX(-50%);z-index:6;display:flex;flex-direction:column;align-items:center;gap:5px;text-decoration:none;color:var(--red-dark);font:500 9px 'Montserrat',sans-serif;letter-spacing:2.4px;white-space:nowrap}
 .okp-scroll-invite .dust-trail{position:relative;display:block;width:42px;height:43px}
-.okp-scroll-invite .dust-speck{position:absolute;top:0;left:50%;width:2px;height:2px;border-radius:50%;background:#c6a16a;box-shadow:0 0 5px #c6a16a80;animation:okpDustFall 2.7s ease-in-out infinite;opacity:0}
+.okp-scroll-invite .dust-speck{position:absolute;top:0;left:50%;width:2px;height:2px;border-radius:50%;background:currentColor;box-shadow:0 0 5px rgba(143,12,49,.25);animation:okpDustFall 2.7s ease-in-out infinite;opacity:0}
 .okp-scroll-invite .dust-speck:nth-child(1){--dx:-11px;--end:-4px;animation-delay:0s}
 .okp-scroll-invite .dust-speck:nth-child(2){--dx:8px;--end:3px;animation-delay:.35s}
 .okp-scroll-invite .dust-speck:nth-child(3){--dx:-4px;--end:0px;animation-delay:.7s}
@@ -697,7 +697,7 @@ footer small{
 .okp-scroll-invite .dust-arrow{position:absolute;bottom:0;left:50%;width:18px;height:18px;transform:translateX(-50%);stroke:currentColor;fill:none;stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round;animation:okpDustArrow 2.7s ease-in-out infinite}
 @keyframes okpDustFall{0%{opacity:0;transform:translate(var(--dx),0)}25%{opacity:.85}85%{opacity:.35}100%{opacity:0;transform:translate(var(--end),27px)}}
 @keyframes okpDustArrow{0%,100%{opacity:.3;transform:translate(-50%,-3px)}60%{opacity:1;transform:translate(-50%,2px)}}
-@media(max-width:500px){.okp-scroll-invite{bottom:8px;font-size:8px}}
+@media(max-width:850px){.okp-scroll-invite{display:flex;bottom:8px;gap:0}.okp-scroll-invite>span:first-child{display:none}.okp-scroll-invite .dust-trail{height:32px}}
 @media(prefers-reduced-motion:reduce){.okp-scroll-invite .dust-speck,.okp-scroll-invite .dust-arrow{animation:none}.okp-scroll-invite .dust-arrow{opacity:1}}
 
 </style>
