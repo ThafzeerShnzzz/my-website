@@ -679,13 +679,10 @@ footer small{
 .okp-clock strong{display:block;font-family:'Cormorant Garamond',Georgia,serif;font-size:clamp(35px,7vw,64px);font-weight:500;line-height:1.1;font-variant-numeric:tabular-nums}
 .okp-clock span{font:600 10px 'Montserrat',sans-serif;letter-spacing:1.5px}
 .okp-event-meta{font:600 12px 'Montserrat',sans-serif;letter-spacing:1px;line-height:2}
-/* Visible jasmine petal fall over the countdown */
-.okp-countdown{position:relative;overflow:hidden;isolation:isolate}
-.okp-countdown>.okp-petals{position:absolute;inset:0;pointer-events:none;z-index:2;overflow:hidden}
-.okp-countdown>.okp-petals span{position:absolute;top:0;left:var(--x);color:#b20f3b;font-size:var(--size);line-height:1;opacity:0;animation:okpJasmineFall var(--duration) linear infinite;animation-delay:var(--delay);text-shadow:0 1px 2px rgba(255,255,255,.8)}
-.okp-countdown>.okp-petals~*{position:relative;z-index:1}
-@keyframes okpJasmineFall{0%{top:-10%;transform:translateX(0) rotate(0deg);opacity:0}10%{opacity:.8}85%{opacity:.8}100%{top:105%;transform:translateX(var(--drift)) rotate(240deg);opacity:0}}
-@media(prefers-reduced-motion:reduce){.okp-countdown>.okp-petals span{animation:none;display:none}}
+/* Option 2: elegant golden shimmer on countdown numerals */
+.okp-clock strong{background:linear-gradient(105deg,var(--red-dark) 0%,var(--red-dark) 35%,#d5a85e 49%,#fff0b9 52%,#d5a85e 55%,var(--red-dark) 70%,var(--red-dark) 100%);background-size:250% 100%;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:var(--red-dark);animation:okpGoldenShimmer 4s ease-in-out infinite}
+@keyframes okpGoldenShimmer{0%,15%{background-position:100% 50%}65%,100%{background-position:0% 50%}}
+@media(prefers-reduced-motion:reduce){.okp-clock strong{animation:none;background:none;-webkit-text-fill-color:currentColor}}
 
 </style>
 </head>
@@ -748,14 +745,7 @@ footer small{
 </header>
 
 <section class="okp-countdown" aria-label="Wedding countdown">
-<div class="okp-petals" aria-hidden="true">
-<span style="--x:8%;--size:22px;--duration:12s;--delay:-3s;--drift:28px">✿</span>
-<span style="--x:24%;--size:18px;--duration:15s;--delay:-9s;--drift:-20px">✿</span>
-<span style="--x:42%;--size:21px;--duration:13s;--delay:-6s;--drift:26px">✿</span>
-<span style="--x:61%;--size:19px;--duration:16s;--delay:-12s;--drift:-24px">✿</span>
-<span style="--x:79%;--size:22px;--duration:14s;--delay:-5s;--drift:22px">✿</span>
-<span style="--x:93%;--size:18px;--duration:17s;--delay:-14s;--drift:-18px">✿</span>
-</div>
+
 <div class="count-eyebrow">THE CELEBRATION IS GETTING CLOSER</div>
 <h2 class="count-title">Until We Celebrate Together…</h2>
 <div class="okp-clock" id="okpClock" aria-live="off">
