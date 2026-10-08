@@ -1,20 +1,21 @@
 <!DOCTYPE html>
 <html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Wedding House — O.K.P</title><link rel="stylesheet" href="style.css?v=house-20261007"><style>
-/* Subtle fire animation, scoped only to the Wedding House courtyard photograph. */
+/* Wedding House campfire: translucent, irregular flames precisely over the existing firepit. */
 .house-fire-scene{position:relative;isolation:isolate}
-.house-fire-scene>.house-fire-animation{position:absolute;left:50%;top:69%;width:12%;height:15%;transform:translate(-50%,-50%);pointer-events:none;z-index:1;overflow:visible}
-.house-fire-animation .house-fire-glow{position:absolute;left:5%;bottom:4%;width:90%;height:45%;border-radius:50%;background:radial-gradient(ellipse,rgba(255,128,16,.27),rgba(255,109,0,.08) 48%,transparent 73%);filter:blur(7px);animation:houseGlow 2.4s ease-in-out infinite alternate}
-.house-fire-animation .house-flame{position:absolute;bottom:18%;width:20%;height:49%;border-radius:70% 0 65% 55%;transform-origin:50% 95%;background:linear-gradient(135deg,rgba(255,237,130,.04) 6%,rgba(255,202,66,.6) 42%,rgba(255,104,13,.08) 95%);filter:blur(2px);mix-blend-mode:screen;animation:houseFlicker 1.35s ease-in-out infinite alternate}
-.house-fire-animation .house-flame-left{left:34%;height:42%;transform:rotate(-17deg);animation-delay:-.55s}
-.house-fire-animation .house-flame-middle{left:46%;height:60%;width:15%;animation-duration:1.05s;animation-delay:-.3s}
-.house-fire-animation .house-flame-right{left:56%;height:39%;transform:rotate(19deg);animation-duration:1.6s;animation-delay:-.8s}
-.house-fire-animation .house-fire-ember{position:absolute;bottom:36%;width:3px;height:3px;border-radius:50%;background:#ffce74;box-shadow:0 0 5px 2px rgba(255,137,23,.55);opacity:0;animation:houseEmber 3.3s ease-out infinite}
+.house-fire-scene>.house-fire-animation{position:absolute;left:50%;top:69%;width:12%;height:15%;transform:translate(-50%,-50%);pointer-events:none;z-index:1;overflow:visible;mix-blend-mode:screen}
+.house-fire-animation .house-fire-glow{position:absolute;left:-15%;bottom:8%;width:130%;height:70%;border-radius:50%;background:radial-gradient(ellipse,rgba(255,197,69,.23) 0%,rgba(255,104,7,.14) 34%,rgba(255,95,0,0) 73%);filter:blur(10px);animation:houseGlow 1.9s ease-in-out infinite alternate}
+.house-fire-animation .house-flame{position:absolute;bottom:20%;width:22%;height:54%;transform-origin:50% 100%;clip-path:polygon(48% 0%,65% 18%,73% 36%,93% 61%,81% 85%,55% 100%,20% 90%,4% 66%,25% 47%,30% 27%);background:linear-gradient(0deg,rgba(255,99,3,.7),rgba(255,174,30,.63) 45%,rgba(255,244,166,.24) 77%,transparent);filter:blur(1.5px);animation:houseFlicker 1.12s ease-in-out infinite alternate}
+.house-fire-animation .house-flame-left{left:32%;height:44%;animation-delay:-.57s;animation-duration:1.23s}
+.house-fire-animation .house-flame-middle{left:44%;height:66%;width:18%;animation-delay:-.21s;animation-duration:.87s}
+.house-fire-animation .house-flame-right{left:57%;height:47%;width:18%;animation-delay:-.75s;animation-duration:1.43s}
+.house-fire-animation .house-flame::after{content:"";position:absolute;left:30%;bottom:0;width:42%;height:54%;background:linear-gradient(to top,rgba(255,255,195,.75),rgba(255,222,88,.1));border-radius:50% 50% 30% 30%;filter:blur(2px)}
+.house-fire-animation .house-fire-ember{position:absolute;bottom:34%;width:2px;height:2px;border-radius:50%;background:#ffdc89;box-shadow:0 0 4px 1px rgba(255,137,23,.5);opacity:0;animation:houseEmber 3.1s ease-out infinite}
 .house-fire-animation .house-ember-one{left:43%;animation-delay:.2s}
-.house-fire-animation .house-ember-two{left:55%;animation-delay:1.3s;animation-duration:3.9s}
-.house-fire-animation .house-ember-three{left:49%;animation-delay:2.4s;animation-duration:3.5s}
-@keyframes houseFlicker{0%{opacity:.4;transform:scale(.85) rotate(-8deg)}50%{opacity:.7;transform:scale(1.06) rotate(5deg)}100%{opacity:.45;transform:scale(.9) rotate(-5deg)}}
-@keyframes houseGlow{from{opacity:.4;transform:scale(.87)}to{opacity:.85;transform:scale(1.12)}}
-@keyframes houseEmber{0%{opacity:0;transform:translate(0,0) scale(.5)}15%{opacity:.8}70%{opacity:.45}100%{opacity:0;transform:translate(11px,-45px) scale(.25)}}
+.house-fire-animation .house-ember-two{left:55%;animation-delay:1.35s;animation-duration:3.7s}
+.house-fire-animation .house-ember-three{left:49%;animation-delay:2.45s;animation-duration:3.4s}
+@keyframes houseFlicker{0%{opacity:.42;transform:translateX(-2px) scaleX(.77) scaleY(.86) rotate(-9deg)}24%{opacity:.73;transform:translateX(2px) scaleX(.96) scaleY(1.03) rotate(6deg)}49%{opacity:.49;transform:translateX(-1px) scaleX(.8) scaleY(.92) rotate(-4deg)}74%{opacity:.77;transform:translateX(1px) scaleX(1.08) scaleY(1.1) rotate(7deg)}100%{opacity:.48;transform:translateX(-2px) scaleX(.88) scaleY(.9) rotate(-6deg)}}
+@keyframes houseGlow{0%{opacity:.45;transform:scale(.9)}40%{opacity:.7;transform:scale(1.04)}100%{opacity:.5;transform:scale(.95)}}
+@keyframes houseEmber{0%{opacity:0;transform:translate(0,0) scale(.5)}12%{opacity:.65}58%{opacity:.35}100%{opacity:0;transform:translate(8px,-48px) scale(.2)}}
 @media(prefers-reduced-motion:reduce){.house-fire-animation *{animation:none!important;opacity:0!important}}
 </style></head>
 <body><div class="topbar">ISTEDA COMMUNITY PRESENTS</div><nav><a class="brand" href="index.html" aria-label="O.K.P — Oru Kalyanam Pole"><img src="okp1.png" alt="O.K.P — Oru Kalyanam Pole"></a><button class="menu">☰</button><div class="links"><a href="index.html">Home</a><a href="story.html">Our Story</a><a href="programme.html">Programme</a><a href="teams.html">Teams</a><a class="active" href="house.html">Wedding House</a><a href="food.html">Food</a><a href="gallery.html">Gallery</a><a class="rsvp" href="rsvp.html">RSVP</a></div></nav>
