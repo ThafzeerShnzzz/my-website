@@ -978,7 +978,7 @@ document.addEventListener("DOMContentLoaded", function () {
   secondsBox.appendChild(burstEl);
   setTimeout(()=>burstEl.remove(),900);
  }
- setInterval(()=>{if(Math.floor(Date.now()/1000)%10===0)burst()},1000);
+ setInterval(()=>{if(Math.floor(Date.now()/1000)%2===0)burst()},1000);
 })();
 </script>
 </body>
