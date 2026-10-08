@@ -679,12 +679,12 @@ footer small{
 .okp-clock strong{display:block;font-family:'Cormorant Garamond',Georgia,serif;font-size:clamp(35px,7vw,64px);font-weight:500;line-height:1.1;font-variant-numeric:tabular-nums}
 .okp-clock span{font:600 10px 'Montserrat',sans-serif;letter-spacing:1.5px}
 .okp-event-meta{font:600 12px 'Montserrat',sans-serif;letter-spacing:1px;line-height:2}
-/* Vintage flip clock — animate only when a value changes */
-.okp-clock>div{min-width:clamp(55px,12vw,92px)}
-.okp-clock strong{position:relative;display:flex;align-items:center;justify-content:center;min-height:clamp(56px,11vw,84px);padding:0 6px;border:1px solid rgba(178,15,59,.28);border-radius:7px;background:linear-gradient(to bottom,#f8efd9 49.3%,rgba(178,15,59,.23) 49.5%,rgba(178,15,59,.23) 50.5%,#f1dfbb 50.7%);box-shadow:0 3px 8px rgba(84,41,29,.08);color:var(--red-dark);transform-origin:center;backface-visibility:hidden}
-.okp-clock strong.okp-flip{animation:okpVintageFlip .55s ease-in-out both}
-@keyframes okpVintageFlip{0%{transform:perspective(420px) rotateX(-70deg);opacity:.45}55%{transform:perspective(420px) rotateX(9deg);opacity:1}100%{transform:perspective(420px) rotateX(0deg);opacity:1}}
-@media(prefers-reduced-motion:reduce){.okp-clock strong.okp-flip{animation:none}}
+/* Option 4 — tiny golden fireworks near the seconds every ten seconds */
+.okp-clock>div:last-child{position:relative}
+.okp-firework{position:absolute;left:50%;top:35%;width:0;height:0;pointer-events:none;z-index:3}
+.okp-firework i{position:absolute;left:0;top:0;width:5px;height:5px;border-radius:50%;background:#d5a85e;box-shadow:0 0 5px rgba(213,168,94,.6);opacity:0;animation:okpSparkBurst 850ms ease-out both;transform:rotate(var(--angle)) translateY(0)}
+@keyframes okpSparkBurst{0%{opacity:0;transform:rotate(var(--angle)) translateY(0) scale(.5)}18%{opacity:1}100%{opacity:0;transform:rotate(var(--angle)) translateY(-43px) scale(.2)}}
+@media(prefers-reduced-motion:reduce){.okp-firework{display:none}}
 
 </style>
 </head>
@@ -965,12 +965,20 @@ document.addEventListener("DOMContentLoaded", function () {
    if(!el)return;
    const next=String(values[i]).padStart(2,'0');
    if(el.textContent===next)return;
-   const initialized=el.textContent!=='--';
    el.textContent=next;
-   if(initialized){el.classList.remove('okp-flip');void el.offsetWidth;el.classList.add('okp-flip')}
   });
  }
  update();setInterval(update,1000);
+ const secondsBox=document.getElementById('okpSeconds')?.parentElement;
+ function burst(){
+  if(!secondsBox||window.matchMedia('(prefers-reduced-motion: reduce)').matches||Date.now()>=target)return;
+  const burstEl=document.createElement('span');
+  burstEl.className='okp-firework';
+  for(let n=0;n<9;n++){const spark=document.createElement('i');spark.style.setProperty('--angle',n*40+'deg');burstEl.appendChild(spark)}
+  secondsBox.appendChild(burstEl);
+  setTimeout(()=>burstEl.remove(),900);
+ }
+ setInterval(()=>{if(Math.floor(Date.now()/1000)%10===0)burst()},1000);
 })();
 </script>
 </body>
