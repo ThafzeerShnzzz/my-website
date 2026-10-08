@@ -669,6 +669,16 @@ footer small{
 @media(max-width:850px){.surprise-gift{left:4%;bottom:7%;width:95px;min-height:90px}.surprise-gift svg{width:53px;height:50px}}
 @media(prefers-reduced-motion:reduce){.surprise-gift svg{animation:none}}
 
+
+/* Wedding countdown — integrated with invitation palette */
+.okp-countdown{padding:48px 20px 42px;text-align:center;background:transparent;color:var(--red-dark)}
+.okp-countdown .count-title{font-family:'Cormorant Garamond',Georgia,serif;font-size:clamp(30px,5vw,46px);font-weight:500;margin:8px 0 20px}
+.okp-countdown .count-eyebrow{font:600 11px 'Montserrat',sans-serif;letter-spacing:2.5px}
+.okp-clock{display:flex;justify-content:center;gap:clamp(12px,3vw,36px);margin:0 auto 23px}
+.okp-clock div{min-width:50px}
+.okp-clock strong{display:block;font-family:'Cormorant Garamond',Georgia,serif;font-size:clamp(35px,7vw,64px);font-weight:500;line-height:1.1;font-variant-numeric:tabular-nums}
+.okp-clock span{font:600 10px 'Montserrat',sans-serif;letter-spacing:1.5px}
+.okp-event-meta{font:600 12px 'Montserrat',sans-serif;letter-spacing:1px;line-height:2}
 </style>
 </head>
 
@@ -729,6 +739,17 @@ footer small{
 
 </header>
 
+<section class="okp-countdown" aria-label="Wedding countdown">
+<div class="count-eyebrow">THE CELEBRATION IS GETTING CLOSER</div>
+<h2 class="count-title">Until We Celebrate Together…</h2>
+<div class="okp-clock" id="okpClock" aria-live="off">
+<div><strong id="okpDays">--</strong><span>DAYS</span></div>
+<div><strong id="okpHours">--</strong><span>HOURS</span></div>
+<div><strong id="okpMinutes">--</strong><span>MINUTES</span></div>
+<div><strong id="okpSeconds">--</strong><span>SECONDS</span></div>
+</div>
+<div class="okp-event-meta">✦ SATURDAY, 07 NOVEMBER 2026 · 7:00 PM ✦<div>📍 KADRA, RAS AL KHAIMAH, UAE</div></div>
+</section>
 <section class="intro">
 
   <p class="eyebrow">WELCOME TO THE WEDDING</p>
@@ -925,5 +946,17 @@ document.addEventListener("DOMContentLoaded", function () {
 })();
 </script>
 
+<script>
+(function(){
+ const target=Date.parse('2026-11-07T19:00:00+04:00');
+ const fields=['okpDays','okpHours','okpMinutes','okpSeconds'].map(id=>document.getElementById(id));
+ function update(){
+  const remaining=Math.max(0,target-Date.now());
+  const values=[Math.floor(remaining/86400000),Math.floor(remaining/3600000)%24,Math.floor(remaining/60000)%60,Math.floor(remaining/1000)%60];
+  fields.forEach((el,i)=>{if(el)el.textContent=String(values[i]).padStart(2,'0')});
+ }
+ update();setInterval(update,1000);
+})();
+</script>
 </body>
 </html>
