@@ -647,23 +647,23 @@ footer small{
 @media(max-width:850px){.home-call{position:absolute;top:50%;left:8px;right:auto;width:auto;height:auto;padding:9px 10px;justify-content:center;border-radius:0;transform:translateY(-50%);font:600 9px 'Montserrat',sans-serif;letter-spacing:.8px}.home-call span{display:inline}}
 
 /* Homepage surprise gallery */
-.surprise-gift{position:absolute;right:calc(2% + 83px);bottom:10%;width:58px;height:74px;display:grid;place-items:center;border:0;background:transparent;cursor:pointer;z-index:5;padding:0;color:var(--red-dark)}
+.surprise-gift{position:absolute;left:2%;bottom:10%;width:58px;height:74px;display:grid;place-items:center;border:0;background:transparent;cursor:pointer;z-index:5;padding:0;color:var(--red-dark)}
 .surprise-gift svg{transform-origin:center bottom;animation:giftShake 1.5s ease-in-out infinite}
 .surprise-gift:focus-visible{outline:2px solid var(--red);outline-offset:3px}
 @keyframes giftShake{0%,55%,100%{transform:rotate(0)}61%{transform:rotate(-12deg)}67%{transform:rotate(11deg)}73%{transform:rotate(-9deg)}79%{transform:rotate(8deg)}85%{transform:rotate(0)}}
 .surprise-overlay[hidden]{display:none}
 .surprise-overlay{position:fixed;inset:0;background:rgba(27,15,18,.83);z-index:1000;display:flex;align-items:center;justify-content:center;padding:18px}
-.surprise-panel{position:relative;max-width:min(470px,94vw);width:100%;max-height:95dvh;display:flex;flex-direction:column;align-items:center;background:var(--paper);border:2px solid var(--gold);padding:12px 12px 14px;box-shadow:0 18px 70px rgba(0,0,0,.4)}
-.surprise-top{font:600 10px 'Montserrat',sans-serif;letter-spacing:2px;color:var(--red-dark);padding:5px 38px 10px;text-align:center}
-.surprise-close{position:absolute;right:8px;top:5px;background:none;border:0;font-size:27px;color:var(--red-dark);cursor:pointer;line-height:1;padding:4px 8px}
+.surprise-panel{position:relative;max-width:min(540px,96vw);width:auto;max-height:96dvh;display:flex;align-items:center;justify-content:center;background:transparent;border:0;padding:0;box-shadow:none}
+.surprise-top{display:none}
+.surprise-close{position:absolute;right:4px;top:4px;background:rgba(25,15,18,.65);border:0;border-radius:50%;width:36px;height:36px;font-size:25px;color:white;cursor:pointer;line-height:1;z-index:3}
 .surprise-frame{position:relative;display:flex;align-items:center;justify-content:center;width:100%;min-height:120px;overflow:hidden}
-.surprise-photo{display:block;max-width:100%;max-height:calc(95dvh - 115px);object-fit:contain}
-.surprise-nav{position:absolute;top:50%;transform:translateY(-50%);border:0;background:rgba(248,239,217,.9);color:var(--red-dark);width:35px;height:42px;font-size:25px;cursor:pointer}
+.surprise-photo{display:block;max-width:100%;max-height:94dvh;object-fit:contain}
+.surprise-nav{display:none}
 .surprise-prev{left:0}.surprise-next{right:0}
-.surprise-dots{display:flex;gap:10px;justify-content:center;margin-top:11px}
+.surprise-dots{display:none}
 .surprise-dots button{border:1px solid var(--red);background:transparent;width:10px;height:10px;border-radius:50%;padding:0;cursor:pointer}
 .surprise-dots button.active{background:var(--red)}
-@media(max-width:850px){.surprise-gift{right:calc(4% + 66px);bottom:7%;width:48px;height:62px}.surprise-gift svg{width:53px;height:50px}}
+@media(max-width:850px){.surprise-gift{left:4%;bottom:7%;width:48px;height:62px}.surprise-gift svg{width:53px;height:50px}}
 @media(prefers-reduced-motion:reduce){.surprise-gift svg{animation:none}}
 
 </style>
@@ -899,11 +899,11 @@ document.addEventListener("DOMContentLoaded", function () {
  const dots=document.getElementById('surpriseDots');
  const gift=document.getElementById('surpriseGift');
  const close=document.getElementById('surpriseClose');
- let index=0,previousFocus=null,startX=null;
+ let index=0,previousFocus=null,startX=null,timer=null;
  slides.forEach((slide,i)=>{const b=document.createElement('button');b.type='button';b.setAttribute('aria-label','Show '+slide.title);b.addEventListener('click',()=>show(i));dots.appendChild(b)});
  function show(i){index=(i+slides.length)%slides.length;photo.src=slides[index].src;photo.alt='O.K.P '+slides[index].title+' poster';title.textContent=slides[index].title+' · '+(index+1)+' / '+slides.length;[...dots.children].forEach((b,j)=>{b.classList.toggle('active',j===index);b.setAttribute('aria-current',j===index?'true':'false')})}
- function open(){previousFocus=document.activeElement;show(0);overlay.hidden=false;document.body.style.overflow='hidden';close.focus()}
- function shut(){overlay.hidden=true;document.body.style.overflow='';(previousFocus||gift).focus()}
+ function open(){previousFocus=document.activeElement;show(0);overlay.hidden=false;document.body.style.overflow='hidden';timer=setInterval(()=>show(index+1),3000);close.focus()}
+ function shut(){clearInterval(timer);timer=null;overlay.hidden=true;document.body.style.overflow='';(previousFocus||gift).focus()}
  gift.addEventListener('click',open);close.addEventListener('click',shut);
  document.getElementById('surprisePrev').addEventListener('click',()=>show(index-1));
  document.getElementById('surpriseNext').addEventListener('click',()=>show(index+1));
