@@ -956,10 +956,11 @@ document.addEventListener("DOMContentLoaded", function () {
  const dots=document.getElementById('surpriseDots');
  const gift=document.getElementById('surpriseGift');
  const close=document.getElementById('surpriseClose');
- let index=0,previousFocus=null,startX=null,timer=null;
+ let index=0,previousFocus=null,startX=null,timer=null,holding=false;
  slides.forEach((slide,i)=>{const b=document.createElement('button');b.type='button';b.setAttribute('aria-label','Show '+slide.title);b.addEventListener('click',()=>show(i));dots.appendChild(b)});
  function show(i){index=(i+slides.length)%slides.length;photo.style.animation='none';void photo.offsetWidth;photo.src=slides[index].src;photo.style.animation='surpriseSlideIn .4s ease-in-out both';photo.alt='O.K.P '+slides[index].title+' poster';title.textContent=slides[index].title+' · '+(index+1)+' / '+slides.length;[...dots.children].forEach((b,j)=>{b.classList.toggle('active',j===index);b.setAttribute('aria-current',j===index?'true':'false')})}
- function open(){previousFocus=document.activeElement;show(0);overlay.hidden=false;document.body.style.overflow='hidden';close.focus()}
+ function startAuto(){clearInterval(timer);timer=setInterval(()=>{if(!holding&&!overlay.hidden)show(index+1)},1000)}
+ function open(){previousFocus=document.activeElement;show(0);overlay.hidden=false;document.body.style.overflow='hidden';startAuto();close.focus()}
  function shut(){clearInterval(timer);timer=null;overlay.hidden=true;document.body.style.overflow='';(previousFocus||gift).focus()}
  gift.addEventListener('click',open);close.addEventListener('click',shut);
  document.getElementById('surprisePrev').addEventListener('click',()=>show(index-1));
@@ -967,8 +968,13 @@ document.addEventListener("DOMContentLoaded", function () {
  overlay.addEventListener('click',e=>{if(e.target===overlay)shut()});
  document.addEventListener('keydown',e=>{if(overlay.hidden)return;if(e.key==='Escape')shut();if(e.key==='ArrowRight')show(index+1);if(e.key==='ArrowLeft')show(index-1);if(e.key==='Tab'){const controls=[close,document.getElementById('surprisePrev'),document.getElementById('surpriseNext'),...dots.children];const p=controls.indexOf(document.activeElement);if(e.shiftKey&&p===0){e.preventDefault();controls[controls.length-1].focus()}else if(!e.shiftKey&&p===controls.length-1){e.preventDefault();controls[0].focus()}}});
  const frame=document.getElementById('surpriseFrame');
- frame.addEventListener('touchstart',e=>{startX=e.changedTouches[0].screenX},{passive:true});
- frame.addEventListener('touchend',e=>{if(startX===null)return;const dx=e.changedTouches[0].screenX-startX;if(Math.abs(dx)>45)show(index+(dx<0?1:-1));startX=null},{passive:true});
+ frame.addEventListener('touchstart',e=>{holding=true;startX=e.changedTouches[0].screenX},{passive:true});
+ frame.addEventListener('touchend',e=>{if(startX!==null){const dx=e.changedTouches[0].screenX-startX;if(Math.abs(dx)>45)show(index+(dx<0?1:-1))}startX=null;holding=false},{passive:true});
+ frame.addEventListener('touchcancel',()=>{startX=null;holding=false},{passive:true});
+ frame.addEventListener('pointerdown',e=>{if(e.pointerType==='mouse')holding=true});
+ window.addEventListener('pointerup',()=>{holding=false});
+ frame.addEventListener('mouseenter',()=>{holding=true});
+ frame.addEventListener('mouseleave',()=>{holding=false});
 })();
 </script>
 
