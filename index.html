@@ -685,18 +685,20 @@ footer small{
 @media(prefers-reduced-motion:reduce){.okp-clock strong.okp-number-pop{animation:none}}
 
 
-/* Jasmine garland scroll cue — isolated below event date and venue */
-.okp-garland-cue{display:flex;flex-direction:column;align-items:center;gap:9px;margin:23px auto 0;color:var(--gold);text-decoration:none;width:max-content;max-width:100%;font:500 9px 'Montserrat',sans-serif;letter-spacing:2.5px}
-.okp-garland-cue .garland-stage{position:relative;width:74px;height:108px}
-.okp-garland-cue .garland-hanging{position:absolute;left:50%;top:0;transform-origin:50% 0;animation:okpGarlandSway 3.8s ease-in-out infinite}
-.okp-garland-cue .garland-thread{height:25px;width:1px;background:linear-gradient(#a48a54,#d2b77d);margin:auto}
-.okp-garland-cue .garland-flower{position:relative;width:24px;height:19px;display:block}
-.okp-garland-cue .garland-petal{position:absolute;left:8px;top:3px;width:9px;height:12px;border-radius:70% 70% 50% 50%;background:#fffdf0;border:1px solid #e8dfc6;transform-origin:50% 7px}
-.okp-garland-cue .garland-core{position:absolute;left:10px;top:8px;width:5px;height:5px;background:#e5bd68;border-radius:50%}
-.okp-garland-cue .garland-arrow{position:absolute;bottom:0;left:50%;transform:translateX(-50%);font-size:23px;line-height:1;animation:okpGarlandArrow 3.8s infinite}
-@keyframes okpGarlandSway{0%{transform:translateX(-50%) rotate(-7deg) translateY(0)}25%{transform:translateX(-50%) rotate(7deg) translateY(4px)}50%{transform:translateX(-50%) rotate(-4deg) translateY(10px)}75%{transform:translateX(-50%) rotate(5deg) translateY(16px)}100%{transform:translateX(-50%) rotate(-7deg) translateY(0)}}
-@keyframes okpGarlandArrow{0%,100%{opacity:.25}55%{opacity:1}}
-@media(prefers-reduced-motion:reduce){.okp-garland-cue .garland-hanging,.okp-garland-cue .garland-arrow{animation:none}}
+
+/* Minimal golden dust scroll invitation on first screen */
+.okp-scroll-invite{position:absolute;left:50%;bottom:14px;transform:translateX(-50%);z-index:6;display:flex;flex-direction:column;align-items:center;gap:5px;text-decoration:none;color:var(--gold);font:500 9px 'Montserrat',sans-serif;letter-spacing:2.4px;white-space:nowrap}
+.okp-scroll-invite .dust-trail{position:relative;display:block;width:42px;height:43px}
+.okp-scroll-invite .dust-speck{position:absolute;top:0;left:50%;width:2px;height:2px;border-radius:50%;background:#c6a16a;box-shadow:0 0 5px #c6a16a80;animation:okpDustFall 2.7s ease-in-out infinite;opacity:0}
+.okp-scroll-invite .dust-speck:nth-child(1){--dx:-11px;--end:-4px;animation-delay:0s}
+.okp-scroll-invite .dust-speck:nth-child(2){--dx:8px;--end:3px;animation-delay:.35s}
+.okp-scroll-invite .dust-speck:nth-child(3){--dx:-4px;--end:0px;animation-delay:.7s}
+.okp-scroll-invite .dust-speck:nth-child(4){--dx:13px;--end:6px;animation-delay:1.05s}
+.okp-scroll-invite .dust-arrow{position:absolute;bottom:0;left:50%;width:18px;height:18px;transform:translateX(-50%);stroke:currentColor;fill:none;stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round;animation:okpDustArrow 2.7s ease-in-out infinite}
+@keyframes okpDustFall{0%{opacity:0;transform:translate(var(--dx),0)}25%{opacity:.85}85%{opacity:.35}100%{opacity:0;transform:translate(var(--end),27px)}}
+@keyframes okpDustArrow{0%,100%{opacity:.3;transform:translate(-50%,-3px)}60%{opacity:1;transform:translate(-50%,2px)}}
+@media(max-width:500px){.okp-scroll-invite{bottom:8px;font-size:8px}}
+@media(prefers-reduced-motion:reduce){.okp-scroll-invite .dust-speck,.okp-scroll-invite .dust-arrow{animation:none}.okp-scroll-invite .dust-arrow{opacity:1}}
 
 </style>
 </head>
@@ -756,9 +758,10 @@ footer small{
     LIMITED INVITES<br>ONLY
   </div>
 
+  <a class="okp-scroll-invite" href="#okp-countdown" aria-label="Scroll down to discover the event"><span>SCROLL TO EXPLORE</span><span class="dust-trail" aria-hidden="true"><i class="dust-speck"></i><i class="dust-speck"></i><i class="dust-speck"></i><i class="dust-speck"></i><svg class="dust-arrow" viewBox="0 0 20 20"><path d="M10 2v14M4 10l6 6 6-6"/></svg></span></a>
 </header>
 
-<section class="okp-countdown" aria-label="Wedding countdown">
+<section class="okp-countdown" id="okp-countdown" aria-label="Wedding countdown">
 
 <div class="count-eyebrow">THE CELEBRATION IS GETTING CLOSER</div>
 <h2 class="count-title">Until We Celebrate Together…</h2>
@@ -769,7 +772,6 @@ footer small{
 <div><strong id="okpSeconds">--</strong><span>SECONDS</span></div>
 </div>
 <div class="okp-event-meta"><span style="font-family:'Cormorant Garamond',Georgia,serif;font-size:clamp(20px,3vw,27px);font-weight:700;letter-spacing:1.2px">NOV 07 — SAT | 07:00 PM</span><div>📍 KADRA, RAS AL KHAIMAH</div></div>
-<a class="okp-garland-cue" href="#wedding-intro" aria-label="Scroll to explore the wedding"><span>SCROLL TO EXPLORE</span><span class="garland-stage" aria-hidden="true"><span class="garland-hanging"><span class="garland-thread"></span><span class="garland-flower"><i class="garland-petal" style="transform:rotate(0deg)"></i><i class="garland-petal" style="transform:rotate(72deg)"></i><i class="garland-petal" style="transform:rotate(144deg)"></i><i class="garland-petal" style="transform:rotate(216deg)"></i><i class="garland-petal" style="transform:rotate(288deg)"></i><i class="garland-core"></i></span><span class="garland-flower"><i class="garland-petal" style="transform:rotate(0deg)"></i><i class="garland-petal" style="transform:rotate(72deg)"></i><i class="garland-petal" style="transform:rotate(144deg)"></i><i class="garland-petal" style="transform:rotate(216deg)"></i><i class="garland-petal" style="transform:rotate(288deg)"></i><i class="garland-core"></i></span><span class="garland-flower"><i class="garland-petal" style="transform:rotate(0deg)"></i><i class="garland-petal" style="transform:rotate(72deg)"></i><i class="garland-petal" style="transform:rotate(144deg)"></i><i class="garland-petal" style="transform:rotate(216deg)"></i><i class="garland-petal" style="transform:rotate(288deg)"></i><i class="garland-core"></i></span></span><span class="garland-arrow">⌄</span></span></a>
 </section>
 <section class="intro" id="wedding-intro">
 
