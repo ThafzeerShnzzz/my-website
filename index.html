@@ -648,7 +648,7 @@ footer small{
 
 /* Homepage surprise gallery */
 .surprise-gift{position:absolute;right:calc(2% + 83px);bottom:10%;width:58px;height:74px;display:grid;place-items:center;border:0;background:transparent;cursor:pointer;z-index:5;padding:0;color:var(--red-dark)}
-.surprise-gift span{display:block;font-size:39px;filter:drop-shadow(0 3px 2px rgba(64,51,34,.18));transform-origin:center bottom;animation:giftShake 1.5s ease-in-out infinite}
+.surprise-gift svg{transform-origin:center bottom;animation:giftShake 1.5s ease-in-out infinite}
 .surprise-gift:focus-visible{outline:2px solid var(--red);outline-offset:3px}
 @keyframes giftShake{0%,55%,100%{transform:rotate(0)}61%{transform:rotate(-12deg)}67%{transform:rotate(11deg)}73%{transform:rotate(-9deg)}79%{transform:rotate(8deg)}85%{transform:rotate(0)}}
 .surprise-overlay[hidden]{display:none}
@@ -663,8 +663,8 @@ footer small{
 .surprise-dots{display:flex;gap:10px;justify-content:center;margin-top:11px}
 .surprise-dots button{border:1px solid var(--red);background:transparent;width:10px;height:10px;border-radius:50%;padding:0;cursor:pointer}
 .surprise-dots button.active{background:var(--red)}
-@media(max-width:850px){.surprise-gift{right:calc(4% + 66px);bottom:7%;width:48px;height:62px}.surprise-gift span{font-size:33px}}
-@media(prefers-reduced-motion:reduce){.surprise-gift span{animation:none}}
+@media(max-width:850px){.surprise-gift{right:calc(4% + 66px);bottom:7%;width:48px;height:62px}.surprise-gift svg{width:53px;height:50px}}
+@media(prefers-reduced-motion:reduce){.surprise-gift svg{animation:none}}
 
 </style>
 </head>
@@ -718,7 +718,7 @@ footer small{
 
   </div>
 
-  <button class="surprise-gift" id="surpriseGift" type="button" aria-label="Open O.K.P party surprise"><span aria-hidden="true">🎁</span></button>
+  <button class="surprise-gift" id="surpriseGift" type="button" aria-label="Unlock the unexpected O.K.P party experiences"><svg aria-hidden="true" viewBox="0 0 220 175" width="64" height="58" style="overflow:visible;display:block;filter:drop-shadow(0 3px 2px rgba(64,51,34,.16))"><rect x="43" y="72" width="134" height="94" rx="9" fill="#a91942"/><rect x="34" y="58" width="152" height="25" rx="6" fill="#d13b62"/><rect x="99" y="58" width="22" height="108" fill="#f4cf91"/><path d="M110 58 C45 48 62 5 92 22 C108 32 110 58 110 58 M110 58 C175 48 158 5 128 22 C112 32 110 58 110 58" fill="none" stroke="#d6ad67" stroke-width="8"/><circle cx="110" cy="72" r="9" fill="#fff1c7"/><path d="M25 90 L17 80 M195 100 L204 88 M50 20 L44 9 M174 32 L186 25" stroke="#d6ad67" stroke-width="3" stroke-linecap="round"/></svg></button>
 
   <div class="stamp index-stamp">
     LIMITED INVITES<br>ONLY
