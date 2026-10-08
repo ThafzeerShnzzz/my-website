@@ -25,8 +25,8 @@
 <div style="margin-top:14px;line-height:1.8;overflow-wrap:anywhere">
 <div><b>Account Holder:</b> THAFSEER ABDURAHIMAN</div>
 <div><b>Bank:</b> Al Maryah Community Bank LLC</div>
-<div><b>Account Number:</b> 3003374200000001</div>
-<div><b>IBAN:</b> AE430973003374200000001</div>
+<div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap"><span><b>Account Number:</b> 3003374200000001</span><button type="button" onclick="copyBankDetail(this,'3003374200000001')" style="cursor:pointer;border:1px solid var(--red-dark);background:transparent;color:var(--red-dark);padding:6px 12px;font:600 11px 'Montserrat',sans-serif">COPY</button></div>
+<div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap"><span><b>IBAN:</b> AE430973003374200000001</span><button type="button" onclick="copyBankDetail(this,'AE430973003374200000001')" style="cursor:pointer;border:1px solid var(--red-dark);background:transparent;color:var(--red-dark);padding:6px 12px;font:600 11px 'Montserrat',sans-serif">COPY</button></div>
 <div><b>Currency:</b> AED</div>
 </div></details></div>
 <div style="border:1px solid rgba(178,15,59,.22);padding:16px">
@@ -102,4 +102,13 @@ document.getElementById('rsvpForm').addEventListener('submit',async function(e){
  document.getElementById('cardCode').textContent=newCode||'REGISTRATION RECEIVED';
  document.getElementById('cardName').textContent=registration.Name;
 });
-</script></body></html>
+</script><script>
+async function copyBankDetail(button,value){
+  try{
+    if(navigator.clipboard && window.isSecureContext){await navigator.clipboard.writeText(value)}
+    else{const input=document.createElement('textarea');input.value=value;input.style.position='fixed';input.style.opacity='0';document.body.appendChild(input);input.select();const copied=document.execCommand('copy');input.remove();if(!copied)throw new Error('Copy failed')}
+    button.textContent='COPIED ✓';setTimeout(()=>{button.textContent='COPY'},1800)
+  }catch(e){button.textContent='SELECT TO COPY';setTimeout(()=>{button.textContent='COPY'},2500)}
+}
+</script>
+</body></html>
