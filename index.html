@@ -912,7 +912,7 @@ document.addEventListener("DOMContentLoaded", function () {
  let index=0,previousFocus=null,startX=null,timer=null;
  slides.forEach((slide,i)=>{const b=document.createElement('button');b.type='button';b.setAttribute('aria-label','Show '+slide.title);b.addEventListener('click',()=>show(i));dots.appendChild(b)});
  function show(i){index=(i+slides.length)%slides.length;photo.style.animation='none';void photo.offsetWidth;photo.src=slides[index].src;photo.style.animation='surpriseSlideIn .5s ease-in-out both';photo.alt='O.K.P '+slides[index].title+' poster';title.textContent=slides[index].title+' · '+(index+1)+' / '+slides.length;[...dots.children].forEach((b,j)=>{b.classList.toggle('active',j===index);b.setAttribute('aria-current',j===index?'true':'false')})}
- function open(){previousFocus=document.activeElement;show(0);overlay.hidden=false;document.body.style.overflow='hidden';timer=setInterval(()=>show(index+1),1300);close.focus()}
+ function open(){previousFocus=document.activeElement;show(0);overlay.hidden=false;document.body.style.overflow='hidden';timer=setInterval(()=>show(index+1),1100);close.focus()}
  function shut(){clearInterval(timer);timer=null;overlay.hidden=true;document.body.style.overflow='';(previousFocus||gift).focus()}
  gift.addEventListener('click',open);close.addEventListener('click',shut);
  document.getElementById('surprisePrev').addEventListener('click',()=>show(index-1));
