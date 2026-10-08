@@ -645,6 +645,27 @@ footer small{
 .home-call{position:absolute;left:20px;top:50%;transform:translateY(-50%);z-index:150;display:inline-flex;align-items:center;gap:7px;color:var(--paper);text-decoration:none;background:var(--red);padding:9px 14px;font:600 10px 'Montserrat',sans-serif;letter-spacing:1.2px}
 .home-call:hover{background:var(--red);color:var(--paper)}
 @media(max-width:850px){.home-call{position:absolute;top:50%;left:8px;right:auto;width:auto;height:auto;padding:9px 10px;justify-content:center;border-radius:0;transform:translateY(-50%);font:600 9px 'Montserrat',sans-serif;letter-spacing:.8px}.home-call span{display:inline}}
+
+/* Homepage surprise gallery */
+.surprise-gift{position:absolute;right:calc(2% + 83px);bottom:10%;width:58px;height:74px;display:grid;place-items:center;border:0;background:transparent;cursor:pointer;z-index:5;padding:0;color:var(--red-dark)}
+.surprise-gift span{display:block;font-size:39px;filter:drop-shadow(0 3px 2px rgba(64,51,34,.18));transform-origin:center bottom;animation:giftShake 1.5s ease-in-out infinite}
+.surprise-gift:focus-visible{outline:2px solid var(--red);outline-offset:3px}
+@keyframes giftShake{0%,55%,100%{transform:rotate(0)}61%{transform:rotate(-12deg)}67%{transform:rotate(11deg)}73%{transform:rotate(-9deg)}79%{transform:rotate(8deg)}85%{transform:rotate(0)}}
+.surprise-overlay[hidden]{display:none}
+.surprise-overlay{position:fixed;inset:0;background:rgba(27,15,18,.83);z-index:1000;display:flex;align-items:center;justify-content:center;padding:18px}
+.surprise-panel{position:relative;max-width:min(470px,94vw);width:100%;max-height:95dvh;display:flex;flex-direction:column;align-items:center;background:var(--paper);border:2px solid var(--gold);padding:12px 12px 14px;box-shadow:0 18px 70px rgba(0,0,0,.4)}
+.surprise-top{font:600 10px 'Montserrat',sans-serif;letter-spacing:2px;color:var(--red-dark);padding:5px 38px 10px;text-align:center}
+.surprise-close{position:absolute;right:8px;top:5px;background:none;border:0;font-size:27px;color:var(--red-dark);cursor:pointer;line-height:1;padding:4px 8px}
+.surprise-frame{position:relative;display:flex;align-items:center;justify-content:center;width:100%;min-height:120px;overflow:hidden}
+.surprise-photo{display:block;max-width:100%;max-height:calc(95dvh - 115px);object-fit:contain}
+.surprise-nav{position:absolute;top:50%;transform:translateY(-50%);border:0;background:rgba(248,239,217,.9);color:var(--red-dark);width:35px;height:42px;font-size:25px;cursor:pointer}
+.surprise-prev{left:0}.surprise-next{right:0}
+.surprise-dots{display:flex;gap:10px;justify-content:center;margin-top:11px}
+.surprise-dots button{border:1px solid var(--red);background:transparent;width:10px;height:10px;border-radius:50%;padding:0;cursor:pointer}
+.surprise-dots button.active{background:var(--red)}
+@media(max-width:850px){.surprise-gift{right:calc(4% + 66px);bottom:7%;width:48px;height:62px}.surprise-gift span{font-size:33px}}
+@media(prefers-reduced-motion:reduce){.surprise-gift span{animation:none}}
+
 </style>
 </head>
 
@@ -696,6 +717,8 @@ footer small{
       <a class="whatsapp-match" href="https://wa.me/971557863681" target="_blank" rel="noopener" aria-label="Chat with Isteda Community on WhatsApp"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 3.5A11.8 11.8 0 0 0 12.1 0C5.6 0 .3 5.3.3 11.8c0 2.1.6 4.1 1.6 5.9L.2 24l6.5-1.7a11.8 11.8 0 0 0 5.4 1.4h.1c6.5 0 11.8-5.3 11.8-11.8 0-3.2-1.2-6.1-3.5-8.4Zm-8.3 18.2h-.1a9.8 9.8 0 0 1-5-1.4l-.4-.2-3.8 1 1-3.7-.2-.4a9.8 9.8 0 1 1 8.5 4.7Zm5.4-7.3c-.3-.1-1.8-.9-2.1-1-.3-.1-.5-.1-.7.2-.2.3-.8 1-1 1.2-.2.2-.4.2-.7.1-1.9-.9-3.2-1.7-4.5-3.9-.3-.5.3-.5.9-1.6.1-.2.1-.4 0-.6-.1-.1-.7-1.6-.9-2.2-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.6.1-.9.4-.3.3-1.2 1.2-1.2 2.9s1.2 3.3 1.4 3.5c.2.2 2.4 3.7 5.9 5.2 2.2 1 3.1 1 4.2.8.7-.1 1.8-.7 2-1.4.3-.7.3-1.3.2-1.4-.2-.2-.5-.3-.8-.4Z"/></svg><span>CHAT WITH US</span></a>
 
   </div>
+
+  <button class="surprise-gift" id="surpriseGift" type="button" aria-label="Open O.K.P party surprise"><span aria-hidden="true">🎁</span></button>
 
   <div class="stamp index-stamp">
     LIMITED INVITES<br>ONLY
@@ -848,6 +871,48 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
 });
+</script>
+
+
+<div class="surprise-overlay" id="surpriseOverlay" role="dialog" aria-modal="true" aria-label="O.K.P party surprise" hidden>
+  <div class="surprise-panel">
+    <div class="surprise-top" id="surpriseTitle">FOAM PARTY · 1 / 3</div>
+    <button class="surprise-close" id="surpriseClose" type="button" aria-label="Close surprise">×</button>
+    <div class="surprise-frame" id="surpriseFrame">
+      <img class="surprise-photo" id="surprisePhoto" src="surprise-foam-party.png" alt="O.K.P Foam Party poster">
+      <button class="surprise-nav surprise-prev" id="surprisePrev" type="button" aria-label="Previous poster">‹</button>
+      <button class="surprise-nav surprise-next" id="surpriseNext" type="button" aria-label="Next poster">›</button>
+    </div>
+    <div class="surprise-dots" id="surpriseDots" aria-label="Poster navigation"></div>
+  </div>
+</div>
+<script>
+(function(){
+ const slides=[
+  {src:'surprise-foam-party.png',title:'FOAM PARTY'},
+  {src:'surprise-dj-night.png',title:'DJ NIGHT'},
+  {src:'surprise-pool-party.png',title:'POOL PARTY'}
+ ];
+ const overlay=document.getElementById('surpriseOverlay');
+ const photo=document.getElementById('surprisePhoto');
+ const title=document.getElementById('surpriseTitle');
+ const dots=document.getElementById('surpriseDots');
+ const gift=document.getElementById('surpriseGift');
+ const close=document.getElementById('surpriseClose');
+ let index=0,previousFocus=null,startX=null;
+ slides.forEach((slide,i)=>{const b=document.createElement('button');b.type='button';b.setAttribute('aria-label','Show '+slide.title);b.addEventListener('click',()=>show(i));dots.appendChild(b)});
+ function show(i){index=(i+slides.length)%slides.length;photo.src=slides[index].src;photo.alt='O.K.P '+slides[index].title+' poster';title.textContent=slides[index].title+' · '+(index+1)+' / '+slides.length;[...dots.children].forEach((b,j)=>{b.classList.toggle('active',j===index);b.setAttribute('aria-current',j===index?'true':'false')})}
+ function open(){previousFocus=document.activeElement;show(0);overlay.hidden=false;document.body.style.overflow='hidden';close.focus()}
+ function shut(){overlay.hidden=true;document.body.style.overflow='';(previousFocus||gift).focus()}
+ gift.addEventListener('click',open);close.addEventListener('click',shut);
+ document.getElementById('surprisePrev').addEventListener('click',()=>show(index-1));
+ document.getElementById('surpriseNext').addEventListener('click',()=>show(index+1));
+ overlay.addEventListener('click',e=>{if(e.target===overlay)shut()});
+ document.addEventListener('keydown',e=>{if(overlay.hidden)return;if(e.key==='Escape')shut();if(e.key==='ArrowRight')show(index+1);if(e.key==='ArrowLeft')show(index-1);if(e.key==='Tab'){const controls=[close,document.getElementById('surprisePrev'),document.getElementById('surpriseNext'),...dots.children];const p=controls.indexOf(document.activeElement);if(e.shiftKey&&p===0){e.preventDefault();controls[controls.length-1].focus()}else if(!e.shiftKey&&p===controls.length-1){e.preventDefault();controls[0].focus()}}});
+ const frame=document.getElementById('surpriseFrame');
+ frame.addEventListener('touchstart',e=>{startX=e.changedTouches[0].screenX},{passive:true});
+ frame.addEventListener('touchend',e=>{if(startX===null)return;const dx=e.changedTouches[0].screenX-startX;if(Math.abs(dx)>45)show(index+(dx<0?1:-1));startX=null},{passive:true});
+})();
 </script>
 
 </body>
