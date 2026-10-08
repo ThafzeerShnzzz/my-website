@@ -679,10 +679,12 @@ footer small{
 .okp-clock strong{display:block;font-family:'Cormorant Garamond',Georgia,serif;font-size:clamp(35px,7vw,64px);font-weight:500;line-height:1.1;font-variant-numeric:tabular-nums}
 .okp-clock span{font:600 10px 'Montserrat',sans-serif;letter-spacing:1.5px}
 .okp-event-meta{font:600 12px 'Montserrat',sans-serif;letter-spacing:1px;line-height:2}
-/* Option 2: elegant golden shimmer on countdown numerals */
-.okp-clock strong{background:linear-gradient(105deg,var(--red-dark) 0%,var(--red-dark) 35%,#d5a85e 49%,#fff0b9 52%,#d5a85e 55%,var(--red-dark) 70%,var(--red-dark) 100%);background-size:250% 100%;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:var(--red-dark);animation:okpGoldenShimmer 4s ease-in-out infinite}
-@keyframes okpGoldenShimmer{0%,15%{background-position:100% 50%}65%,100%{background-position:0% 50%}}
-@media(prefers-reduced-motion:reduce){.okp-clock strong{animation:none;background:none;-webkit-text-fill-color:currentColor}}
+/* Vintage flip clock — animate only when a value changes */
+.okp-clock>div{min-width:clamp(55px,12vw,92px)}
+.okp-clock strong{position:relative;display:flex;align-items:center;justify-content:center;min-height:clamp(56px,11vw,84px);padding:0 6px;border:1px solid rgba(178,15,59,.28);border-radius:7px;background:linear-gradient(to bottom,#f8efd9 49.3%,rgba(178,15,59,.23) 49.5%,rgba(178,15,59,.23) 50.5%,#f1dfbb 50.7%);box-shadow:0 3px 8px rgba(84,41,29,.08);color:var(--red-dark);transform-origin:center;backface-visibility:hidden}
+.okp-clock strong.okp-flip{animation:okpVintageFlip .55s ease-in-out both}
+@keyframes okpVintageFlip{0%{transform:perspective(420px) rotateX(-70deg);opacity:.45}55%{transform:perspective(420px) rotateX(9deg);opacity:1}100%{transform:perspective(420px) rotateX(0deg);opacity:1}}
+@media(prefers-reduced-motion:reduce){.okp-clock strong.okp-flip{animation:none}}
 
 </style>
 </head>
@@ -959,7 +961,14 @@ document.addEventListener("DOMContentLoaded", function () {
  function update(){
   const remaining=Math.max(0,target-Date.now());
   const values=[Math.floor(remaining/86400000),Math.floor(remaining/3600000)%24,Math.floor(remaining/60000)%60,Math.floor(remaining/1000)%60];
-  fields.forEach((el,i)=>{if(el)el.textContent=String(values[i]).padStart(2,'0')});
+  fields.forEach((el,i)=>{
+   if(!el)return;
+   const next=String(values[i]).padStart(2,'0');
+   if(el.textContent===next)return;
+   const initialized=el.textContent!=='--';
+   el.textContent=next;
+   if(initialized){el.classList.remove('okp-flip');void el.offsetWidth;el.classList.add('okp-flip')}
+  });
  }
  update();setInterval(update,1000);
 })();
