@@ -702,6 +702,11 @@ footer small{
 @media(max-width:850px){.okp-scroll-invite{display:flex;position:relative;left:auto;bottom:auto;transform:none;margin:15px auto 0;gap:0}.okp-scroll-invite>span:first-child{display:none}.okp-scroll-invite .dust-trail{height:32px}}
 @media(prefers-reduced-motion:reduce){.okp-scroll-invite .dust-speck,.okp-scroll-invite .dust-arrow{animation:none}.okp-scroll-invite .dust-arrow{opacity:1}}
 
+/* Keep the desktop scroll cue below the hero buttons. */
+@media(min-width:851px){
+  .okp-scroll-invite{position:relative;left:auto;bottom:auto;transform:none;margin:24px auto 0;width:max-content}
+}
+
 </style>
 </head>
 
