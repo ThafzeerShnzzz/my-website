@@ -54,7 +54,7 @@ table{width:100%;border-collapse:collapse;min-width:1180px}th{position:sticky;to
  <div class="table-box"><table><thead><tr><th>OKP ID</th><th>NAME</th><th>WHATSAPP</th><th>C/O</th><th>PREFERENCE</th><th>PAYMENT REF</th><th>PROOF</th><th>STATUS</th><th>ACTION</th></tr></thead><tbody id="rows"></tbody></table><div id="empty" class="empty" style="display:none">No registrations found.</div></div>
 </section>
 </main>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script crossorigin="anonymous" src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 window.addEventListener('DOMContentLoaded',function(){
   var b=document.getElementById('directLoginBtn');
@@ -67,10 +67,10 @@ window.addEventListener('error',function(e){
 });
 </script>
 <script>
-const URL='https://fbdkfzstxufvmjnkzzif.supabase.co';
+const SUPABASE_URL='https://fbdkfzstxufvmjnkzzif.supabase.co';
 const KEY='sb_publishable_X1jt3-YBCSZ0Pmk0cMV4ng_TqN9LNYm';
 const ADMIN_UIDS=['465f75b4-9e4d-4f41-9fd7-37aa91175874','edd5746f-c472-4e01-8fa8-cf62adaeaeed'];
-const db=supabase.createClient(URL,KEY,{auth:{detectSessionInUrl:true,persistSession:true}});
+const db=supabase.createClient(SUPABASE_URL,KEY,{auth:{detectSessionInUrl:true,persistSession:true}});
 const $=id=>document.getElementById(id);
 const loginView=$('loginView'),recoveryView=$('recoveryView'),recoveryForm=$('recoveryForm'),recoveryError=$('recoveryError'),newPassword=$('newPassword'),confirmPassword=$('confirmPassword'),dashboard=$('dashboard'),loginForm=$('loginForm'),loginError=$('loginError'),emailInput=$('email'),passwordInput=$('password'),directLoginBtn=$('directLoginBtn'),magicLinkBtn=$('magicLinkBtn'),logoutBtn=$('logout'),dashError=$('dashError'),totalCount=$('totalCount'),pendingCount=$('pendingCount'),approvedCount=$('approvedCount'),rejectedCount=$('rejectedCount'),searchInput=$('search'),filterInput=$('filter'),refreshBtn=$('refresh'),rows=$('rows'),empty=$('empty');
 let registrations=[],recoveryMode=false;
