@@ -12,15 +12,19 @@ create table if not exists public.okp_expenses(
 );
 alter table public.okp_expenses enable row level security;
 revoke all on public.okp_expenses from anon,authenticated;
-grant select,insert,delete on public.okp_expenses to authenticated;
+grant select,insert,update,delete on public.okp_expenses to authenticated;
 drop policy if exists okp_expenses_admin_select on public.okp_expenses;
 drop policy if exists okp_expenses_admin_insert on public.okp_expenses;
 drop policy if exists okp_expenses_admin_delete on public.okp_expenses;
+drop policy if exists okp_expenses_admin_update on public.okp_expenses;
 create policy okp_expenses_admin_select on public.okp_expenses for select to authenticated
  using(auth.uid() in ('465f75b4-9e4d-4f41-9fd7-37aa91175874'::uuid,'edd5746f-c472-4e01-8fa8-cf62adaeaeed'::uuid,'56a26c25-1876-4cf3-8884-39e5ec34517d'::uuid));
 create policy okp_expenses_admin_insert on public.okp_expenses for insert to authenticated
  with check(auth.uid()=created_by and auth.uid() in ('465f75b4-9e4d-4f41-9fd7-37aa91175874'::uuid,'edd5746f-c472-4e01-8fa8-cf62adaeaeed'::uuid,'56a26c25-1876-4cf3-8884-39e5ec34517d'::uuid));
 create policy okp_expenses_admin_delete on public.okp_expenses for delete to authenticated
  using(auth.uid() in ('465f75b4-9e4d-4f41-9fd7-37aa91175874'::uuid,'edd5746f-c472-4e01-8fa8-cf62adaeaeed'::uuid,'56a26c25-1876-4cf3-8884-39e5ec34517d'::uuid));
+create policy okp_expenses_admin_update on public.okp_expenses for update to authenticated
+ using(auth.uid() in ('465f75b4-9e4d-4f41-9fd7-37aa91175874'::uuid,'edd5746f-c472-4e01-8fa8-cf62adaeaeed'::uuid,'56a26c25-1876-4cf3-8884-39e5ec34517d'::uuid))
+ with check(auth.uid() in ('465f75b4-9e4d-4f41-9fd7-37aa91175874'::uuid,'edd5746f-c472-4e01-8fa8-cf62adaeaeed'::uuid,'56a26c25-1876-4cf3-8884-39e5ec34517d'::uuid));
 notify pgrst,'reload schema';
 commit;
