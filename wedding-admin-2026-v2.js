@@ -18,7 +18,45 @@ function renderGuestCounts(){
  q('guestCountNote').textContent=focReady&&payLaterReady?'Approved registrations only. Paid excludes FOC and Pay Later.':!payLaterReady?'Pay Later setup is unavailable. Run admin-pay-later-setup.sql in Supabase, then refresh. Paid totals are hidden until payment details are available.':'FOC details could not be loaded. Refresh before using guest type counts or filters.';
 
 }
-const U='https://fbdkfzstxufvmjnkzzif.supabase.co',K='sb_publishable_X1jt3-YBCSZ0Pmk0cMV4ng_TqN9LNYm';let token=sessionStorage.getItem('okp_admin_token'),data=[],focCodes=new Set(),focReady=false;const q=x=>document.getElementById(x),esc=x=>String(x??'').replace(/[&<>"]/g,a=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[a]));if(!token)location.replace('admin-v2.html');async function load(){q('msg').textContent='Loading registrations...';try{let r=await fetch(U+'/rest/v1/registrations?select=*&order=id.desc',{headers:{apikey:K,Authorization:'Bearer '+token}});if(r.status===401){sessionStorage.removeItem('okp_admin_token');location.replace('admin-v2.html');return}if(!r.ok)throw Error(await r.text());data=await r.json();await loadFocFlags();await loadPayLater();await loadPaymentMethods();await loadTeams();q('msg').textContent='';render()}catch(e){q('msg').textContent='LOAD ERROR: '+e.message}}function render(){renderGuestCounts();renderTeamCounts();q('total').textContent=data.length;q('pending').textContent=data.filter(x=>x['Payment status']==='verification_pending').length;q('approved').textContent=data.filter(x=>x['Payment status']==='approved').length;q('rejected').textContent=data.filter(x=>x['Payment status']==='rejected').length;let pc=data.filter(x=>x['Payment status']==='verification_pending').length;let at=q('actionText');if(at)at.textContent=pc?pc+' payment'+(pc===1?' is':'s are')+' waiting for verification 👀':'All caught up — no payments waiting 🎉';let s=q('search').value.toLowerCase(),f=q('filter').value,a=data.filter(x=>matchesTeam(x)&&matchesGuestType(x)&&(f==='all'||x['Payment status']===f)&&[x.registration_code,x.Name,x.Whatsapp,x.care_of,x.payment_reference].some(v=>String(v??'').toLowerCase().includes(s)));q('rows').innerHTML=a.map(x=>'<tr><td>'+esc(x.registration_code)+'</td><td>'+esc(x.Name)+'</td><td>'+esc(x.Whatsapp)+'</td><td>'+esc(x.care_of)+'</td><td>'+esc(x.Preferred_family)+'</td><td data-label="ASSIGNED TEAM">'+teamControl(x)+'</td><td>'+(focCodes.has(x.registration_code)?'<span class="foc-pill">FOC</span>':esc(x.payment_reference))+payLaterBadge(x)+paymentMethodControl(x)+'</td><td>'+ (x.payment_proof?'<span class="proof-present">Saved ✓</span>':'—')+'</td><td data-label="STATUS"><span class="status-pill '+(x['Payment status']==='approved'?'approved':x['Payment status']==='rejected'?'rejected':'verification_pending')+'">'+(x['Payment status']==='approved'?'✓ APPROVED':x['Payment status']==='rejected'?'✕ REJECTED':'⏳ WAITING REVIEW')+'</span></td><td data-label="ACTION" data-guest-id="'+x.id+'">'+(x['Payment status']==='approved'?'<button class="btn small wa" onclick="openApprovalWhatsAppById('+x.id+')">WHATSAPP</button>':'')+guestActionMenu(x)+'</td></tr>').join('');if(!a.length)q('rows').innerHTML='<tr><td colspan="10">No registrations found.</td></tr>'}function guestActionMenu(x){
+const U='https://fbdkfzstxufvmjnkzzif.supabase.co',K='sb_publishable_X1jt3-YBCSZ0Pmk0cMV4ng_TqN9LNYm';let token=sessionStorage.getItem('okp_admin_token'),data=[],focCodes=new Set(),focReady=false;const q=x=>document.getElementById(x),esc=x=>String(x??'').replace(/[&<>"]/g,a=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[a]));if(!token)location.replace('admin-v2.html');async function load(){q('msg').textContent='Loading registrations...';try{let r=await fetch(U+'/rest/v1/registrations?select=*&order=id.desc',{headers:{apikey:K,Authorization:'Bearer '+token}});if(r.status===401){sessionStorage.removeItem('okp_admin_token');location.replace('admin-v2.html');return}if(!r.ok)throw Error(await r.text());data=await r.json();await loadFocFlags();await loadPayLater();await loadAdminPaymentNotes();await loadPaymentMethods();await loadTeams();q('msg').textContent='';render()}catch(e){q('msg').textContent='LOAD ERROR: '+e.message}}function render(){renderGuestCounts();renderTeamCounts();q('total').textContent=data.length;q('pending').textContent=data.filter(x=>x['Payment status']==='verification_pending').length;q('approved').textContent=data.filter(x=>x['Payment status']==='approved').length;q('rejected').textContent=data.filter(x=>x['Payment status']==='rejected').length;let pc=data.filter(x=>x['Payment status']==='verification_pending').length;let at=q('actionText');if(at)at.textContent=pc?pc+' payment'+(pc===1?' is':'s are')+' waiting for verification 👀':'All caught up — no payments waiting 🎉';let s=q('search').value.toLowerCase(),f=q('filter').value,a=data.filter(x=>matchesTeam(x)&&matchesGuestType(x)&&(f==='all'||x['Payment status']===f)&&[x.registration_code,x.Name,x.Whatsapp,x.care_of,x.payment_reference].some(v=>String(v??'').toLowerCase().includes(s)));q('rows').innerHTML=a.map(x=>'<tr><td>'+esc(x.registration_code)+'</td><td>'+esc(x.Name)+'</td><td>'+esc(x.Whatsapp)+'</td><td>'+esc(x.care_of)+'</td><td>'+esc(x.Preferred_family)+'</td><td data-label="ASSIGNED TEAM">'+teamControl(x)+'</td><td>'+(focCodes.has(x.registration_code)?'<span class="foc-pill">FOC</span>':esc(x.payment_reference))+payLaterBadge(x)+adminPaymentNoteBadge(x)+paymentMethodControl(x)+'</td><td>'+ (x.payment_proof?'<span class="proof-present">Saved ✓</span>':'—')+'</td><td data-label="STATUS"><span class="status-pill '+(x['Payment status']==='approved'?'approved':x['Payment status']==='rejected'?'rejected':'verification_pending')+'">'+(x['Payment status']==='approved'?'✓ APPROVED':x['Payment status']==='rejected'?'✕ REJECTED':'⏳ WAITING REVIEW')+'</span></td><td data-label="ACTION" data-guest-id="'+x.id+'">'+(x['Payment status']==='approved'?'<button class="btn small wa" onclick="openApprovalWhatsAppById('+x.id+')">WHATSAPP</button>':'')+guestActionMenu(x)+'</td></tr>').join('');if(!a.length)q('rows').innerHTML='<tr><td colspan="10">No registrations found.</td></tr>'}let adminPaymentNotes=new Map(),adminPaymentNotesReady=false,adminPaymentNoteBusy=false,adminPaymentNoteGuestId=null;
+async function loadAdminPaymentNotes(){
+ adminPaymentNotesReady=false;adminPaymentNotes=new Map();
+ try{
+  const r=await fetch(U+'/rest/v1/okp_admin_payment_notes?select=registration_code,note,due_date',{headers:{apikey:K,Authorization:'Bearer '+token}});
+  if(!r.ok)throw Error('Payment notes setup required');
+  adminPaymentNotes=new Map((await r.json()).map(x=>[x.registration_code,x]));adminPaymentNotesReady=true;
+ }catch(e){console.warn('Payment notes require admin-payment-notes-setup.sql');}
+}
+function adminPaymentNoteBadge(x){
+ const item=adminPaymentNotes.get(x.registration_code);if(!item||(!item.note&&!item.due_date))return '';
+ return '<div class="admin-payment-note" title="'+esc(item.note||'')+'">'+(item.note?'<span>'+esc(item.note)+'</span>':'')+(item.due_date?'<small>Due '+esc(item.due_date)+'</small>':'')+'</div>';
+}
+function openAdminPaymentNote(id){
+ const x=data.find(v=>v.id===id);if(!x)return;
+ if(!adminPaymentNotesReady){alert('Payment notes storage is not configured yet. Run admin-payment-notes-setup.sql in Supabase SQL Editor and refresh.');return;}
+ adminPaymentNoteGuestId=id;
+ const current=adminPaymentNotes.get(x.registration_code)||{};
+ q('adminPaymentNoteGuest').textContent=x.Name+' · '+x.registration_code;
+ q('adminPaymentNoteText').value=current.note||'';
+ q('adminPaymentNoteDate').value=current.due_date||'';
+ q('adminPaymentNoteError').textContent='';
+ q('adminPaymentNoteDialog').showModal();
+}
+q('adminPaymentNoteCancel').onclick=()=>{if(!adminPaymentNoteBusy)q('adminPaymentNoteDialog').close()};
+q('adminPaymentNoteDialog').addEventListener('cancel',e=>{if(adminPaymentNoteBusy)e.preventDefault()});
+q('adminPaymentNoteForm').onsubmit=async e=>{
+ e.preventDefault();if(adminPaymentNoteBusy)return;
+ const x=data.find(v=>v.id===adminPaymentNoteGuestId);if(!x)return;
+ const note=q('adminPaymentNoteText').value.trim(),due=q('adminPaymentNoteDate').value;
+ adminPaymentNoteBusy=true;q('adminPaymentNoteSave').disabled=true;q('adminPaymentNoteError').textContent='Saving...';
+ try{
+  const r=await fetch(U+'/rest/v1/okp_admin_payment_notes?on_conflict=registration_code',{method:'POST',headers:{apikey:K,Authorization:'Bearer '+token,'Content-Type':'application/json',Prefer:'resolution=merge-duplicates,return=minimal'},body:JSON.stringify({registration_code:x.registration_code,note,due_date:due||null})});
+  if(!r.ok)throw Error((await r.text()).slice(0,350));
+  adminPaymentNotes.set(x.registration_code,{note,due_date:due||null});q('adminPaymentNoteDialog').close();render();
+ }catch(err){q('adminPaymentNoteError').textContent='Could not save: '+err.message}
+ finally{adminPaymentNoteBusy=false;q('adminPaymentNoteSave').disabled=false}
+};
+function guestActionMenu(x){
  const id=x.id,code=esc(x.registration_code),items=[];
  const add=(label,call,kind='')=>items.push('<button type="button" class="guest-menu-item '+kind+'" onclick="this.closest(\'details\').open=false;'+call+'">'+label+'</button>');
  if(x['Payment status']!=='approved')add('Approve','statusSet('+id+',\'approved\')');
@@ -28,6 +66,7 @@ const U='https://fbdkfzstxufvmjnkzzif.supabase.co',K='sb_publishable_X1jt3-YBCSZ
   if(isPayLater(x)){add('Edit Due Date','openPayLater('+id+')');if(x['Payment status']==='approved')add('Mark Paid','markLaterPaid('+id+')')}
   else add('Pay Later','openPayLater('+id+')');
  }
+ add('Payment Due Date / Note','openAdminPaymentNote('+id+')');
  if(x['Payment status']==='approved')add('Invite / Admit Card','openInvitationById('+id+')');
  if(x.payment_proof)add('View Payment Proof','proof(\''+encodeURIComponent(x.payment_proof)+'\')');
  add('Upload Payment Proof','openAdminProofUpload('+id+')');
