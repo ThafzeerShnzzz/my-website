@@ -18,25 +18,25 @@ function renderGuestCounts(){
  q('guestCountNote').textContent=focReady&&payLaterReady?'Approved registrations only. Paid excludes FOC and Pay Later.':!payLaterReady?'Pay Later setup is unavailable. Run admin-pay-later-setup.sql in Supabase, then refresh. Paid totals are hidden until payment details are available.':'FOC details could not be loaded. Refresh before using guest type counts or filters.';
 
 }
-const U='https://fbdkfzstxufvmjnkzzif.supabase.co',K='sb_publishable_X1jt3-YBCSZ0Pmk0cMV4ng_TqN9LNYm';let token=sessionStorage.getItem('okp_admin_token'),data=[],focCodes=new Set(),focReady=false;const q=x=>document.getElementById(x),esc=x=>String(x??'').replace(/[&<>"]/g,a=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[a]));if(!token)location.replace('admin-v2.html');async function load(){q('msg').textContent='Loading registrations...';try{let r=await fetch(U+'/rest/v1/registrations?select=*&order=id.desc',{headers:{apikey:K,Authorization:'Bearer '+token}});if(r.status===401){sessionStorage.removeItem('okp_admin_token');location.replace('admin-v2.html');return}if(!r.ok)throw Error(await r.text());data=await r.json();await loadFocFlags();await loadPayLater();await loadAdminPaymentNotes();await loadPaymentMethods();await loadTeams();q('msg').textContent='';render()}catch(e){q('msg').textContent='LOAD ERROR: '+e.message}}function render(){renderGuestCounts();renderTeamCounts();q('total').textContent=data.length;q('pending').textContent=data.filter(x=>x['Payment status']==='verification_pending').length;q('approved').textContent=data.filter(x=>x['Payment status']==='approved').length;q('rejected').textContent=data.filter(x=>x['Payment status']==='rejected').length;let pc=data.filter(x=>x['Payment status']==='verification_pending').length;let at=q('actionText');if(at)at.textContent=pc?pc+' payment'+(pc===1?' is':'s are')+' waiting for verification 👀':'All caught up — no payments waiting 🎉';let s=q('search').value.toLowerCase(),f=q('filter').value,a=data.filter(x=>matchesTeam(x)&&matchesGuestType(x)&&(f==='all'||x['Payment status']===f)&&[x.registration_code,x.Name,x.Whatsapp,x.care_of,x.payment_reference].some(v=>String(v??'').toLowerCase().includes(s)));q('rows').innerHTML=a.map(x=>{
- const foc=focCodes.has(x.registration_code),later=isPayLater(x),method=paymentMethods.get(x.registration_code);
- const status=x['Payment status'],note=adminPaymentNotes.get(x.registration_code)||{};
- const state=foc?'FOC':later?'Pay Later':status==='approved'?'Approved':status==='rejected'?'Rejected':'Pending';
- const stateClass=foc?'foc':later?'later':status==='approved'?'paid':status==='rejected'?'rejected':'pending';
- const amount=foc?'—':method==='ziina'?'AED 205.50':'AED 199';
+const U='https://fbdkfzstxufvmjnkzzif.supabase.co',K='sb_publishable_X1jt3-YBCSZ0Pmk0cMV4ng_TqN9LNYm';let token=sessionStorage.getItem('okp_admin_token'),data=[],focCodes=new Set(),focReady=false;const q=x=>document.getElementById(x),esc=x=>String(x??'').replace(/[&<>"]/g,a=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[a]));if(!token)location.replace('admin-v2.html');async function load(){q('msg').textContent='Loading registrations...';try{let r=await fetch(U+'/rest/v1/registrations?select=*&order=id.desc',{headers:{apikey:K,Authorization:'Bearer '+token}});if(r.status===401){sessionStorage.removeItem('okp_admin_token');location.replace('admin-v2.html');return}if(!r.ok)throw Error(await r.text());data=await r.json();await loadFocFlags();await loadFocRoles();await loadPayLater();await loadAdminPaymentNotes();await loadPaymentMethods();await loadTeams();q('msg').textContent='';render()}catch(e){q('msg').textContent='LOAD ERROR: '+e.message}}function render(){renderGuestCounts();renderTeamCounts();q('total').textContent=data.length;q('pending').textContent=data.filter(x=>x['Payment status']==='verification_pending').length;q('approved').textContent=data.filter(x=>x['Payment status']==='approved').length;q('rejected').textContent=data.filter(x=>x['Payment status']==='rejected').length;let pc=data.filter(x=>x['Payment status']==='verification_pending').length;let at=q('actionText');if(at)at.textContent=pc?pc+' payment'+(pc===1?' is':'s are')+' waiting for verification 👀':'All caught up — no payments waiting 🎉';let s=q('search').value.toLowerCase(),f=q('filter').value,a=data.filter(x=>matchesTeam(x)&&matchesGuestType(x)&&(f==='all'||x['Payment status']===f)&&[x.registration_code,x.Name,x.Whatsapp,x.care_of,x.payment_reference].some(v=>String(v??'').toLowerCase().includes(s)));q('rows').innerHTML=a.map(x=>{
+ const foc=focCodes.has(x.registration_code),later=isPayLater(x),method=paymentMethods.get(x.registration_code),status=x['Payment status'];
+ const note=adminPaymentNotes.get(x.registration_code)||{},due=note.due_date||(later?payLater.get(x.registration_code)?.due_date:'')||'';
+ const team=teams.get(x.registration_code)||'unassigned',role=focRoles.get(x.registration_code)||'';
+ const state=foc?'FOC':later?'Pay Later':method?'Paid':status==='rejected'?'Rejected':'Pending';
+ const stateClass=foc?'foc':later?'later':method?'paid':status==='rejected'?'rejected':'pending';
  const ref=String(x.payment_reference||'').trim();
- const due=note.due_date||(later?payLater.get(x.registration_code)?.due_date:'')||'';
- const team=teams.get(x.registration_code)||'unassigned';
  return '<tr><td data-label="OKP ID" class="id-cell">'+esc(x.registration_code)+'</td>'+
- '<td data-label="GUEST" class="name-cell"><strong>'+esc(x.Name)+'</strong><span class="guest-secondary">'+esc(x.Whatsapp||'')+'</span></td>'+
- '<td data-label="TEAM"><span class="team-badge team-'+esc(team)+'">'+esc(teamLabels[team]||'Unassigned')+'</span></td>'+
- '<td data-label="PAYMENT STATUS"><span class="payment-state '+stateClass+'"><i></i>'+state+'</span></td>'+
- '<td data-label="AMOUNT" class="amount-cell">'+amount+'</td>'+
- '<td data-label="PAYMENT REF" class="reference-cell"><span title="'+esc(ref)+'">'+esc(ref||'—')+'</span>'+(note.note?'<small title="'+esc(note.note)+'">'+esc(note.note)+'</small>':'')+'</td>'+
+ '<td data-label="NAME" class="name-cell"><strong>'+esc(x.Name)+'</strong></td>'+
+ '<td data-label="C/O">'+esc(x.care_of||'—')+'</td>'+
+ '<td data-label="TEAM"><button class="team-badge team-'+esc(team)+'" onclick="openGuestTeam('+x.id+')">'+esc(teamLabels[team]||'Unassigned')+'⌄</button></td>'+
+ '<td data-label="PAYMENT STATUS"><button class="payment-state '+stateClass+'" onclick="'+(foc?'openFocRole('+x.id+')':later?'openAdminPaymentNote('+x.id+')':method?'openPaymentMode('+x.id+')':'openAdminPaymentNote('+x.id+')')+'()"><i></i>'+state+'</button></td>'+
+ '<td data-label="RSVP NOTE" class="reference-cell">'+esc(ref||'—')+(note.note?'<small>'+esc(note.note)+'</small>':'')+'</td>'+
+ '<td data-label="FOC">'+(foc?'<button class="foc-role-badge" onclick="openFocRole('+x.id+')">'+esc(role||'Set FOC role')+'</button>':'—')+'</td>'+
+ '<td data-label="APPROVAL"><button class="approval-badge '+(status==='approved'?'yes':status==='rejected'?'no':'wait')+'" onclick="openGuestDetails('+x.id+')">'+(status==='approved'?'Approved':status==='rejected'?'Rejected':'Review')+'</button></td>'+
  '<td data-label="DUE DATE" class="due-cell">'+(due?esc(due):'—')+'</td>'+
  '<td data-label="ACTIONS" data-guest-id="'+x.id+'" class="action-cell">'+(status==='approved'?'<button class="btn small wa" onclick="openApprovalWhatsAppById('+x.id+')">WHATSAPP</button>':'')+guestActionMenu(x)+'</td></tr>';
  }).join('');
- if(!a.length)q('rows').innerHTML='<tr><td colspan="8">No registrations found.</td></tr>';
+ if(!a.length)q('rows').innerHTML='<tr><td colspan="10">No registrations found.</td></tr>';
 }let adminPaymentNotes=new Map(),adminPaymentNotesReady=false,adminPaymentNoteBusy=false,adminPaymentNoteGuestId=null;
 async function loadAdminPaymentNotes(){
  adminPaymentNotesReady=false;adminPaymentNotes=new Map();
@@ -75,6 +75,35 @@ q('adminPaymentNoteForm').onsubmit=async e=>{
  }catch(err){q('adminPaymentNoteError').textContent='Could not save: '+err.message}
  finally{adminPaymentNoteBusy=false;q('adminPaymentNoteSave').disabled=false}
 };
+let focRoles=new Map(),focRolesReady=false,focRoleBusy=false;
+async function loadFocRoles(){
+ focRolesReady=false;focRoles=new Map();
+ try{const r=await fetch(U+'/rest/v1/okp_admin_foc_roles?select=registration_code,role',{headers:{apikey:K,Authorization:'Bearer '+token}});
+ if(!r.ok)throw Error('FOC role setup needed');focRoles=new Map((await r.json()).map(x=>[x.registration_code,x.role]));focRolesReady=true;}
+ catch(e){console.warn('Run admin-foc-roles-setup.sql for role editing');}
+}
+function openFocRole(id){
+ const x=data.find(v=>v.id===id);if(!x||!focCodes.has(x.registration_code))return;
+ if(!focRolesReady){alert('FOC roles need one-time Supabase setup: admin-foc-roles-setup.sql');return;}
+ q('focRoleGuest').textContent=x.Name+' · '+x.registration_code;
+ const role=focRoles.get(x.registration_code)||'';
+ q('focRoleSelect').value=['OKP Photographer','OKP Video Team','OKP Flower Girl','OKP Dance Team'].includes(role)?role:(role?'Other':'');
+ q('focRoleOther').value=q('focRoleSelect').value==='Other'?role:'';
+ q('focRoleOther').hidden=q('focRoleSelect').value!=='Other';
+ q('focRoleError').textContent='';q('focRoleDialog').showModal();q('focRoleDialog').dataset.guestId=String(id);
+}
+q('focRoleSelect').onchange=()=>{q('focRoleOther').hidden=q('focRoleSelect').value!=='Other'};
+q('focRoleCancel').onclick=()=>{if(!focRoleBusy)q('focRoleDialog').close()};
+q('focRoleForm').onsubmit=async e=>{
+ e.preventDefault();if(focRoleBusy)return;
+ const x=data.find(v=>v.id===Number(q('focRoleDialog').dataset.guestId));if(!x)return;
+ const role=(q('focRoleSelect').value==='Other'?q('focRoleOther').value:q('focRoleSelect').value).trim();
+ if(!role)return;
+ focRoleBusy=true;q('focRoleSave').disabled=true;q('focRoleError').textContent='Saving...';
+ try{const r=await fetch(U+'/rest/v1/okp_admin_foc_roles?on_conflict=registration_code',{method:'POST',headers:{apikey:K,Authorization:'Bearer '+token,'Content-Type':'application/json',Prefer:'resolution=merge-duplicates,return=minimal'},body:JSON.stringify({registration_code:x.registration_code,role})});
+ if(!r.ok)throw Error((await r.text()).slice(0,250));focRoles.set(x.registration_code,role);q('focRoleDialog').close();render();}
+ catch(err){q('focRoleError').textContent=err.message}finally{focRoleBusy=false;q('focRoleSave').disabled=false}
+};
 function guestActionMenu(x){
  const id=x.id,code=esc(x.registration_code),items=[];
  const add=(label,call,kind='')=>items.push('<button type="button" class="guest-menu-item '+kind+'" onclick="this.closest(\'details\').open=false;'+call+'">'+label+'</button>');
@@ -92,6 +121,7 @@ function guestActionMenu(x){
  if(x.payment_proof)add('View Payment Proof','proof(\''+encodeURIComponent(x.payment_proof)+'\')');
  add('Upload Payment Proof','openAdminProofUpload('+id+')');
  section('GUEST MANAGEMENT');
+ if(focCodes.has(x.registration_code))add('Set FOC Role','openFocRole('+id+')');
  if(teamsReady)add('Edit Team','openGuestTeam('+id+')');
  if(x['Payment status']!=='approved')add('Approve Registration','statusSet('+id+',\'approved\')');
  if(x['Payment status']!=='rejected')add('Reject Registration','statusSet('+id+',\'rejected\')');
@@ -115,7 +145,7 @@ function openGuestDetails(id){
  ['Assigned team',teamLabels[teams.get(x.registration_code)||'unassigned']||'Unassigned'],
  ['Payment reference',x.payment_reference],['Payment method',paymentMethods.get(x.registration_code)||'—'],
  ['Payment proof',x.payment_proof?'Saved':'Not uploaded'],
- ['Payment note',adminPaymentNotes.get(x.registration_code)?.note||'—']
+ ['Payment note',adminPaymentNotes.get(x.registration_code)?.note||'—'],['Due date',adminPaymentNotes.get(x.registration_code)?.due_date||payLater.get(x.registration_code)?.due_date||'—'],['FOC role',focRoles.get(x.registration_code)||'—'],['Approval',x['Payment status']||'—']
  ].map(([k,v])=>'<div class="detail-row"><span>'+esc(k)+'</span><strong>'+esc(v||'—')+'</strong></div>').join('');
  q('guestDetailsDialog').showModal();
 }
