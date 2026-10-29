@@ -108,8 +108,14 @@ function guestNameIndicator(x,foc,later,method){
  const status=x['Payment status'];
  const type=foc?'foc':later?'later':status==='approved'&&method?'paid':status==='rejected'?'rejected':'pending';
  const labels={paid:'Payment received',later:'Approved · Pay Later',foc:'Complimentary guest',rejected:'Registration rejected',pending:'Awaiting verification'};
- const symbols={paid:'✓',later:'◷',foc:'✦',rejected:'×',pending:'◷'};
- return '<span class="guest-name-indicator guest-name-indicator--'+type+'" role="img" aria-label="'+labels[type]+'" title="'+labels[type]+'">'+symbols[type]+'</span>';
+ const paths={
+ paid:'<path d="M20 6 9 17l-5-5"/>',
+ later:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+ pending:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+ foc:'<path d="m12 3 2.4 6.6L21 12l-6.6 2.4L12 21l-2.4-6.6L3 12l6.6-2.4L12 3Z"/>',
+ rejected:'<path d="M5 5 19 19M19 5 5 19"/>'
+ };
+ return '<span class="guest-name-indicator guest-name-indicator--'+type+'" role="img" aria-label="'+labels[type]+'" title="'+labels[type]+'"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">'+paths[type]+'</svg></span>';
 }
 function guestActionMenu(x){
  const id=x.id,code=esc(x.registration_code),items=[];
