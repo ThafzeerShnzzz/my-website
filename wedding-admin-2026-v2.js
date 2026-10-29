@@ -109,7 +109,7 @@ function guestNameIndicator(x,foc,later,method){
  const type=foc?'foc':later?'later':status==='approved'&&method?'paid':status==='rejected'?'rejected':'pending';
  const labels={paid:'Payment received',later:'Approved · Pay Later',foc:'Complimentary guest',rejected:'Registration rejected',pending:'Awaiting verification'};
  const paths={
- paid:'<path d="M20 6 9 17l-5-5"/>',
+ paid:'<circle cx="12" cy="12" r="9"/><path d="m8 12 2.7 2.7L16 9.5"/>',
  later:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
  pending:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
  foc:'<path d="m12 3 2.4 6.6L21 12l-6.6 2.4L12 21l-2.4-6.6L3 12l6.6-2.4L12 3Z"/>',
