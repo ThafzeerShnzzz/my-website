@@ -26,7 +26,7 @@ const U='https://fbdkfzstxufvmjnkzzif.supabase.co',K='sb_publishable_X1jt3-YBCSZ
  const stateClass=foc?'foc':later?'later':method?'paid':status==='rejected'?'rejected':'pending';
  const ref=String(x.payment_reference||'').trim();
  return '<tr><td data-label="OKP ID" class="id-cell">'+esc(x.registration_code)+'</td>'+
- '<td data-label="NAME" class="name-cell"><strong>'+esc(x.Name)+'</strong></td>'+
+ '<td data-label="NAME" class="name-cell"><strong>'+esc(x.Name)+'</strong>'+guestNameIndicator(x,foc,later,method)+'</td>'+
  '<td data-label="C/O">'+esc(x.care_of||'—')+'</td>'+
  '<td data-label="TEAM"><button class="team-badge team-'+esc(team)+'" onclick="openGuestTeam('+x.id+')">'+esc(teamLabels[team]||'Unassigned')+'⌄</button></td>'+
  '<td data-label="PAYMENT STATUS"><button class="payment-state '+stateClass+'" onclick="'+(foc?'openFocRole('+x.id+')':later?'openAdminPaymentNote('+x.id+')':method?'openPaymentMode('+x.id+')':'openAdminPaymentNote('+x.id+')')+'()"><i></i>'+state+'</button></td>'+
@@ -104,6 +104,13 @@ q('focRoleForm').onsubmit=async e=>{
  if(!r.ok)throw Error((await r.text()).slice(0,250));focRoles.set(x.registration_code,role);q('focRoleDialog').close();render();}
  catch(err){q('focRoleError').textContent=err.message}finally{focRoleBusy=false;q('focRoleSave').disabled=false}
 };
+function guestNameIndicator(x,foc,later,method){
+ const status=x['Payment status'];
+ const type=foc?'foc':later?'later':status==='approved'&&method?'paid':status==='rejected'?'rejected':'pending';
+ const labels={paid:'Payment received',later:'Approved · Pay Later',foc:'Complimentary guest',rejected:'Registration rejected',pending:'Awaiting verification'};
+ const symbols={paid:'✓',later:'◷',foc:'✦',rejected:'×',pending:'◷'};
+ return '<span class="guest-name-indicator guest-name-indicator--'+type+'" role="img" aria-label="'+labels[type]+'" title="'+labels[type]+'">'+symbols[type]+'</span>';
+}
 function guestActionMenu(x){
  const id=x.id,code=esc(x.registration_code),items=[];
  const add=(label,call,kind='')=>items.push('<button type="button" class="guest-menu-item '+kind+'" onclick="this.closest(\'details\').open=false;'+call+'">'+label+'</button>');
