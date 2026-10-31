@@ -160,6 +160,7 @@ function openGuestTeam(id){
 }
 function openGuestDetails(id){
  const x=data.find(v=>v.id===id);if(!x)return;
+ const approval=x['Payment status'];const rejected=approval==='rejected';const pending=approval==='verification_pending';const due=adminPaymentNotes.get(x.registration_code)?.due_date||payLater.get(x.registration_code)?.due_date;const later=!rejected&&approval==='approved'&&!!payLater.get(x.registration_code);const headIcon=rejected?'<span class="guest-review-icon rejected" aria-label="Rejected">✕</span>':pending?'<span class="guest-review-icon pending" aria-label="Pending">♧</span>':'<span class="guest-review-icon approved" aria-label="Approved">✓</span>';const statusText=rejected?'Rejected':pending?'Awaiting review':'Approved';const head=document.querySelector('#guestDetailsDialog .review-guest-card');head.innerHTML='<div class="review-guest-avatar">●</div><div class="review-guest-heading"><small>'+esc(x.registration_code)+'</small><h3 id="guestDetailsTitle">'+esc(x.Name)+' '+headIcon+'</h3><span class="guest-review-status">'+statusText+'</span></div>'+(later&&due?'<div class="review-due-pill"><small>PAY LATER · DUE</small><strong>'+esc(due)+'</strong></div>':'');
  q('guestDetailsTitle').textContent=x.Name+' · '+x.registration_code;
  q('guestDetailsBody').innerHTML=[
  ['WhatsApp',x.Whatsapp],['Care of',x.care_of],['RSVP preference',x.Preferred_family],['Heard about us',x.how_u_heard_about_us],['New to community',x.new_to_our_Community],
