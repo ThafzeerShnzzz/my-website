@@ -160,8 +160,16 @@ function openGuestTeam(id){
 }
 function openGuestDetails(id){
  const x=data.find(v=>v.id===id);if(!x)return;
- const approval=x['Payment status'];const rejected=approval==='rejected';const pending=approval==='verification_pending';const due=adminPaymentNotes.get(x.registration_code)?.due_date||payLater.get(x.registration_code)?.due_date;const later=!rejected&&approval==='approved'&&!!payLater.get(x.registration_code);const headIcon=rejected?'<span class="guest-review-icon rejected" aria-label="Rejected">✕</span>':pending?'<span class="guest-review-icon pending" aria-label="Pending">♧</span>':'<span class="guest-review-icon approved" aria-label="Approved">✓</span>';const statusText=rejected?'Rejected':pending?'Awaiting review':'Approved';const head=document.querySelector('#guestDetailsDialog .review-guest-card');head.innerHTML='<div class="review-guest-avatar">●</div><div class="review-guest-heading"><small>'+esc(x.registration_code)+'</small><h3 id="guestDetailsTitle">'+esc(x.Name)+' '+headIcon+'</h3><span class="guest-review-status">'+statusText+'</span></div>'+(later&&due?'<div class="review-due-pill"><small>PAY LATER · DUE</small><strong>'+esc(due)+'</strong></div>':'');
- q('guestDetailsTitle').textContent=x.Name+' · '+x.registration_code;
+ const approval=x['Payment status'],rejected=approval==='rejected',pending=approval==='verification_pending',foc=focCodes.has(x.registration_code),later=!rejected&&!pending&&isPayLater(x),paid=!rejected&&!pending&&!foc&&!later&&approval==='approved';
+ const due=later?(payLater.get(x.registration_code)?.due_date||adminPaymentNotes.get(x.registration_code)?.due_date):null;
+ const stamp=x.created_at||x.createdAt||x.registration_date||x.registered_at||x.created_on;
+ let registered='';if(stamp){const d=new Date(stamp);registered=Number.isNaN(d.getTime())?String(stamp):d.toLocaleString('en-GB',{day:'numeric',month:'short',year:'numeric',hour:'numeric',minute:'2-digit'});}
+ const label=rejected?'CANCELLED':pending?'PENDING':foc?'FOC':later?'PAY LATER':paid?'PAID':'APPROVED';
+ const kind=rejected?'rejected':pending?'pending':foc?'foc':later?'later':paid?'paid':'approved';
+ const symbol=rejected?'✕':pending?'♧':foc?'✧':later?'◷':'✓';
+ const head=document.querySelector('#guestDetailsDialog .review-guest-card');
+ head.innerHTML='<div class="review-guest-avatar">●</div><div class="review-guest-heading"><small>'+esc(x.registration_code)+'</small><h3 id="guestDetailsTitle">'+esc(x.Name)+'</h3><span class="guest-review-status">Guest profile</span></div><div class="review-profile-right"><div class="review-profile-badge '+kind+'"><span class="review-profile-symbol">'+symbol+'</span><strong>'+label+'</strong></div>'+(registered?'<small class="review-registered">Registered on<br>'+esc(registered)+'</small>':'')+(later&&due?'<small class="review-due-inline">Due '+esc(due)+'</small>':'')+'</div>';
+ q('guestDetailsTitle').textContent=x.Name;
  q('guestDetailsBody').innerHTML=[
  ['WhatsApp',x.Whatsapp],['Care of',x.care_of],['RSVP preference',x.Preferred_family],['Heard about us',x.how_u_heard_about_us],['New to community',x.new_to_our_Community],
  ['Assigned team',x['Payment status']==='rejected'?'Removed':teamLabels[teams.get(x.registration_code)||'unassigned']||'Unassigned'],
