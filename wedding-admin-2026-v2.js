@@ -38,13 +38,13 @@ const U='https://fbdkfzstxufvmjnkzzif.supabase.co',K='sb_publishable_X1jt3-YBCSZ
  '<td data-label="C/O">'+esc(x.care_of||'—')+'</td>'+
  '<td data-label="TEAM"><button class="team-badge team-'+esc(team)+'" onclick="openGuestTeam('+x.id+')">'+esc(teamLabels[team]||'Unassigned')+'⌄</button></td>'+
  '<td data-label="PAYMENT STATUS"><button class="payment-state '+stateClass+'" onclick="'+(foc?'openFocRole('+x.id+')':later?'openAdminPaymentNote('+x.id+')':method?'openPaymentMode('+x.id+')':'openAdminPaymentNote('+x.id+')')+'()"><i></i>'+state+'</button></td>'+
- '<td data-label="RSVP NOTE" class="reference-cell">'+esc(ref||'—')+(note.note?'<small>'+esc(note.note)+'</small>':'')+'</td>'+
+ 
  
  '<td data-label="APPROVAL"><button class="approval-badge '+(status==='approved'?'yes':status==='rejected'?'no':'wait')+'" onclick="openGuestDetails('+x.id+')">'+(status==='approved'?'Approved':status==='rejected'?'Rejected':'Review')+'</button></td>'+
  '<td data-label="DUE DATE" class="due-cell">'+(due?esc(due):'—')+'</td>'+
- '<td data-label="ACTIONS" data-guest-id="'+x.id+'" class="action-cell">'+(status==='verification_pending'?'<span class="pending-inline-actions"><button class="btn review-action" onclick="openGuestDetails('+x.id+')">REVIEW</button><button class="btn wa" onclick="openPendingWhatsApp('+x.id+')">WHATSAPP</button><button class="btn" onclick="statusSet('+x.id+',\'approved\')">APPROVE</button></span>':status==='approved'?'<button class="btn small wa" onclick="openApprovalWhatsAppById('+x.id+')">WHATSAPP</button>':'')+guestActionMenu(x)+'</td></tr>';
+ '<td data-label="ACTIONS" data-guest-id="'+x.id+'" class="action-cell">'+(status==='verification_pending'?'<span class="pending-inline-actions"><button class="btn review-action" onclick="openGuestDetails('+x.id+')"><span class="review-alert" aria-hidden="true">⚠</span> REVIEW</button><button class="btn wa" onclick="openPendingWhatsApp('+x.id+')">WHATSAPP</button><button class="btn" onclick="statusSet('+x.id+',\'approved\')">APPROVE</button></span>':status==='approved'?'<button class="btn small wa" onclick="openApprovalWhatsAppById('+x.id+')">WHATSAPP</button>':'')+'</td></tr>';
  }).join('');
- if(!a.length)q('rows').innerHTML='<tr><td colspan="10">No registrations found.</td></tr>';
+ if(!a.length)q('rows').innerHTML='<tr><td colspan="9">No registrations found.</td></tr>';
 }let adminPaymentNotes=new Map(),adminPaymentNotesReady=false,adminPaymentNoteBusy=false,adminPaymentNoteGuestId=null;
 async function loadAdminPaymentNotes(){
  adminPaymentNotesReady=false;adminPaymentNotes=new Map();
@@ -168,7 +168,7 @@ function openGuestDetails(id){
  ['Payment proof',x.payment_proof?'Uploaded':'Not uploaded'],
  ['Payment note',adminPaymentNotes.get(x.registration_code)?.note||'—'],['Due date',adminPaymentNotes.get(x.registration_code)?.due_date||payLater.get(x.registration_code)?.due_date||'—'],['FOC role',focRoles.get(x.registration_code)||'—'],['Approval',x['Payment status']||'—']
  ].map(([k,v])=>'<div class="detail-row"><span>'+esc(k)+'</span><strong>'+esc(v||'—')+'</strong></div>').join('')+'<div class="detail-row"><span>Payment proof actions</span><strong>'+(x.payment_proof?'<button type="button" class="btn reject" onclick="proof(\''+encodeURIComponent(x.payment_proof)+'\')">VIEW PROOF</button> ':'')+'<button type="button" class="btn" onclick="openAdminProofUpload('+x.id+')">UPLOAD PROOF</button></strong></div>';
- q('guestDetailsDialog').showModal();
+ q('guestDetailsBody').innerHTML+='<div class="review-note"><strong>RSVP Note</strong><div>'+esc(x.payment_reference||'—')+'</div></div>'+(x['Payment status']==='verification_pending'?'<div class="review-footer"><button class="btn wa" onclick="openPendingWhatsApp('+x.id+')">WHATSAPP</button><button class="btn" onclick="document.getElementById(\'guestDetailsDialog\').close();statusSet('+x.id+',\'approved\')">APPROVE</button><button class="btn reject" onclick="document.getElementById(\'guestDetailsDialog\').close();statusSet('+x.id+',\'rejected\')">REJECT</button></div>':'');q('guestDetailsDialog').showModal();
 }
 function focusGuestTeam(id){const row=[...document.querySelectorAll('#rows tr')].find(tr=>tr.querySelector('[data-guest-id="'+id+'"]'));const select=row?.querySelector('.assigned-team');if(select){select.scrollIntoView({block:'center',behavior:'smooth'});select.focus()}else alert('Use the assigned team dropdown for this guest.')}
 document.addEventListener('click',e=>{document.querySelectorAll('.guest-menu[open]').forEach(d=>{if(!d.contains(e.target))d.open=false})});
