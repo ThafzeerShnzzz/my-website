@@ -200,7 +200,45 @@ q('adminProofForm').onsubmit=async e=>{
  }catch(error){q('adminProofError').textContent=error.message}
  finally{adminProofBusy=false;q('adminProofSave').disabled=false}
 };
-async function proof(encoded){let path=decodeURIComponent(encoded);let r=await fetch(U+'/storage/v1/object/sign/payment-proofs/'+path,{method:'POST',headers:{apikey:K,Authorization:'Bearer '+token,'Content-Type':'application/json'},body:JSON.stringify({expiresIn:120})});let j=await r.json();if(!r.ok){alert('Could not open proof.');return}let url=j.signedURL||j.signedUrl;if(url&&!url.startsWith('http'))url=U+'/storage/v1'+url;window.open(url,'_blank')}q('guestType').onchange=render;q('search').oninput=render;q('filter').onchange=render;q('refresh').onclick=load;q('logout').onclick=()=>{sessionStorage.removeItem('okp_admin_token');location.replace('admin-v2.html')};load();
+async function proof(encoded){
+ const raw=decodeURIComponent(encoded||'').trim();
+ if(!raw){alert('No payment proof is linked to this registration.');return}
+ let popup=null;
+ try{
+  if(/^https:\/\//i.test(raw)){
+   const url=new URL(raw);
+   if(url.hostname!==new URL(U).hostname){window.open(raw,'_blank','noopener');return}
+   const marker='/storage/v1/object/';
+   if(!url.pathname.includes(marker)){window.open(raw,'_blank','noopener');return}
+  }
+  if(/^data:(image\/(png|jpeg|jpg|webp)|application\/pdf);base64,/i.test(raw)){
+   const [header,body]=raw.split(',',2);
+   const mime=header.slice(5).split(';')[0];
+   const binary=atob(body),bytes=new Uint8Array(binary.length);
+   for(let i=0;i<binary.length;i++)bytes[i]=binary.charCodeAt(i);
+   const objectUrl=URL.createObjectURL(new Blob([bytes],{type:mime}));
+   window.open(objectUrl,'_blank','noopener');
+   setTimeout(()=>URL.revokeObjectURL(objectUrl),120000);
+   return;
+  }
+  let path=raw.replace(/^\/+/, '');
+  path=path.replace(/^storage\/v1\/object\/(?:public\/|sign\/|authenticated\/)?payment-proofs\//,'').replace(/^payment-proofs\//,'');
+  if(/^https:\/\//i.test(raw)){
+   const u=new URL(raw);
+   const match=u.pathname.match(/\/storage\/v1\/object\/(?:public\/|sign\/|authenticated\/)?payment-proofs\/(.+)$/);
+   if(!match){window.open(raw,'_blank','noopener');return}
+   path=decodeURIComponent(match[1]);
+  }
+  const r=await fetch(U+'/storage/v1/object/sign/payment-proofs/'+path.split('/').map(encodeURIComponent).join('/'),{method:'POST',headers:{apikey:K,Authorization:'Bearer '+token,'Content-Type':'application/json'},body:JSON.stringify({expiresIn:300})});
+  const j=await r.json().catch(()=>({}));
+  if(!r.ok)throw Error((j.message||j.error||'Storage access denied')+' (HTTP '+r.status+'). Verify that the file exists and your admin account can access payment-proofs.');
+  const signed=j.signedURL||j.signedUrl;
+  if(!signed)throw Error('Supabase did not return a proof link.');
+  const url=signed.startsWith('http')?signed:U+'/storage/v1'+(signed.startsWith('/')?'':'/')+signed;
+  window.open(url,'_blank','noopener');
+ }catch(e){alert('Payment proof could not be opened. '+e.message)}
+}
+q('guestType').onchange=render;q('search').oninput=render;q('filter').onchange=render;q('refresh').onclick=load;q('logout').onclick=()=>{sessionStorage.removeItem('okp_admin_token');location.replace('admin-v2.html')};load();
 
 async function exportExcel(){
  const button=q('exportExcel');if(!payLaterReady||!focReady){alert('Refresh after completing Pay Later setup before exporting payment classifications.');return}if(!token||!data.length){alert('No registrations available to export.');return}
