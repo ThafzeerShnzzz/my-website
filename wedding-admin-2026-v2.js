@@ -119,7 +119,7 @@ function guestNameIndicator(x,foc,later,method){
  const paths={
  paid:'<circle cx="12" cy="12" r="9"/><path d="m8 12 2.7 2.7L16 9.5"/>',
  later:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
- pending:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+ pending:'<path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"/><path d="M10 21h4"/><circle cx="19" cy="5" r="2.5" fill="currentColor" stroke="none"/>',
  foc:'<path d="m12 3 2.4 6.6L21 12l-6.6 2.4L12 21l-2.4-6.6L3 12l6.6-2.4L12 3Z"/>',
  rejected:'<path d="M5 5 19 19M19 5 5 19"/>'
  };
