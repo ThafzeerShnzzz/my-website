@@ -21,6 +21,7 @@ function matchesGuestType(x){
 function renderGuestCounts(){
  const approved=data.filter(x=>x['Payment status']==='approved');
  q('confirmedTotal').textContent=approved.length;
+ if(q('payingTotal'))q('payingTotal').textContent=focReady&&payLaterReady?approved.filter(x=>!focCodes.has(x.registration_code)).length:'—';
  q('paidTotal').textContent=focReady&&payLaterReady?approved.filter(x=>!focCodes.has(x.registration_code)&&!isPayLater(x)).length:'—';
  if(q('laterTotal'))q('laterTotal').textContent=payLaterReady?approved.filter(isPayLater).length:'—';
  q('focTotal').textContent=focReady?approved.filter(x=>focCodes.has(x.registration_code)).length:'—';
