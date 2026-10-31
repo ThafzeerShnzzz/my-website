@@ -29,19 +29,19 @@ function renderGuestCounts(){
 const U='https://fbdkfzstxufvmjnkzzif.supabase.co',K='sb_publishable_X1jt3-YBCSZ0Pmk0cMV4ng_TqN9LNYm';let token=sessionStorage.getItem('okp_admin_token'),data=[],focCodes=new Set(),focReady=false;const q=x=>document.getElementById(x),esc=x=>String(x??'').replace(/[&<>"]/g,a=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[a]));if(!token)location.replace('admin-v2.html');async function load(){q('msg').textContent='Loading registrations...';try{let r=await fetch(U+'/rest/v1/registrations?select=*&order=id.desc',{headers:{apikey:K,Authorization:'Bearer '+token}});if(r.status===401){sessionStorage.removeItem('okp_admin_token');location.replace('admin-v2.html');return}if(!r.ok)throw Error(await r.text());data=await r.json();await loadFocFlags();await loadFocRoles();await loadPayLater();await loadAdminPaymentNotes();await loadPaymentMethods();await loadTeams();q('msg').textContent='';render()}catch(e){q('msg').textContent='LOAD ERROR: '+e.message}}function render(){renderFocAssignments();renderGuestCounts();renderTeamCounts();q('total').textContent=data.length;q('pending').textContent=data.filter(x=>x['Payment status']==='verification_pending').length;q('approved').textContent=data.filter(x=>x['Payment status']==='approved').length;q('rejected').textContent=data.filter(x=>x['Payment status']==='rejected').length;let pc=data.filter(x=>x['Payment status']==='verification_pending').length;let at=q('actionText');if(at)at.textContent=pc?pc+' payment'+(pc===1?' is':'s are')+' waiting for verification 👀':'All caught up — no payments waiting 🎉';let s=q('search').value.toLowerCase(),f=q('filter').value,a=data.filter(x=>matchesTeam(x)&&matchesGuestType(x)&&(f==='all'||x['Payment status']===f)&&[x.registration_code,x.Name,x.Whatsapp,x.care_of,x.payment_reference].some(v=>String(v??'').toLowerCase().includes(s)));q('rows').innerHTML=a.map(x=>{
  const foc=focCodes.has(x.registration_code),later=isPayLater(x),method=paymentMethods.get(x.registration_code),status=x['Payment status'];
  const note=adminPaymentNotes.get(x.registration_code)||{},due=note.due_date||(later?payLater.get(x.registration_code)?.due_date:'')||'';
- const team=teams.get(x.registration_code)||'unassigned',role=focRoles.get(x.registration_code)||'';
- const state=foc?'FOC':later?'Pay Later':method?'Paid':status==='rejected'?'Rejected':'Pending';
- const stateClass=foc?'foc':later?'later':method?'paid':status==='rejected'?'rejected':'pending';
+ const team=status==='rejected'?'unassigned':teams.get(x.registration_code)||'unassigned',role=focRoles.get(x.registration_code)||'';
+ const state=status==='rejected'?'Cancelled':foc?'FOC':later?'Pay Later':method?'Paid':'Pending';
+ const stateClass=status==='rejected'?'rejected':foc?'foc':later?'later':method?'paid':'pending';
  const ref=String(x.payment_reference||'').trim();
  return '<tr><td data-label="OKP ID" class="id-cell">'+esc(x.registration_code)+'</td>'+
  '<td data-label="NAME" class="name-cell"><strong>'+esc(x.Name)+'</strong>'+guestNameIndicator(x,foc,later,method)+'</td>'+
  '<td data-label="C/O">'+esc(x.care_of||'—')+'</td>'+
- '<td data-label="TEAM"><button class="team-badge team-'+esc(team)+'" onclick="openGuestTeam('+x.id+')">'+esc(teamLabels[team]||'Unassigned')+'⌄</button></td>'+
+ '<td data-label="TEAM">'+(status==='rejected'?'<span class="team-badge team-unassigned">Removed</span>':'<button class="team-badge team-'+esc(team)+'" onclick="openGuestTeam('+x.id+')">'+esc(teamLabels[team]||'Unassigned')+'⌄</button>')+'</td>'+
  '<td data-label="PAYMENT STATUS"><button class="payment-state '+stateClass+'" onclick="'+(foc?'openFocRole('+x.id+')':later?'openAdminPaymentNote('+x.id+')':method?'openPaymentMode('+x.id+')':'openAdminPaymentNote('+x.id+')')+'()"><i></i>'+state+'</button></td>'+
  
  
  '<td data-label="APPROVAL"><button class="approval-badge '+(status==='approved'?'yes':status==='rejected'?'no':'wait')+'" onclick="openGuestDetails('+x.id+')">'+(status==='approved'?'Approved':status==='rejected'?'Rejected':'Review')+'</button></td>'+
- '<td data-label="DUE DATE" class="due-cell">'+(due?esc(due):'—')+'</td>'+
+ '<td data-label="DUE DATE" class="due-cell">'+(status==='rejected'?'—':due?esc(due):'—')+'</td>'+
  '<td data-label="ACTIONS" data-guest-id="'+x.id+'" class="action-cell">'+(status==='verification_pending'?'<span class="pending-inline-actions"><button class="btn review-action" onclick="openGuestDetails('+x.id+')"><span class="review-alert" aria-hidden="true">⚠</span> REVIEW</button><button class="btn wa" onclick="openPendingWhatsApp('+x.id+')">WHATSAPP</button><button class="btn" onclick="statusSet('+x.id+',\'approved\')">APPROVE</button></span>':status==='approved'?'<button class="btn small review-action" onclick="openGuestDetails('+x.id+')">VIEW</button><button class="btn small wa" onclick="openApprovalWhatsAppById('+x.id+')">WHATSAPP</button>':'<button class="btn small review-action" onclick="openGuestDetails('+x.id+')">VIEW</button>')+guestActionMenu(x)+'</td></tr>';
  }).join('');
  if(!a.length)q('rows').innerHTML='<tr><td colspan="9">No registrations found.</td></tr>';
@@ -114,7 +114,7 @@ q('focRoleForm').onsubmit=async e=>{
 };
 function guestNameIndicator(x,foc,later,method){
  const status=x['Payment status'];
- const type=foc?'foc':later?'later':status==='approved'&&method?'paid':status==='rejected'?'rejected':'pending';
+ const type=status==='rejected'?'rejected':foc?'foc':later?'later':status==='approved'&&method?'paid':'pending';
  const labels={paid:'Payment received',later:'Approved · Pay Later',foc:'Complimentary guest',rejected:'Registration rejected',pending:'Awaiting verification'};
  const paths={
  paid:'<circle cx="12" cy="12" r="9"/><path d="m8 12 2.7 2.7L16 9.5"/>',
@@ -163,12 +163,12 @@ function openGuestDetails(id){
  q('guestDetailsTitle').textContent=x.Name+' · '+x.registration_code;
  q('guestDetailsBody').innerHTML=[
  ['WhatsApp',x.Whatsapp],['Care of',x.care_of],['RSVP preference',x.Preferred_family],['Heard about us',x.how_u_heard_about_us],['New to community',x.new_to_our_Community],
- ['Assigned team',teamLabels[teams.get(x.registration_code)||'unassigned']||'Unassigned'],
+ ['Assigned team',x['Payment status']==='rejected'?'Removed':teamLabels[teams.get(x.registration_code)||'unassigned']||'Unassigned'],
  ['Payment reference',x.payment_reference],['Payment method',paymentMethods.get(x.registration_code)||'—'],
  ['Payment proof',x.payment_proof?'Uploaded — ready to review':'Not uploaded'],
- ['Payment note',adminPaymentNotes.get(x.registration_code)?.note||'—'],['Due date',adminPaymentNotes.get(x.registration_code)?.due_date||payLater.get(x.registration_code)?.due_date||'—'],['FOC role',focRoles.get(x.registration_code)||'—'],['Approval',x['Payment status']||'—']
+ ['Admin remark / payment note',adminPaymentNotes.get(x.registration_code)?.note||'—'],['Due date',x['Payment status']==='rejected'?'—':adminPaymentNotes.get(x.registration_code)?.due_date||payLater.get(x.registration_code)?.due_date||'—'],['FOC role',focRoles.get(x.registration_code)||'—'],['Approval',x['Payment status']||'—']
  ].map(([k,v])=>'<div class="detail-row"><span>'+esc(k)+'</span><strong>'+esc(v||'—')+'</strong></div>').join('')+'<div class="detail-row"><span>Payment proof actions</span><strong>'+(x.payment_proof?'<button type="button" class="btn reject" onclick="proof(\''+encodeURIComponent(x.payment_proof)+'\')">VIEW PROOF</button> ':'')+'<button type="button" class="btn" onclick="openAdminProofUpload('+x.id+')">UPLOAD PROOF</button></strong></div>';
- q('guestDetailsBody').innerHTML+='<div class="review-note"><strong>RSVP Note</strong><div>'+esc(x.payment_reference||'—')+'</div></div>'+(x['Payment status']==='verification_pending'?'<div class="review-footer"><button class="btn wa" onclick="openPendingWhatsApp('+x.id+')">WHATSAPP</button><button class="btn" onclick="document.getElementById(\'guestDetailsDialog\').close();statusSet('+x.id+',\'approved\')">APPROVE</button><button class="btn reject" onclick="document.getElementById(\'guestDetailsDialog\').close();statusSet('+x.id+',\'rejected\')">REJECT</button></div>':'');q('guestDetailsDialog').showModal();
+ q('guestDetailsBody').innerHTML+='<div class="review-note"><strong>Admin Remarks</strong><div>'+esc(adminPaymentNotes.get(x.registration_code)?.note||'No remarks yet')+'</div><button type="button" class="btn" onclick="openAdminPaymentNote('+x.id+')">EDIT REMARK</button></div><div class="review-note"><strong>RSVP Note</strong><div>'+esc(x.payment_reference||'—')+'</div></div>'+(x['Payment status']==='verification_pending'?'<div class="review-footer"><button class="btn wa" onclick="openPendingWhatsApp('+x.id+')">WHATSAPP</button><button class="btn" onclick="document.getElementById(\'guestDetailsDialog\').close();statusSet('+x.id+',\'approved\')">APPROVE</button><button class="btn reject" onclick="document.getElementById(\'guestDetailsDialog\').close();statusSet('+x.id+',\'rejected\')">REJECT</button></div>':'');q('guestDetailsDialog').showModal();
 }
 function focusGuestTeam(id){const row=[...document.querySelectorAll('#rows tr')].find(tr=>tr.querySelector('[data-guest-id="'+id+'"]'));const select=row?.querySelector('.assigned-team');if(select){select.scrollIntoView({block:'center',behavior:'smooth'});select.focus()}else alert('Use the assigned team dropdown for this guest.')}
 document.addEventListener('click',e=>{document.querySelectorAll('.guest-menu[open]').forEach(d=>{if(!d.contains(e.target))d.open=false})});
@@ -394,10 +394,10 @@ async function loadTeams(){
  q('teamFilter').disabled=!teamsReady;
  q('teamNotice').textContent=teamsReady?'Assign one team per guest. RSVP preferences stay unchanged.':'Team assignment is not ready. Run admin-team-setup.sql in Supabase SQL Editor, then refresh.';
 }
-function matchesTeam(x){const f=q('teamFilter').value;return f==='all'||teamsReady&&(teams.get(x.registration_code)||'unassigned')===f}
+function matchesTeam(x){const f=q('teamFilter').value;return f==='all'||teamsReady&&x['Payment status']!=='rejected'&&(teams.get(x.registration_code)||'unassigned')===f}
 function renderTeamCounts(){
  for(const team of Object.keys(teamLabels)){
-  const count=teamsReady?data.filter(x=>(teams.get(x.registration_code)||'unassigned')===team).length:'—';
+  const count=teamsReady?data.filter(x=>x['Payment status']!=='rejected'&&(teams.get(x.registration_code)||'unassigned')===team).length:'—';
   q('teamCount-'+team).textContent=count;
  }
 }
