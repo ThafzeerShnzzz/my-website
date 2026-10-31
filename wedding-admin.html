@@ -1,382 +1,107 @@
-function openPendingWhatsApp(id){const x=data.find(v=>v.id===id);if(!x)return;let n=String(x.Whatsapp||'').replace(/\D/g,'');if(n.startsWith('00'))n=n.slice(2);if(n.startsWith('0'))n='971'+n.slice(1);if(!n){alert('WhatsApp number is missing for this guest.');return;}window.open('https://wa.me/'+n,'_blank','noopener');}
-function renderReviewQueue(){
- const list=q('reviewQueueList'),count=q('reviewQueueCount');if(!list||!count)return;
- const pendingGuests=data.filter(x=>x['Payment status']==='verification_pending');
- count.textContent=pendingGuests.length+' pending';
- list.innerHTML=pendingGuests.length?pendingGuests.map(x=>'<article class="review-queue-card"><div class="review-queue-top"><span class="review-queue-id">'+esc(x.registration_code||'—')+'</span><span class="review-queue-flag">WAITING REVIEW</span></div><div class="review-queue-name">'+esc(x.Name||'Unnamed guest')+'</div><div class="review-queue-meta">'+esc(x.care_of?'C/O · '+x.care_of:'C/O · —')+'<br>'+esc(x.Whatsapp||'—')+'</div><div class="review-queue-actions"><button type="button" class="btn reject" onclick="openGuestDetails('+x.id+')">VIEW</button><button type="button" class="btn wa" onclick="openPendingWhatsApp('+x.id+')">WHATSAPP</button><button type="button" class="btn" onclick="statusSet('+x.id+',\'approved\')">APPROVE</button></div></article>').join(''):'<div class="review-queue-empty">All caught up. No new registrations waiting for review.</div>';
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>O.K.P Control Room</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;1,600&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box}body{margin:0;background:#f4efe5;color:#221f1d;font-family:Manrope,sans-serif}.shell{display:grid;grid-template-columns:230px 1fr;min-height:100vh}.side{background:#73132f;color:#fff;padding:30px 22px;display:flex;flex-direction:column}.logo{width:105px;margin:0 auto 38px;filter:brightness(0) invert(1)}.nav{font-size:11px;letter-spacing:1px;opacity:.6;margin-bottom:10px}.navitem{padding:13px 14px;border-radius:12px;margin:3px 0;font-size:13px}.navitem.active{background:rgba(255,255,255,.13);font-weight:700}.sidefoot{margin-top:auto;font-size:10px;opacity:.55}.main{padding:38px 42px}.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:32px}.eyebrow{font-size:10px;letter-spacing:2px;color:#9a6f79;font-weight:800}.title{font:600 42px/1.05 "Playfair Display",serif;color:#4b1726;margin:7px 0}.sub{font-size:13px;color:#817773}.logout,.btn{border:0;border-radius:10px;padding:10px 13px;font:700 10px Manrope;background:#8f1739;color:#fff;cursor:pointer}.hero{display:flex;justify-content:space-between;align-items:center;background:#241e20;color:#fff;border-radius:22px;padding:23px 26px;margin-bottom:18px}.hero strong{font:600 24px "Playfair Display",serif}.hero span{display:block;font-size:11px;opacity:.62;margin-top:5px}.count{font-size:36px;font-weight:800}.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:18px 0}.stat{background:#fff;border-radius:16px;padding:18px;border:1px solid #e9dfd3}.stat b{display:block;font-size:27px;color:#73132f}.stat span{font-size:10px;color:#857873;letter-spacing:.7px}.tools{display:grid;grid-template-columns:1fr 180px auto;gap:9px;margin:20px 0 12px}.tools input,.tools select{border:1px solid #dfd4c8;background:#fff;border-radius:11px;padding:12px;font:12px Manrope}.tablewrap{background:#fff;border:1px solid #e7ddd2;border-radius:18px;overflow:auto}table{border-collapse:collapse;width:100%;min-width:1050px}th{text-align:left;padding:13px 11px;background:#f9f6f0;color:#8a7771;font-size:9px;letter-spacing:.8px}td{padding:14px 11px;border-top:1px solid #eee7df;font-size:11px}.small{padding:7px 9px;font-size:9px}.reject{background:#eee8e5;color:#604e49}.proof{background:#332d48}.copy{background:#75645d}.wa{background:#237454}.status-pill{display:inline-block;padding:7px 9px;border-radius:99px;font-size:9px;font-weight:800}.status-pill.verification_pending{background:#fff1c9;color:#8a5d00}.status-pill.approved{background:#dff3e4;color:#236b38}.status-pill.rejected{background:#f6dddd;color:#9a1b25}.meta{font-size:9px;color:#968985;margin-top:4px}#msg{font-size:11px;color:#8a1739;margin:8px 2px}
+@media(max-width:800px){.shell{display:block}.side{display:none}.main{padding:25px 14px}.title{font-size:34px}.top{align-items:flex-start}.hero{padding:20px}.stats{grid-template-columns:1fr 1fr}.tools{grid-template-columns:1fr 1fr}.tools input{grid-column:1/-1}.tablewrap{border:0;background:transparent}table,tbody,tr,td{display:block;min-width:0}thead{display:none}tr{background:#fff;border-radius:16px;margin:12px 0;padding:12px;border:1px solid #e7ddd2}td{border:0;padding:6px}td:before{content:attr(data-label);display:block;font-size:8px;color:#9a777e;font-weight:800;letter-spacing:.7px;margin-bottom:2px}}
+.foc-card{background:#fff;border:1px solid #e7ddd2;border-radius:18px;padding:22px;margin:16px 0}.foc-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.foc-card label{display:block;font-size:10px;font-weight:800}.foc-card input,.foc-card select{display:block;width:100%;margin-top:6px;padding:12px;border:1px solid #dfd4c8;border-radius:10px;font:12px Manrope}.foc-card h2{margin-top:0;color:#73132f}.foc-card p{font-size:12px}.foc-pill{display:inline-block;background:#eee6f6;color:#623481;border-radius:99px;padding:5px 8px;font-size:9px;font-weight:800}#focResult{white-space:pre-line;overflow-wrap:anywhere}@media(max-width:600px){.foc-grid{grid-template-columns:1fr}}
+.guest-summary{margin:18px 0}.guest-summary .stats{grid-template-columns:repeat(4,minmax(0,1fr))}.family-counts{min-width:0;width:100%;background:#fff;border-radius:16px;overflow:hidden}.family-counts th,.family-counts td{padding:12px}.summary-note{font-size:11px;color:#817773}@media(max-width:600px){.guest-summary .stats{grid-template-columns:1fr}.family-counts,.family-counts tbody{display:table;width:100%}.family-counts thead{display:table-header-group}.family-counts tr{display:table-row}.family-counts th,.family-counts td{display:table-cell}.family-counts td:before{display:none}}
+.pay-later-pill{display:inline-block;padding:6px 9px;border-radius:10px;background:#fff1c9;color:#805500;font-size:10px;font-weight:800}.pay-later-pill.overdue{background:#f6dddd;color:#9a1b25}.pay-dialog{border:1px solid #e7ddd2;border-radius:18px;padding:24px;width:min(440px,94vw);background:#fffaf3;color:#4b1726}.pay-dialog::backdrop{background:#0007}.pay-dialog input{display:block;width:100%;padding:12px;margin:10px 0 18px;border:1px solid #dfd4c8;border-radius:10px;font:14px Manrope}.pay-dialog p{font-size:12px}.pay-dialog .btn{margin-right:6px}
+.assigned-team{max-width:160px;padding:10px;border:1px solid #dfd4c8;border-radius:10px;background:#fff;font:12px Manrope}.tools{grid-template-columns:minmax(160px,1fr) repeat(3,minmax(120px,auto)) auto auto}@media(max-width:1100px){.tools{grid-template-columns:1fr 1fr}.tools input{grid-column:1/-1}}\n .foc-assignments{display:grid;gap:8px;margin:12px 0 20px}.foc-assignment{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 12px;border:1px solid #e8ded6;border-radius:10px}.foc-assignment strong{font-weight:700}@media(max-width:600px){.foc-assignment{flex-wrap:wrap}} </style><style>
+.guest-menu{display:inline-block;position:relative;vertical-align:middle;margin-left:5px}
+.guest-menu summary{list-style:none;cursor:pointer;border:1px solid #e1d3d0;border-radius:9px;background:#fff;color:#73132f;padding:5px 12px;font-size:21px;font-weight:800;line-height:1}
+.guest-menu summary::-webkit-details-marker{display:none}
+.guest-menu-pop{position:absolute;right:0;top:calc(100% + 5px);width:190px;z-index:100;background:#fff;border:1px solid #e7dcd3;border-radius:12px;padding:6px;box-shadow:0 10px 30px #26101929;max-height:320px;overflow:auto}
+.guest-menu-item{display:block;width:100%;text-align:left;padding:10px 11px;border:0;border-radius:7px;background:transparent;color:#3c2530;font:600 11px Manrope,sans-serif;cursor:pointer}
+.guest-menu-item:hover,.guest-menu-item:focus{background:#f7f0ee}
+.guest-menu-item.danger{color:#a02a42;border-top:1px solid #eee5df;margin-top:4px}
+.proof-present{font-size:10px;color:#386b50;font-weight:700}
+.tablewrap{overflow:visible!important}#rows tr{position:relative}#rows tr:has(.guest-menu[open]){z-index:10}
+</style><style>.admin-payment-note{margin-top:6px;max-width:190px;border-left:3px solid #b5895b;background:#fbf5e9;padding:6px 9px;border-radius:5px;font-size:10px;color:#664c36;overflow-wrap:anywhere}.admin-payment-note span{display:block}.admin-payment-note small{display:block;margin-top:3px;opacity:.8}.note-field{width:100%;box-sizing:border-box;border:1px solid #d8cabe;border-radius:10px;padding:12px;font:12px Manrope;margin:7px 0 15px}.note-info{font-size:11px;color:#7b706a}</style><style>
+.guest-table{min-width:950px}.guest-table th{font-size:10px;letter-spacing:.4px;color:#576171;background:#f7f8fa;padding:16px 12px}.guest-table td{padding:16px 12px;font-size:12px;color:#273142}.guest-table tr:hover td{background:#fcfaf7}.guest-table .name-cell strong{font-size:12px;display:block}.guest-secondary{display:block;color:#948e8b;font-size:10px;margin-top:4px}.id-cell{white-space:nowrap;color:#586479!important}.team-badge,.payment-state{display:inline-flex;align-items:center;gap:7px;border-radius:9px;padding:8px 11px;white-space:nowrap;font-size:11px;font-weight:700}.team-groom{background:#e8f2ff;color:#2766a6}.team-bride{background:#fceaf0;color:#a53864}.team-other{background:#eee8ff;color:#6c45a0}.team-unassigned{background:#f0f0f0;color:#777}.payment-state i{width:8px;height:8px;border-radius:50%;background:currentColor}.payment-state.paid{background:#e5f7ed;color:#14804b}.payment-state.later{background:#fff2db;color:#a96509}.payment-state.pending{background:#f0f1f4;color:#667085}.payment-state.rejected{background:#ffe8eb;color:#bb344d}.payment-state.foc{background:#f2e8ff;color:#7947a1}.amount-cell{white-space:nowrap;font-weight:700}.reference-cell{max-width:175px;overflow-wrap:anywhere}.reference-cell small{display:block;color:#8b7567;margin-top:5px;font-size:10px}.due-cell{white-space:nowrap;color:#a26a31!important}.action-cell{white-space:nowrap}.action-cell .wa{background:#e7f7ef;color:#16764a;border:1px solid #bfe5ce;padding:9px 11px}.guest-menu-pop{width:255px!important;max-height:420px!important;padding:7px!important}.guest-menu-title{font-size:13px;font-weight:800;padding:11px 10px;color:#352a30}.guest-menu-title small{display:block;color:#8b7f7b;font-size:10px;margin-top:4px;font-weight:500}.guest-menu-section{font-size:9px;letter-spacing:.8px;font-weight:800;color:#988c86;padding:13px 10px 5px;border-top:1px solid #eee6df;margin-top:5px}.guest-menu-item{font-size:11px!important;padding:10px 12px!important}.guest-menu[open] .guest-menu-pop{z-index:1000}.detail-row{display:flex;justify-content:space-between;gap:16px;padding:11px 0;border-bottom:1px solid #eee5df;font-size:12px}.detail-row span{color:#857973}.detail-row strong{text-align:right;overflow-wrap:anywhere}.pay-dialog{width:min(530px,94vw);padding:28px;background:#fff}.pay-dialog h2{font-size:22px}.pay-dialog .note-field{font-size:13px}.pay-dialog::backdrop{background:#1b1b1bb0}
+@media(max-width:800px){.guest-table{min-width:0}.guest-table td{padding:7px 8px}.guest-table .guest-secondary{display:block}.guest-menu-pop{right:0}.guest-table tr{position:relative}}
+</style><style>.guest-table{min-width:1120px}.guest-table td{padding:13px 11px}.guest-table .team-badge,.guest-table .payment-state{border:0;cursor:pointer;font-family:inherit}.guest-table .team-badge:hover,.guest-table .payment-state:hover{filter:brightness(.96)}.foc-role-badge{border:0;border-radius:12px;padding:7px 10px;background:#f0e8fa;color:#6943a0;font:700 10px Manrope;cursor:pointer;white-space:nowrap}.approval-badge{border:0;border-radius:9px;padding:8px 11px;font:700 10px Manrope;cursor:pointer}.approval-badge.yes{background:#e4f5e9;color:#23734a}.approval-badge.no{background:#fce9eb;color:#a52e43}.approval-badge.wait{background:#f0f0f0;color:#777}.guest-table .reference-cell{max-width:185px}.guest-table .due-cell{font-size:11px}</style>
+<style id="okp-mobile-layout-fix">
+/* Mobile-only overrides: restore compact cards and prevent inherited desktop min widths */
+@media (max-width:800px){
+ html,body{max-width:100%;overflow-x:hidden}
+ .shell{display:block;min-width:0}
+ .side{display:none}
+ .main{width:100%;min-width:0;padding:16px 12px 34px}
+ .top{display:flex;align-items:flex-start;gap:10px;flex-wrap:wrap;margin-bottom:18px}
+ .top>*,.hero>*,.tools>*{min-width:0}
+ .title{font-size:30px;line-height:1.1}
+ .sub{font-size:11px}
+ .hero{padding:16px;border-radius:14px;gap:10px}
+ .hero strong{font-size:19px}
+ .hero .count{font-size:26px}
+ .stats,.guest-summary .stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+ .stat{padding:12px;border-radius:12px;min-width:0}
+ .stat b{font-size:22px}
+ .stat span{font-size:9px;overflow-wrap:anywhere}
+ .tools{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+ .tools input{grid-column:1/-1;width:100%;min-width:0}
+ .tools select,.tools button{width:100%;max-width:100%;min-width:0;padding:11px 7px;font-size:10px}
+ .foc-card{padding:15px;border-radius:14px}
+ .foc-grid{grid-template-columns:1fr;gap:10px}
+ .family-counts{width:100%;display:table;min-width:0}
+ .family-counts th,.family-counts td{padding:8px 5px;font-size:9px}
+ .tablewrap{width:100%;max-width:100%;min-width:0;background:transparent;border:0;overflow:visible!important}
+ .guest-table,.guest-table tbody{display:block;width:100%;min-width:0!important;max-width:100%;border:0}
+ .guest-table thead{display:none}
+ .guest-table tr{display:grid!important;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:0 12px;position:relative;width:100%;min-width:0;max-width:100%;padding:13px;margin:0 0 10px;border:1px solid #e7ddd2;border-radius:15px;background:#fff;overflow:visible}
+ .guest-table td{display:block!important;min-width:0;max-width:100%;padding:7px 0!important;border:0!important;background:transparent!important;font-size:11px;white-space:normal;overflow-wrap:anywhere}
+ .guest-table td::before{content:attr(data-label);display:block;font-size:9px;color:#927e7b;font-weight:800;letter-spacing:.5px;margin-bottom:5px}
+ .guest-table td.id-cell{grid-column:1;grid-row:1;color:#876777!important;font-size:11px}
+ .guest-table td.name-cell{grid-column:1/-1;grid-row:2;padding:2px 0 11px!important;border-bottom:1px solid #eee5df!important}
+ .guest-table .name-cell strong{font-size:16px;line-height:1.35;overflow-wrap:anywhere}
+ .guest-table td[data-label="C/O"]{grid-column:1/-1;grid-row:3}
+ .guest-table td[data-label="TEAM"]{grid-column:1;grid-row:4}
+ .guest-table td[data-label="PAYMENT STATUS"]{grid-column:2;grid-row:4}
+ .guest-table td[data-label="RSVP NOTE"]{grid-column:1/-1;grid-row:5;max-width:100%}
+ 
+ .guest-table td[data-label="APPROVAL"]{grid-column:2;grid-row:6}
+ .guest-table td[data-label="DUE DATE"]{grid-column:1;grid-row:7;white-space:normal}
+ .guest-table td.action-cell{grid-column:1/-1;grid-row:8;display:flex!important;align-items:center;justify-content:flex-end;gap:8px;padding-top:12px!important;border-top:1px solid #eee5df!important;white-space:normal}
+ .guest-table .team-badge,.guest-table .payment-state,.guest-table .foc-role-badge,.guest-table .approval-badge{max-width:100%;white-space:normal;text-align:left;line-height:1.35;font-size:10px;padding:8px 9px}
+ .guest-table .payment-state i{flex:none}
+ .guest-table .reference-cell small{overflow-wrap:anywhere}
+ .action-cell .wa{min-height:37px;font-size:10px;padding:9px 12px}
+ .guest-menu{margin-left:0;position:static}
+ .guest-menu summary{min-height:37px;min-width:42px;display:flex;align-items:center;justify-content:center;font-size:22px}
+ .guest-menu-pop{position:absolute!important;top:auto!important;bottom:12px!important;left:auto!important;right:12px!important;width:min(270px,calc(100vw - 48px))!important;max-width:calc(100vw - 48px)!important;max-height:min(60vh,420px)!important;overflow-y:auto!important;overscroll-behavior:contain;z-index:200!important}
+ #rows tr:has(.guest-menu[open]){z-index:50}
+ .pay-dialog{max-width:calc(100vw - 24px);width:calc(100vw - 24px);max-height:calc(100dvh - 40px);overflow-y:auto;padding:18px;border-radius:16px}
+ .pay-dialog h2{font-size:19px}
+ .pay-dialog input,.pay-dialog select,.pay-dialog textarea{max-width:100%;min-width:0}
+ .detail-row{gap:12px}
+ .detail-row strong{max-width:56%;overflow-wrap:anywhere}
 }
-
-let teams=new Map(),teamsReady=false;
-const teamLabels={bride:"Bride",groom:"Groom",other:"Other",unassigned:"Unassigned"};
-let paymentMethods=new Map(),paymentMethodsReady=false,paymentModeGuestId=null,paymentModeBusy=false;
-
-let payLater=new Map(),payLaterReady=false,payLaterGuestId=null,payLaterBusy=false;
-function isPayLater(x){return payLater.has(x.registration_code)&&!payLater.get(x.registration_code).paid_at}
-function matchesGuestType(x){
- const type=q('guestType').value;
- return type==='all'||(type==='foc'?focReady&&focCodes.has(x.registration_code):type==='later'?payLaterReady&&isPayLater(x):focReady&&payLaterReady&&x['Payment status']==='approved'&&!focCodes.has(x.registration_code)&&!isPayLater(x));
+@media (max-width:370px){
+ .main{padding:12px 9px 25px}
+ .guest-table tr{padding:11px;gap:0 8px}
+ .guest-table .name-cell strong{font-size:15px}
+ .guest-menu-pop{right:8px!important;width:calc(100vw - 36px)!important}
 }
-function renderGuestCounts(){
- const approved=data.filter(x=>x['Payment status']==='approved');
- q('confirmedTotal').textContent=approved.length;
- q('paidTotal').textContent=focReady&&payLaterReady?approved.filter(x=>!focCodes.has(x.registration_code)&&!isPayLater(x)).length:'—';
- if(q('laterTotal'))q('laterTotal').textContent=payLaterReady?approved.filter(isPayLater).length:'—';
- q('focTotal').textContent=focReady?approved.filter(x=>focCodes.has(x.registration_code)).length:'—';
- q('guestCountNote').textContent=focReady&&payLaterReady?'Approved registrations only. Paid excludes FOC and Pay Later.':!payLaterReady?'Pay Later setup is unavailable. Run admin-pay-later-setup.sql in Supabase, then refresh. Paid totals are hidden until payment details are available.':'FOC details could not be loaded. Refresh before using guest type counts or filters.';
-
-}
-const U='https://fbdkfzstxufvmjnkzzif.supabase.co',K='sb_publishable_X1jt3-YBCSZ0Pmk0cMV4ng_TqN9LNYm';let token=sessionStorage.getItem('okp_admin_token'),data=[],focCodes=new Set(),focReady=false;const q=x=>document.getElementById(x),esc=x=>String(x??'').replace(/[&<>"]/g,a=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[a]));if(!token)location.replace('admin-v2.html');async function load(){q('msg').textContent='Loading registrations...';try{let r=await fetch(U+'/rest/v1/registrations?select=*&order=id.desc',{headers:{apikey:K,Authorization:'Bearer '+token}});if(r.status===401){sessionStorage.removeItem('okp_admin_token');location.replace('admin-v2.html');return}if(!r.ok)throw Error(await r.text());data=await r.json();await loadFocFlags();await loadFocRoles();await loadPayLater();await loadAdminPaymentNotes();await loadPaymentMethods();await loadTeams();q('msg').textContent='';render()}catch(e){q('msg').textContent='LOAD ERROR: '+e.message}}function render(){renderReviewQueue();renderGuestCounts();renderTeamCounts();q('total').textContent=data.length;q('pending').textContent=data.filter(x=>x['Payment status']==='verification_pending').length;q('approved').textContent=data.filter(x=>x['Payment status']==='approved').length;q('rejected').textContent=data.filter(x=>x['Payment status']==='rejected').length;let pc=data.filter(x=>x['Payment status']==='verification_pending').length;let at=q('actionText');if(at)at.textContent=pc?pc+' payment'+(pc===1?' is':'s are')+' waiting for verification 👀':'All caught up — no payments waiting 🎉';let s=q('search').value.toLowerCase(),f=q('filter').value,a=data.filter(x=>matchesTeam(x)&&matchesGuestType(x)&&(f==='all'||x['Payment status']===f)&&[x.registration_code,x.Name,x.Whatsapp,x.care_of,x.payment_reference].some(v=>String(v??'').toLowerCase().includes(s)));q('rows').innerHTML=a.map(x=>{
- const foc=focCodes.has(x.registration_code),later=isPayLater(x),method=paymentMethods.get(x.registration_code),status=x['Payment status'];
- const note=adminPaymentNotes.get(x.registration_code)||{},due=note.due_date||(later?payLater.get(x.registration_code)?.due_date:'')||'';
- const team=teams.get(x.registration_code)||'unassigned',role=focRoles.get(x.registration_code)||'';
- const state=foc?'FOC':later?'Pay Later':method?'Paid':status==='rejected'?'Rejected':'Pending';
- const stateClass=foc?'foc':later?'later':method?'paid':status==='rejected'?'rejected':'pending';
- const ref=String(x.payment_reference||'').trim();
- return '<tr><td data-label="OKP ID" class="id-cell">'+esc(x.registration_code)+'</td>'+
- '<td data-label="NAME" class="name-cell"><strong>'+esc(x.Name)+'</strong>'+guestNameIndicator(x,foc,later,method)+'</td>'+
- '<td data-label="C/O">'+esc(x.care_of||'—')+'</td>'+
- '<td data-label="TEAM"><button class="team-badge team-'+esc(team)+'" onclick="openGuestTeam('+x.id+')">'+esc(teamLabels[team]||'Unassigned')+'⌄</button></td>'+
- '<td data-label="PAYMENT STATUS"><button class="payment-state '+stateClass+'" onclick="'+(foc?'openFocRole('+x.id+')':later?'openAdminPaymentNote('+x.id+')':method?'openPaymentMode('+x.id+')':'openAdminPaymentNote('+x.id+')')+'()"><i></i>'+state+'</button></td>'+
- '<td data-label="RSVP NOTE" class="reference-cell">'+esc(ref||'—')+(note.note?'<small>'+esc(note.note)+'</small>':'')+'</td>'+
- '<td data-label="FOC">'+(foc?'<button class="foc-role-badge" onclick="openFocRole('+x.id+')">'+esc(role||'Set FOC role')+'</button>':'—')+'</td>'+
- '<td data-label="APPROVAL"><button class="approval-badge '+(status==='approved'?'yes':status==='rejected'?'no':'wait')+'" onclick="openGuestDetails('+x.id+')">'+(status==='approved'?'Approved':status==='rejected'?'Rejected':'Review')+'</button></td>'+
- '<td data-label="DUE DATE" class="due-cell">'+(due?esc(due):'—')+'</td>'+
- '<td data-label="ACTIONS" data-guest-id="'+x.id+'" class="action-cell">'+(status==='approved'?'<button class="btn small wa" onclick="openApprovalWhatsAppById('+x.id+')">WHATSAPP</button>':'')+guestActionMenu(x)+'</td></tr>';
- }).join('');
- if(!a.length)q('rows').innerHTML='<tr><td colspan="10">No registrations found.</td></tr>';
-}let adminPaymentNotes=new Map(),adminPaymentNotesReady=false,adminPaymentNoteBusy=false,adminPaymentNoteGuestId=null;
-async function loadAdminPaymentNotes(){
- adminPaymentNotesReady=false;adminPaymentNotes=new Map();
- try{
-  const r=await fetch(U+'/rest/v1/okp_admin_payment_notes?select=registration_code,note,due_date',{headers:{apikey:K,Authorization:'Bearer '+token}});
-  if(!r.ok)throw Error('Payment notes setup required');
-  adminPaymentNotes=new Map((await r.json()).map(x=>[x.registration_code,x]));adminPaymentNotesReady=true;
- }catch(e){console.warn('Payment notes require admin-payment-notes-setup.sql');}
-}
-function adminPaymentNoteBadge(x){
- const item=adminPaymentNotes.get(x.registration_code);if(!item||(!item.note&&!item.due_date))return '';
- return '<div class="admin-payment-note" title="'+esc(item.note||'')+'">'+(item.note?'<span>'+esc(item.note)+'</span>':'')+(item.due_date?'<small>Due '+esc(item.due_date)+'</small>':'')+'</div>';
-}
-function openAdminPaymentNote(id){
- const x=data.find(v=>v.id===id);if(!x)return;
- if(!adminPaymentNotesReady){alert('Payment notes storage is not configured yet. Run admin-payment-notes-setup.sql in Supabase SQL Editor and refresh.');return;}
- adminPaymentNoteGuestId=id;
- const current=adminPaymentNotes.get(x.registration_code)||{};
- q('adminPaymentNoteGuest').textContent=x.Name+' · '+x.registration_code;
- q('adminPaymentNoteText').value=current.note||'';
- q('adminPaymentNoteDate').value=current.due_date||'';
- q('adminPaymentNoteError').textContent='';
- q('adminPaymentNoteDialog').showModal();
-}
-q('adminPaymentNoteCancel').onclick=()=>{if(!adminPaymentNoteBusy)q('adminPaymentNoteDialog').close()};
-q('adminPaymentNoteDialog').addEventListener('cancel',e=>{if(adminPaymentNoteBusy)e.preventDefault()});
-q('adminPaymentNoteForm').onsubmit=async e=>{
- e.preventDefault();if(adminPaymentNoteBusy)return;
- const x=data.find(v=>v.id===adminPaymentNoteGuestId);if(!x)return;
- const note=q('adminPaymentNoteText').value.trim(),due=q('adminPaymentNoteDate').value;
- adminPaymentNoteBusy=true;q('adminPaymentNoteSave').disabled=true;q('adminPaymentNoteError').textContent='Saving...';
- try{
-  const r=await fetch(U+'/rest/v1/okp_admin_payment_notes?on_conflict=registration_code',{method:'POST',headers:{apikey:K,Authorization:'Bearer '+token,'Content-Type':'application/json',Prefer:'resolution=merge-duplicates,return=minimal'},body:JSON.stringify({registration_code:x.registration_code,note,due_date:due||null})});
-  if(!r.ok)throw Error((await r.text()).slice(0,350));
-  adminPaymentNotes.set(x.registration_code,{note,due_date:due||null});q('adminPaymentNoteDialog').close();render();
- }catch(err){q('adminPaymentNoteError').textContent='Could not save: '+err.message}
- finally{adminPaymentNoteBusy=false;q('adminPaymentNoteSave').disabled=false}
-};
-let focRoles=new Map(),focRolesReady=false,focRoleBusy=false;
-async function loadFocRoles(){
- focRolesReady=false;focRoles=new Map();
- try{const r=await fetch(U+'/rest/v1/okp_admin_foc_roles?select=registration_code,role',{headers:{apikey:K,Authorization:'Bearer '+token}});
- if(!r.ok)throw Error('FOC role setup needed');focRoles=new Map((await r.json()).map(x=>[x.registration_code,x.role]));focRolesReady=true;}
- catch(e){console.warn('Run admin-foc-roles-setup.sql for role editing');}
-}
-function openFocRole(id){
- const x=data.find(v=>v.id===id);if(!x||!focCodes.has(x.registration_code))return;
- if(!focRolesReady){alert('FOC roles need one-time Supabase setup: admin-foc-roles-setup.sql');return;}
- q('focRoleGuest').textContent=x.Name+' · '+x.registration_code;
- const role=focRoles.get(x.registration_code)||'';
- q('focRoleSelect').value=['OKP Photographer','OKP Video Team','OKP Flower Girl','OKP Dance Team'].includes(role)?role:(role?'Other':'');
- q('focRoleOther').value=q('focRoleSelect').value==='Other'?role:'';
- q('focRoleOther').hidden=q('focRoleSelect').value!=='Other';
- q('focRoleError').textContent='';q('focRoleDialog').showModal();q('focRoleDialog').dataset.guestId=String(id);
-}
-q('focRoleSelect').onchange=()=>{q('focRoleOther').hidden=q('focRoleSelect').value!=='Other'};
-q('focRoleCancel').onclick=()=>{if(!focRoleBusy)q('focRoleDialog').close()};
-q('focRoleForm').onsubmit=async e=>{
- e.preventDefault();if(focRoleBusy)return;
- const x=data.find(v=>v.id===Number(q('focRoleDialog').dataset.guestId));if(!x)return;
- const role=(q('focRoleSelect').value==='Other'?q('focRoleOther').value:q('focRoleSelect').value).trim();
- if(!role)return;
- focRoleBusy=true;q('focRoleSave').disabled=true;q('focRoleError').textContent='Saving...';
- try{const r=await fetch(U+'/rest/v1/okp_admin_foc_roles?on_conflict=registration_code',{method:'POST',headers:{apikey:K,Authorization:'Bearer '+token,'Content-Type':'application/json',Prefer:'resolution=merge-duplicates,return=minimal'},body:JSON.stringify({registration_code:x.registration_code,role})});
- if(!r.ok)throw Error((await r.text()).slice(0,250));focRoles.set(x.registration_code,role);q('focRoleDialog').close();render();}
- catch(err){q('focRoleError').textContent=err.message}finally{focRoleBusy=false;q('focRoleSave').disabled=false}
-};
-function guestNameIndicator(x,foc,later,method){
- const status=x['Payment status'];
- const type=foc?'foc':later?'later':status==='approved'&&method?'paid':status==='rejected'?'rejected':'pending';
- const labels={paid:'Payment received',later:'Approved · Pay Later',foc:'Complimentary guest',rejected:'Registration rejected',pending:'Awaiting verification'};
- const paths={
- paid:'<circle cx="12" cy="12" r="9"/><path d="m8 12 2.7 2.7L16 9.5"/>',
- later:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
- pending:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
- foc:'<path d="m12 3 2.4 6.6L21 12l-6.6 2.4L12 21l-2.4-6.6L3 12l6.6-2.4L12 3Z"/>',
- rejected:'<path d="M5 5 19 19M19 5 5 19"/>'
- };
- return '<span class="guest-name-indicator guest-name-indicator--'+type+'" role="img" aria-label="'+labels[type]+'" title="'+labels[type]+'"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">'+paths[type]+'</svg></span>';
-}
-function guestActionMenu(x){
- const id=x.id,code=esc(x.registration_code),items=[];
- const add=(label,call,kind='')=>items.push('<button type="button" class="guest-menu-item '+kind+'" onclick="this.closest(\'details\').open=false;'+call+'">'+label+'</button>');
- const section=label=>items.push('<div class="guest-menu-section">'+label+'</div>');
- add('Guest Details','openGuestDetails('+id+')');
- if(x['Payment status']==='approved')add('Invite / Admit Card','openInvitationById('+id+')');
- section('PAYMENT');
- if(paymentMethodsReady&&focReady&&!focCodes.has(x.registration_code))add(isPayLater(x)?'Record Payment':'Set Payment Mode','openPaymentMode('+id+')');
- if(payLaterReady&&focReady&&!focCodes.has(x.registration_code)){
-  if(isPayLater(x)){add('Edit Pay Later Date','openPayLater('+id+')');if(x['Payment status']==='approved')add('Mark Paid','markLaterPaid('+id+')')}
-  else add('Pay Later','openPayLater('+id+')');
- }
- add('Payment Due Date / Note','openAdminPaymentNote('+id+')');
- section('PAYMENT PROOF');
- if(x.payment_proof)add('View Payment Proof','proof(\''+encodeURIComponent(x.payment_proof)+'\')');
- add('Upload Payment Proof','openAdminProofUpload('+id+')');
- section('GUEST MANAGEMENT');
- if(focCodes.has(x.registration_code))add('Set FOC Role','openFocRole('+id+')');
- if(teamsReady)add('Edit Team','openGuestTeam('+id+')');
- if(x['Payment status']!=='approved')add('Approve Registration','statusSet('+id+',\'approved\')');
- if(x['Payment status']!=='rejected')add('Reject Registration','statusSet('+id+',\'rejected\')');
- section('OTHER');
- add('Delete Guest','deleteRow('+id+',\''+code+'\')','danger');
- return '<details class="guest-menu"><summary aria-label="Actions for '+esc(x.Name)+'" title="More actions">⋯</summary><div class="guest-menu-pop"><div class="guest-menu-title">Guest Actions<small>'+esc(x.registration_code)+' · '+esc(x.Name)+'</small></div>'+items.join('')+'</div></details>';
-}
-function openGuestTeam(id){
- const x=data.find(v=>v.id===id);if(!x)return;
- q('guestTeamGuest').textContent=x.Name+' · '+x.registration_code;
- q('guestTeamSelect').innerHTML=Object.entries(teamLabels).map(([key,label])=>'<option value="'+esc(key)+'">'+esc(label)+'</option>').join('');
- q('guestTeamSelect').value=teams.get(x.registration_code)||'unassigned';
- q('guestTeamDialog').showModal();
- q('guestTeamSave').onclick=async()=>{await saveTeam(id,q('guestTeamSelect'));q('guestTeamDialog').close()};
-}
-function openGuestDetails(id){
- const x=data.find(v=>v.id===id);if(!x)return;
- q('guestDetailsTitle').textContent=x.Name+' · '+x.registration_code;
- q('guestDetailsBody').innerHTML=[
- ['WhatsApp',x.Whatsapp],['Care of',x.care_of],['RSVP preference',x.Preferred_family],
- ['Assigned team',teamLabels[teams.get(x.registration_code)||'unassigned']||'Unassigned'],
- ['Payment reference',x.payment_reference],['Payment method',paymentMethods.get(x.registration_code)||'—'],
- ['Payment proof',x.payment_proof?'Saved':'Not uploaded'],
- ['Payment note',adminPaymentNotes.get(x.registration_code)?.note||'—'],['Due date',adminPaymentNotes.get(x.registration_code)?.due_date||payLater.get(x.registration_code)?.due_date||'—'],['FOC role',focRoles.get(x.registration_code)||'—'],['Approval',x['Payment status']||'—']
- ].map(([k,v])=>'<div class="detail-row"><span>'+esc(k)+'</span><strong>'+esc(v||'—')+'</strong></div>').join('');
- q('guestDetailsDialog').showModal();
-}
-function focusGuestTeam(id){const row=[...document.querySelectorAll('#rows tr')].find(tr=>tr.querySelector('[data-guest-id="'+id+'"]'));const select=row?.querySelector('.assigned-team');if(select){select.scrollIntoView({block:'center',behavior:'smooth'});select.focus()}else alert('Use the assigned team dropdown for this guest.')}
-document.addEventListener('click',e=>{document.querySelectorAll('.guest-menu[open]').forEach(d=>{if(!d.contains(e.target))d.open=false})});
-function copyId(v){navigator.clipboard.writeText(v).then(()=>{}).catch(()=>{});}async function statusSet(id,s){if(s==='approved'&&paymentMethodsReady&&!focCodes.has(data.find(x=>x.id===id)?.registration_code)){openPaymentMode(id);return;}if(data.some(x=>x.id===id&&x['Payment status']===s))return;if(!confirm((s==='approved'?'Approve':'Reject')+' this registration?'))return;let x=data.find(v=>v.id===id);let wa=null;if(s==='approved'&&x){let d=String(x.Whatsapp??'').replace(/\D/g,'');if(d.startsWith('0'))d='971'+d.slice(1);if(d){let m='💌 *O.K.P · WEDDING HOUSE*\n\nHey *'+(x.Name||'')+'!*\n*You’re officially on the guest list! ❤️*\n\nRegistration confirmed ✓\nRegistration ID: *'+(x.registration_code||'')+'*\n\nKeep your ID safe — you’ll need it at the Wedding House. 😉\n\n*See you at O.K.P! ✨*\n\n_Oru Kalyanam Pole_\nIsteda Community';wa=window.open('https://wa.me/'+d+'?text='+encodeURIComponent(m),'_blank')}}let r=await fetch(U+'/rest/v1/registrations?id=eq.'+id,{method:'PATCH',headers:{apikey:K,Authorization:'Bearer '+token,'Content-Type':'application/json',Prefer:'return=minimal'},body:JSON.stringify({'Payment status':s})});if(!r.ok){alert('Update failed: '+await r.text());return}if(x)x['Payment status']=s;render();if(s==='approved'&&x&&!wa){alert('Approved ✓\nUse the WHATSAPP button to send confirmation.')}}function openApprovalWhatsAppById(id){let x=data.find(v=>v.id===id);if(x)openApprovalWhatsApp(x)}function openInvitationById(id){let x=data.find(v=>v.id===id);if(x)openInvitation(x)}function openApprovalWhatsApp(x){let d=String(x.Whatsapp??'').replace(/\D/g,'');if(!d){alert('Approved, but this guest has no WhatsApp number.');return}if(d.startsWith('0'))d='971'+d.slice(1);let m='💌 *O.K.P · WEDDING HOUSE*\n\nHey *'+(x.Name||'')+'!*\n*You’re officially on the guest list! ❤️*\n\nRegistration confirmed ✓\nRegistration ID: *'+(x.registration_code||'')+'*\n\nKeep your ID safe — you’ll need it at the Wedding House. 😉\n\n*See you at O.K.P! ✨*\n\n_Oru Kalyanam Pole_\nIsteda Community';window.open('https://wa.me/'+d+'?text='+encodeURIComponent(m),'_blank')}async function deleteRow(id,code){if(!confirm('DELETE '+code+' permanently?\n\nThis cannot be undone.'))return;let r=await fetch(U+'/rest/v1/registrations?id=eq.'+id,{method:'DELETE',headers:{apikey:K,Authorization:'Bearer '+token,Prefer:'return=minimal'}});if(!r.ok){alert('Delete failed. Admin DELETE permission may need to be enabled.\n'+await r.text());return}data=data.filter(x=>x.id!==id);render()}function openInvitation(x){if(!focReady){alert('Guest type could not be verified. Refresh the admin panel before creating the admit card.');return}let isFoc=focCodes.has(x.registration_code);let w=window.open('','_blank');if(!w){alert('Please allow pop-ups to view the invitation.');return}let name=esc(x.Name||'Guest'),code=esc(x.registration_code||''),care=esc(x.care_of||'—'),phone=esc(x.Whatsapp||'—');w.document.write(`<!doctype html><html><head><meta name="viewport" content="width=device-width,initial-scale=1"><title>${code} · O.K.P Admit Card</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Allura&family=Cormorant+Garamond:wght@400;500;600;700&family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet"><script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"><\/script><script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"><\/script><style>:root{--paper:#f8efd9;--red:#b20f3b;--red-dark:#8f0c31;--ink:#403322;--gold:#b99a57}*{box-sizing:border-box}html,body{margin:0;background:#efe7d7;color:var(--ink);font-family:'Cormorant Garamond',Georgia,serif}.stage{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px}.card{width:108mm;height:171mm;position:relative;overflow:hidden;padding:9mm;background:linear-gradient(135deg,#fbf4e3 0%,var(--paper) 48%,#f5e5c5 100%);box-shadow:none}.card:before{content:"";position:absolute;inset:0;opacity:.13;background-image:radial-gradient(rgba(70,40,15,.35) .35px,transparent .45px),radial-gradient(rgba(255,255,255,.8) .45px,transparent .55px);background-size:5px 5px,9px 9px}.flower{position:absolute;color:rgba(178,15,59,.22);font-size:34pt;line-height:1}.f1{left:-4mm;top:12mm;transform:rotate(-16deg)}.f2{right:-3mm;top:36mm;transform:rotate(18deg)}.f3{left:5mm;bottom:8mm;font-size:23pt}.paper{height:100%;position:relative;z-index:2;border-top:1px solid rgba(178,15,59,.28);border-bottom:1px solid rgba(178,15,59,.28);padding:6mm 5mm 5mm;text-align:center;display:flex;flex-direction:column;align-items:center}.top{font:500 6.5pt 'Montserrat',sans-serif;letter-spacing:3px;color:var(--red-dark)}.logo{width:72mm;max-height:34mm;object-fit:contain;margin:4mm auto 2mm}.stay{font:500 6pt 'Montserrat',sans-serif;letter-spacing:2.7px;color:var(--red-dark)}.script{font:400 27pt Allura,cursive;color:var(--red);margin:3mm 0 0}.headline{font-weight:600;font-size:20pt;line-height:.95;color:var(--red-dark);margin:0}.lead{font-size:10.5pt;line-height:1.4;margin:2mm 0;color:var(--ink)}.name{font-size:23pt;font-weight:600;color:var(--red);line-height:1;margin:1mm 0 2mm}.guestmeta{display:flex;gap:4mm;justify-content:center;align-items:center;font:500 6.5pt 'Montserrat',sans-serif;letter-spacing:.8px;color:var(--red-dark);margin:1mm 0 2mm}.guestmeta span+span{border-left:1px solid rgba(178,15,59,.25);padding-left:4mm}.rule{width:20mm;border-top:1px solid rgba(178,15,59,.35);margin:1mm auto 2mm}.details{width:100%;display:grid;grid-template-columns:1fr 1fr;border-top:1px solid rgba(178,15,59,.22);border-bottom:1px solid rgba(178,15,59,.22);padding:3mm 0;margin-top:1mm}.details>div+div{border-left:1px solid rgba(178,15,59,.18)}.label{font:500 5.5pt 'Montserrat',sans-serif;letter-spacing:1.8px;color:var(--red-dark)}.value{font:600 10.5pt 'Cormorant Garamond',serif;color:var(--ink);margin-top:1.5mm}.confirmed{color:var(--red)}.note{font-style:italic;font-size:9pt;margin:3mm 0 0}.foot{margin-top:auto;width:100%;flex:0 0 auto;padding:0 0 3mm;border:0}.midstamp{margin:4mm auto 2mm!important;flex:0 0 auto}.admit{width:17mm;height:17mm;border:1px solid var(--red);border-radius:50%;display:grid;place-items:center;margin:0 auto;color:var(--red);background:transparent;padding:2mm;font:600 4.3pt/1.2 'Montserrat',sans-serif;letter-spacing:1px;transform:rotate(-5deg);text-align:center}.closing{font-size:8.5pt;margin-top:2mm}.orn{color:var(--red);font-size:11pt;letter-spacing:7px;margin-top:1.5mm}.outfit-stamp-row{display:flex;align-items:center;justify-content:space-between;gap:5mm;width:100%;margin:5mm 0 2mm;flex:0 0 auto}.pack-note{font:500 7pt/1.7 'Montserrat',sans-serif;color:var(--red-dark);text-align:left;margin:0;flex:1;min-width:0}.pack-title{font-size:5.8pt;font-weight:600;letter-spacing:1px;margin-bottom:1mm}.outfit-stamp-row .midstamp{margin:0!important;flex:0 0 17mm}.bottom-note{font:400 6.6pt/1.2 'Cormorant Garamond',Georgia,serif;font-style:italic;color:rgba(64,51,34,.46);margin:0 auto;max-width:76mm;text-align:center}.actions{display:flex;gap:8px;margin-top:16px}.actions button{border:1px solid var(--red-dark);padding:11px 15px;font:600 9px 'Montserrat',sans-serif;letter-spacing:1px;cursor:pointer}.share{background:var(--red);color:var(--paper)}.print{background:var(--paper);color:var(--red-dark)}@page{size:108mm 171mm;margin:0}@media print{html,body{width:108mm;height:171mm;background:var(--paper)!important;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}.stage{display:block;min-height:0;padding:0}.card{width:108mm;height:171mm;margin:0;box-shadow:none;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}.actions{display:none}}</style></head><body><div class="stage"><div class="card"><span class="flower f1">❀</span><span class="flower f2">❀</span><span class="flower f3">✿</span><div class="paper"><div class="top">ISTEDA COMMUNITY PRESENTS</div><img src="okp1.png" class="logo"><div class="stay">STAYCATION 3.0 · WEDDING HOUSE</div><div class="script">You’re invited</div><div class="headline">to our little wedding universe.</div><div class="lead">A place has been kept for</div><div class="name">${name}</div><div class="guestmeta"><span>C/O&nbsp; ${care}</span><span>${phone}</span></div><div class="rule"></div><div class="details"><div><div class="label">REGISTRATION</div><div class="value">${code}</div></div><div><div class="label">STATUS</div><div class="value confirmed">CONFIRMED ✓</div></div></div><div class="outfit-stamp-row"><div class="pack-note"><div class="pack-title">PACK YOUR OUTFITS</div><div>Party Wear<br>Yellow for Haldi<br>Pool / Foam Party Wear</div></div><div class="admit midstamp"${isFoc?' style="border-color:#a58336;color:#a58336"':''}>ADMIT ONE<br>WEDDING HOUSE${isFoc?'<svg viewBox="0 0 16 16" width="10" height="10" style="display:block;margin:1px auto 0" aria-hidden="true"><path fill="currentColor" d="M8 0L10 6L16 8L10 10L8 16L6 10L0 8L6 6Z"/></svg>':''}</div></div><div class="foot"><div class="bottom-note">Keep this card close — the Wedding House knows you by this.</div></div></div></div><div class="actions"><button class="share" onclick="saveCardImage(this)">SAVE ADMIT CARD</button><button class="share" onclick="shareCard()">SHARE INVITATION</button><button class="print" onclick="savePDF(this)">SAVE AS PDF</button></div></div><script>async function saveCardImage(btn){const old=btn.textContent;btn.disabled=true;btn.textContent='SAVING CARD...';try{await document.fonts.ready;const card=document.querySelector('.card');const canvas=await html2canvas(card,{scale:4,useCORS:true,backgroundColor:'#f8efd9',logging:false,width:card.offsetWidth,height:card.offsetHeight});const blob=await new Promise(r=>canvas.toBlob(r,'image/png'));const file=new File([blob],'ADMIT CARD ${code}.png',{type:'image/png'});if(navigator.share&&(!navigator.canShare||navigator.canShare({files:[file]}))){await navigator.share({files:[file],title:'O.K.P · ${code}'})}else{const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=file.name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),30000)}}catch(e){if(!e||e.name!=='AbortError')alert('Could not save the admit card. Please try again.')}finally{btn.disabled=false;btn.textContent=old}}async function savePDF(btn){const old=btn.textContent;btn.disabled=true;btn.textContent='CREATING PDF...';try{await document.fonts.ready;const card=document.querySelector('.card');const canvas=await html2canvas(card,{scale:4,useCORS:true,backgroundColor:'#f8efd9',logging:false,width:card.offsetWidth,height:card.offsetHeight});const img=canvas.toDataURL('image/png');const {jsPDF}=window.jspdf;const pdf=new jsPDF({orientation:'portrait',unit:'mm',format:[108,171],compress:true});pdf.addImage(img,'PNG',0,0,108,171,undefined,'FAST');pdf.save('ADMIT CARD ${code}.pdf')}catch(e){alert('Could not create PDF. Please try again.')}finally{btn.disabled=false;btn.textContent=old}}async function shareCard(){try{await document.fonts.ready;const card=document.querySelector('.card');const canvas=await html2canvas(card,{scale:3,useCORS:true,backgroundColor:'#f8efd9',logging:false});const img=canvas.toDataURL('image/jpeg',0.98);const {jsPDF}=window.jspdf;const pdf=new jsPDF({orientation:'portrait',unit:'mm',format:[108,171],compress:true});pdf.addImage(img,'JPEG',0,0,108,171,undefined,'FAST');const file=new File([pdf.output('blob')],'${code}.pdf',{type:'application/pdf'});if(navigator.share&&(!navigator.canShare||navigator.canShare({files:[file]}))){await navigator.share({files:[file],title:'O.K.P · ${code}'})}else{const a=document.createElement('a');a.href=URL.createObjectURL(file);a.download=file.name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),30000)}}catch(e){if(!e||e.name!=='AbortError')alert('Could not share the PDF. Please try again.')}}<\/script></body></html>`);w.document.close()}let adminProofGuestId=null,adminProofBusy=false;
-function openAdminProofUpload(id){
- const guest=data.find(x=>x.id===id);if(!guest)return;
- adminProofGuestId=id;
- q('adminProofGuest').textContent=guest.Name+' · '+guest.registration_code;
- q('adminProofFile').value='';
- q('adminProofError').textContent=guest.payment_proof?'Uploading a new proof will replace the existing proof reference.':'';
- q('adminProofDialog').showModal();
-}
-q('adminProofCancel').onclick=()=>{if(!adminProofBusy)q('adminProofDialog').close()};
-q('adminProofDialog').addEventListener('cancel',e=>{if(adminProofBusy)e.preventDefault()});
-q('adminProofForm').onsubmit=async e=>{
- e.preventDefault();if(adminProofBusy)return;
- const guest=data.find(x=>x.id===adminProofGuestId),file=q('adminProofFile').files[0];
- if(!guest||!file)return;
- if(!['image/jpeg','image/png','application/pdf'].includes(file.type)||file.size>5*1024*1024){q('adminProofError').textContent='Choose JPG, PNG or PDF up to 5 MB.';return}
- adminProofBusy=true;q('adminProofSave').disabled=true;q('adminProofError').textContent='Uploading...';
- try{
-  const ext=file.type==='application/pdf'?'pdf':file.type==='image/png'?'png':'jpg';
-  const path='admin/'+encodeURIComponent(guest.registration_code)+'/'+Date.now()+'-'+Math.random().toString(36).slice(2)+'.'+ext;
-  const upload=await fetch(U+'/storage/v1/object/payment-proofs/'+path,{method:'POST',headers:{apikey:K,Authorization:'Bearer '+token,'Content-Type':file.type,'x-upsert':'false'},body:file});
-  if(!upload.ok)throw Error('Storage upload failed: '+(await upload.text()));
-  const saved=await fetch(U+'/rest/v1/registrations?id=eq.'+guest.id,{method:'PATCH',headers:{apikey:K,Authorization:'Bearer '+token,'Content-Type':'application/json',Prefer:'return=minimal'},body:JSON.stringify({payment_proof:path})});
-  if(!saved.ok)throw Error('Proof uploaded, but linking to guest failed: '+(await saved.text()));
-  guest.payment_proof=path;q('adminProofDialog').close();render();
- }catch(error){q('adminProofError').textContent=error.message}
- finally{adminProofBusy=false;q('adminProofSave').disabled=false}
-};
-async function proof(encoded){let path=decodeURIComponent(encoded);let r=await fetch(U+'/storage/v1/object/sign/payment-proofs/'+path,{method:'POST',headers:{apikey:K,Authorization:'Bearer '+token,'Content-Type':'application/json'},body:JSON.stringify({expiresIn:120})});let j=await r.json();if(!r.ok){alert('Could not open proof.');return}let url=j.signedURL||j.signedUrl;if(url&&!url.startsWith('http'))url=U+'/storage/v1'+url;window.open(url,'_blank')}q('guestType').onchange=render;q('search').oninput=render;q('filter').onchange=render;q('refresh').onclick=load;q('logout').onclick=()=>{sessionStorage.removeItem('okp_admin_token');location.replace('admin-v2.html')};load();
-
-async function exportExcel(){
- const button=q('exportExcel');if(!payLaterReady||!focReady){alert('Refresh after completing Pay Later setup before exporting payment classifications.');return}if(!token||!data.length){alert('No registrations available to export.');return}
- button.disabled=true;button.textContent='PREPARING EXCEL...';
- try{
-  if(!window.XLSX){
-   await new Promise((resolve,reject)=>{const s=document.createElement('script');s.src='https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js';s.onload=resolve;s.onerror=reject;document.head.appendChild(s)});
-  }
-  const filter=q('filter').value,search=q('search').value.trim().toLowerCase();
-  const guests=data.filter(x=>matchesTeam(x)&&matchesGuestType(x)&&(filter==='all'||x['Payment status']===filter)&&[x.registration_code,x.Name,x.Whatsapp,x.care_of,x.payment_reference].some(v=>String(v??'').toLowerCase().includes(search)));
-  const safe=v=>{const s=String(v??'');return /^[=+@\\-]/.test(s)?String.fromCharCode(39)+s:s};
-  const rows=guests.map(x=>({'OKP ID':safe(x.registration_code),'Guest Name':safe(x.Name),'WhatsApp':safe(x.Whatsapp),'Isteda Contact (C/O)':safe(x.care_of),'Family Preference':safe(x.Preferred_family),'Assigned Team':teamsReady?teamLabels[teams.get(x.registration_code)||'unassigned']:'Unavailable','New to Community':safe(x.new_to_our_Community),'Heard About Us':safe(x.how_u_heard_about_us),'Payment Reference':safe(x.payment_reference),'Payment Status':safe(x['Payment status']),'Guest Type':focCodes.has(x.registration_code)?'FOC':isPayLater(x)?'Pay Later':x['Payment status']==='approved'?'Paid':'Pending / Rejected','Payment Due Date':safe(payLater.get(x.registration_code)?.due_date),'Paid At':safe(payLater.get(x.registration_code)?.paid_at),'Payment Method':safe(paymentMethodsReady?(paymentMethods.get(x.registration_code)||'Not assigned'):'Unavailable')}));
-  const sheet=XLSX.utils.json_to_sheet(rows,{header:['OKP ID','Guest Name','WhatsApp','Isteda Contact (C/O)','Family Preference','Assigned Team','New to Community','Heard About Us','Payment Reference','Payment Status','Guest Type','Payment Due Date','Paid At','Payment Method']});
-  sheet['!cols']=[{wch:18},{wch:26},{wch:20},{wch:28},{wch:22},{wch:20},{wch:22},{wch:25},{wch:20}];
-  const book=XLSX.utils.book_new();XLSX.utils.book_append_sheet(book,sheet,'Guests');
-  XLSX.writeFile(book,'OKP_Guest_List_'+new Date().toISOString().slice(0,10)+'.xlsx');
- }catch(e){console.error(e);alert('Excel export failed. Please try again.')}
- finally{button.disabled=false;button.textContent='DOWNLOAD EXCEL'}
-}
-q('exportExcel').onclick=exportExcel;
-
-async function loadFocFlags(){
- focReady=false;focCodes=new Set();q('saveFoc').disabled=true;
- try{
-  const response=await fetch(U+'/rest/v1/okp_complimentary_guests?select=registration_code',{headers:{apikey:K,Authorization:'Bearer '+token}});
-  if(!response.ok)throw new Error('FOC setup is unavailable');
-  const flags=await response.json();focCodes=new Set(flags.map(x=>x.registration_code));focReady=true;q('saveFoc').disabled=false;
-  q('focResult').textContent='';
- }catch(e){q('focResult').textContent='FOC registration is not ready. Run admin-foc-setup.sql in Supabase SQL Editor first. Existing registrations still work.'}
-}
-q('addFoc').onclick=()=>{q('focPanel').hidden=!q('focPanel').hidden;q('addFoc').setAttribute('aria-expanded',String(!q('focPanel').hidden));if(!q('focPanel').hidden)q('focForm').elements.name.focus()};
-q('cancelFoc').onclick=()=>{q('focPanel').hidden=true;q('addFoc').setAttribute('aria-expanded','false')};
-q('focForm').onsubmit=async event=>{
- event.preventDefault();if(!focReady||q('saveFoc').disabled)return;
- const form=event.currentTarget,fields=new FormData(form),button=q('saveFoc');
- let phone=String(fields.get('whatsapp')||'').trim().replace(/[\s()-]/g,'');
- if(/^05\d{8}$/.test(phone))phone='+971'+phone.slice(1);
- else if(/^9715\d{8}$/.test(phone))phone='+'+phone;
- if(!/^\+9715\d{8}$/.test(phone)){q('focResult').textContent='Enter a valid UAE WhatsApp number.';return}
- const name=String(fields.get('name')||'').trim();
- if(!name){q('focResult').textContent='Enter the guest name.';return}
- button.disabled=true;button.textContent='SAVING...';q('focResult').textContent='';
- try{
-  const response=await fetch(U+'/rest/v1/rpc/admin_add_okp_foc_guest',{
-   method:'POST',headers:{apikey:K,Authorization:'Bearer '+token,'Content-Type':'application/json'},
-   body:JSON.stringify({p_name:name,p_whatsapp:phone,p_preferred_family:fields.get('family'),p_new_to_community:fields.get('new'),p_heard_about_us:fields.get('heard'),p_care_of:String(fields.get('care')||'').trim()})
-  });
-  const result=await response.json();
-  if(!response.ok)throw new Error(result.message||'Could not save this guest.');
-  if(typeof result!=='string'||!result)throw new Error('No registration code returned. Refresh the guest list before trying again.');
-  form.reset();q('search').value='';q('filter').value='all';q('guestType').value='all';await load();
-  q('focResult').textContent=name+' registered successfully.\nRegistration ID: '+result+'\nStatus: Approved';
- }catch(e){q('focResult').textContent=e.message+' Check the guest list before retrying.'}
- finally{button.disabled=!focReady;button.textContent='SAVE & APPROVE'}
-};
-
-
-async function loadPayLater(){
- payLaterReady=false;payLater=new Map();
- try{
-  const r=await fetch(U+'/rest/v1/okp_pay_later?select=registration_code,due_date,paid_at',{headers:{apikey:K,Authorization:'Bearer '+token}});
-  if(!r.ok)throw Error('Pay Later unavailable');
-  const entries=await r.json();payLater=new Map(entries.map(x=>[x.registration_code,x]));payLaterReady=true;
- }catch(e){console.warn('Pay Later setup not available');}
-}
-function dubaiToday(){const parts=new Intl.DateTimeFormat('en-US',{timeZone:'Asia/Dubai',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date());const value=t=>parts.find(p=>p.type===t).value;return value('year')+'-'+value('month')+'-'+value('day')}
-function payLaterBadge(x){
- if(!payLaterReady||!isPayLater(x))return '';
- const due=payLater.get(x.registration_code).due_date;
- const overdue=x['Payment status']==='approved'&&due<dubaiToday();
- return '<div class="pay-later-pill'+(overdue?' overdue':'')+'">PAY LATER · '+(overdue?'OVERDUE · ':'')+'Due '+esc(due)+'</div>';
-}
-function payLaterActions(x){
- if(!payLaterReady||!focReady||focCodes.has(x.registration_code))return '';
- if(isPayLater(x))return '<button class="btn small" onclick="openPayLater('+x.id+')">EDIT DUE DATE</button>'+(x['Payment status']==='approved'?'<button class="btn small wa" onclick="markLaterPaid('+x.id+')">MARK PAID</button>':'');
- return '<button class="btn small" onclick="openPayLater('+x.id+')">PAY LATER</button>';
-}
-function openPayLater(id){
- if(payLaterBusy||!payLaterReady||!focReady)return;
- const x=data.find(v=>v.id===id);if(!x||focCodes.has(x.registration_code))return;
- payLaterGuestId=id;q('payLaterGuest').textContent=x.Name+' · '+x.registration_code;
- q('payLaterDate').value=payLater.get(x.registration_code)?.due_date||'';
- q('payLaterError').textContent='';q('payLaterDialog').showModal();
-}
-async function savePayLater(x,due,paid){
- const r=await fetch(U+'/rest/v1/rpc/admin_set_okp_pay_later',{method:'POST',headers:{apikey:K,Authorization:'Bearer '+token,'Content-Type':'application/json'},body:JSON.stringify({p_code:x.registration_code,p_due_date:due,p_mark_paid:paid})});
- if(!r.ok){let error;try{error=await r.json()}catch(e){}throw Error(error?.message||'Could not save. Complete admin-pay-later-setup.sql and refresh.')}
-}
-async function markLaterPaid(id){
- if(!paymentMethodsReady){alert('Run admin-payment-collection-setup.sql in Supabase, then refresh to select the payment method.');return}
- openPaymentMode(id);
-}
-
-q('payLaterCancel').onclick=()=>{if(!payLaterBusy)q('payLaterDialog').close()};
-q('payLaterDialog').addEventListener('cancel',event=>{if(payLaterBusy)event.preventDefault()});
-q('payLaterForm').onsubmit=async event=>{
- event.preventDefault();if(payLaterBusy)return;
- const x=data.find(v=>v.id===payLaterGuestId),due=q('payLaterDate').value;
- if(!x||!/^\d{4}-\d{2}-\d{2}$/.test(due))return;
- payLaterBusy=true;q('payLaterSave').disabled=true;q('payLaterError').textContent='Saving...';
- try{
-  await savePayLater(x,due,false);q('payLaterDialog').close();await load();
- }catch(e){q('payLaterError').textContent=e.message}
- finally{payLaterBusy=false;q('payLaterSave').disabled=false}
-};
-
-async function loadPaymentMethods(){
- paymentMethodsReady=false;paymentMethods=new Map();
- try{
-  const r=await fetch(U+'/rest/v1/okp_payment_methods?select=registration_code,method',{headers:{apikey:K,Authorization:'Bearer '+token}});
-  if(!r.ok)throw Error('Payment mode setup unavailable');
-  paymentMethods=new Map((await r.json()).map(x=>[x.registration_code,x.method]));paymentMethodsReady=true;
- }catch(e){console.warn('Payment method setup not available')}
-}
-function paymentMethodControl(x){
- if(!paymentMethodsReady||!focReady||focCodes.has(x.registration_code))return '';
- const labels={cash:'Cash',bank:'Bank Transfer',ziina:'Ziina'};
- const label=isPayLater(x)?'RECORD PAYMENT':labels[paymentMethods.get(x.registration_code)]||'SET PAYMENT MODE';
- return '<div style="margin-top:6px"><button class="btn small" onclick="openPaymentMode('+x.id+')">'+label+'</button></div>';
-}
-function openPaymentMode(id){
- if(!paymentMethodsReady||paymentModeBusy||payLaterBusy)return;
- const x=data.find(v=>v.id===id);if(!x||!focReady||focCodes.has(x.registration_code))return;
- paymentModeGuestId=id;q('paymentModeGuest').textContent=x.Name+' · '+x.registration_code;
- q('paymentMode').value=isPayLater(x)?'':paymentMethods.get(x.registration_code)||'';
- q('paymentModeError').textContent='';q('paymentModeDialog').showModal();
-}
-q('paymentModeCancel').onclick=()=>{if(!paymentModeBusy)q('paymentModeDialog').close()};
-q('paymentModeDialog').addEventListener('cancel',e=>{if(paymentModeBusy)e.preventDefault()});
-q('paymentModeForm').onsubmit=async e=>{
- e.preventDefault();if(paymentModeBusy)return;
- const x=data.find(v=>v.id===paymentModeGuestId),method=q('paymentMode').value;
- if(!x||!['cash','bank','ziina'].includes(method))return;
- paymentModeBusy=true;q('paymentModeSave').disabled=true;q('paymentModeError').textContent='Saving...';
- try{
-  const r=await fetch(U+'/rest/v1/rpc/admin_record_okp_payment',{method:'POST',headers:{apikey:K,Authorization:'Bearer '+token,'Content-Type':'application/json'},body:JSON.stringify({p_code:x.registration_code,p_method:method})});
-  if(!r.ok){const error=await r.json();throw Error(error.message||'Could not save payment')}
-  q('paymentModeDialog').close();await load();
- }catch(error){q('paymentModeError').textContent=error.message}
- finally{paymentModeBusy=false;q('paymentModeSave').disabled=false}
-};
-
-async function loadTeams(){
- teamsReady=false;teams=new Map();
- try{
-  for(let offset=0;;offset+=500){
-   const r=await fetch(U+'/rest/v1/okp_team_assignments?select=registration_code,team&order=registration_code&limit=500&offset='+offset,{headers:{apikey:K,Authorization:'Bearer '+token}});
-   if(!r.ok)throw Error('Team setup unavailable');
-   const page=await r.json();page.forEach(x=>teams.set(x.registration_code,x.team));if(page.length<500)break;
-  }
-  teamsReady=true;
- }catch(e){console.warn('Team assignments could not be loaded')}
- q('teamFilter').disabled=!teamsReady;
- q('teamNotice').textContent=teamsReady?'Assign one team per guest. RSVP preferences stay unchanged.':'Team assignment is not ready. Run admin-team-setup.sql in Supabase SQL Editor, then refresh.';
-}
-function matchesTeam(x){const f=q('teamFilter').value;return f==='all'||teamsReady&&(teams.get(x.registration_code)||'unassigned')===f}
-function renderTeamCounts(){
- for(const team of Object.keys(teamLabels)){
-  const count=teamsReady?data.filter(x=>(teams.get(x.registration_code)||'unassigned')===team).length:'—';
-  q('teamCount-'+team).textContent=count;
- }
-}
-function teamControl(x){
- const value=teams.get(x.registration_code)||'unassigned';
- return '<select class="assigned-team" aria-label="Assigned team for '+esc(x.Name)+'" '+(!teamsReady?'disabled ':'')+'onchange="saveTeam('+x.id+',this)">'+Object.entries(teamLabels).map(([key,label])=>'<option value="'+key+'"'+(key===value?' selected':'')+'>'+label+'</option>').join('')+'</select>';
-}
-async function saveTeam(id,select){
- const x=data.find(v=>v.id===id);if(!x||!teamsReady)return;
- const value=select.value,previous=teams.get(x.registration_code)||'unassigned';
- if(!Object.hasOwn(teamLabels,value))return;
- select.disabled=true;q('teamNotice').textContent='Saving team for '+x.Name+'…';
- try{
-  const r=await fetch(U+'/rest/v1/rpc/admin_set_okp_team',{method:'POST',headers:{apikey:K,Authorization:'Bearer '+token,'Content-Type':'application/json'},body:JSON.stringify({p_code:x.registration_code,p_team:value})});
-  if(!r.ok){let error;try{error=await r.json()}catch(e){}throw Error(error?.message||'Could not save team. Please refresh and try again.')}
-  if(value==='unassigned')teams.delete(x.registration_code);else teams.set(x.registration_code,value);
-  render();q('teamNotice').textContent='Saved: '+x.Name+' → '+teamLabels[value]+'.';
- }catch(e){select.value=previous;q('teamNotice').textContent='Team was not saved: '+e.message}
- finally{select.disabled=false}
-}
-q('teamFilter').onchange=render;
+</style><style id="okp-name-status-icons">
+.guest-table .name-cell strong{display:inline;vertical-align:middle}
+.guest-name-indicator{display:inline-flex;align-items:center;justify-content:center;vertical-align:middle;margin-left:6px;width:18px;height:18px;flex:none;color:#85878a;background:transparent;border:0}
+.guest-name-indicator svg{display:block;width:16px;height:16px}
+.guest-name-indicator--paid{color:#198653}
+.guest-name-indicator--later{color:#b17a29}
+.guest-name-indicator--pending{color:#92949b}
+.guest-name-indicator--rejected{color:#bd4859}
+.guest-name-indicator--foc{color:#8b57b1}
+@media(max-width:800px){.guest-name-indicator{margin-left:5px;width:17px;height:17px}.guest-name-indicator svg{width:15px;height:15px}.guest-table .name-cell strong{display:inline}}
+</style><style id="okp-review-queue-style">
+.review-queue{margin:22px 0 26px}.review-queue-head,.all-guests-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:12px}.review-queue h2,.all-guests-head h2{font:600 24px "Playfair Display",serif;color:#4b1726;margin:0}.review-queue-head p,.all-guests-head p{font-size:11px;color:#817773;margin:4px 0 0}.review-queue-count{background:#73132f;color:#fff;border-radius:100px;font-size:11px;font-weight:800;padding:7px 11px;white-space:nowrap}.review-queue-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,295px),1fr));gap:10px}.review-queue-card{background:#fff;border:1px solid #eadfd3;border-radius:15px;padding:15px;min-width:0}.review-queue-top{display:flex;align-items:center;justify-content:space-between;gap:8px}.review-queue-id{font-size:10px;font-weight:800;color:#8f1739}.review-queue-flag{font-size:9px;letter-spacing:.4px;font-weight:800;color:#97601d;background:#fff1d9;padding:5px 8px;border-radius:20px}.review-queue-name{font-size:15px;font-weight:800;margin:11px 0 3px;overflow-wrap:anywhere}.review-queue-meta{font-size:11px;color:#817773;line-height:1.7;overflow-wrap:anywhere}.review-queue-actions{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:14px}.review-queue-actions .btn{font-size:10px;padding:11px 8px}.review-queue-empty{background:#fff;border:1px solid #eadfd3;border-radius:15px;padding:20px;font-size:12px;color:#817773}.all-guests-head{margin-top:24px}@media(max-width:800px){.review-queue{margin:18px 0 23px}.review-queue h2,.all-guests-head h2{font-size:21px}.review-queue-list{grid-template-columns:1fr}.review-queue-card{padding:14px}.review-queue-actions .btn{min-height:40px}}
+</style></head><body><div class="shell"><aside class="side"><img class="logo" src="okp1.png"><div class="nav">WEDDING HOUSE</div><a class="navitem active" href="wedding-admin.html" style="color:inherit;text-decoration:none">Registration</a><a class="navitem" href="payment-collection.html" style="color:inherit;text-decoration:none">Payment Collection</a><a class="navitem" href="expense-tracker.html" style="color:inherit;text-decoration:none">Expense Tracker</a><a class="navitem" href="event-estimation.html" style="color:inherit;text-decoration:none">Event Estimation</a><div class="sidefoot">ISTEDA COMMUNITY<br>PRIVATE CONTROL ROOM</div></aside><main class="main"><div class="top"><div><div class="eyebrow">O.K.P · ORU KALYANAM POLE</div><h1 class="title">Wedding House<br><i>Control Room</i></h1><div class="sub">Review guests, payments & confirmations.</div></div><button id="logout" class="logout">LOG OUT</button></div><p><a class="btn" href="payment-collection.html" style="display:inline-block;text-decoration:none">PAYMENT COLLECTION →</a> <a class="btn" href="expense-tracker.html" style="display:inline-block;text-decoration:none;background:#241e20;margin:4px">EXPENSE TRACKER →</a></p><section class="hero"><div><strong>Needs your attention</strong><span id="actionText">Checking the guest list…</span></div><div class="count" id="heroPending">—</div></section><div class="stats"><div class="stat"><b id="total">0</b><span>TOTAL GUESTS</span></div><div class="stat"><b id="pending">0</b><span>WAITING REVIEW</span></div><div class="stat"><b id="approved">0</b><span>APPROVED</span></div><div class="stat"><b id="rejected">0</b><span>REJECTED</span></div></div><section class="guest-summary" aria-label="Approved guest counts"><div class="stats"><div class="stat"><b id="confirmedTotal">—</b><span>ALL APPROVED GUESTS</span></div><div class="stat"><b id="paidTotal">—</b><span>PAID · EXCLUDING FOC / PAY LATER</span></div><div class="stat"><b id="focTotal">—</b><span>FOC · APPROVED</span></div></div><div class="stat" style="margin-bottom:12px"><b id="laterTotal">—</b><span>PAY LATER · APPROVED</span></div><p class="summary-note" id="guestCountNote">Counts below include approved registrations only.</p></section><section aria-label="Assigned teams"><h2>Team Assignment</h2><p id="teamNotice" class="summary-note" role="status" aria-live="polite"></p><div class="stats"><div class="stat"><b id="teamCount-bride">—</b><span>BRIDE</span></div><div class="stat"><b id="teamCount-groom">—</b><span>GROOM</span></div><div class="stat"><b id="teamCount-other">—</b><span>OTHER</span></div><div class="stat"><b id="teamCount-unassigned">—</b><span>UNASSIGNED</span></div></div><p class="summary-note">Team counts include all registrations. Use the status filter for approved guests only.</p></section><section class="review-queue" aria-label="New registrations awaiting review"><div class="review-queue-head"><div><h2>New Registrations</h2><p>Review new requests and approve from here.</p></div><span class="review-queue-count" id="reviewQueueCount">0 pending</span></div><div id="reviewQueueList" class="review-queue-list" aria-live="polite"></div></section><div class="all-guests-head"><div><h2>All Registrations</h2><p>Existing guest list, filters and management tools.</p></div></div><div class="tools"><input id="search" placeholder="Search guest, WhatsApp, OKP ID or C/O…"><select id="filter"><option value="all">All registrations</option><option value="verification_pending">Needs review</option><option value="approved">Approved</option><option value="rejected">Rejected</option></select><select id="guestType" aria-label="Guest type"><option value="all">All guest types</option><option value="paid">Paid only</option><option value="later">Pay Later</option><option value="foc">FOC only</option></select><select id="teamFilter" aria-label="Assigned team filter"><option value="all">All teams</option><option value="bride">Bride</option><option value="groom">Groom</option><option value="other">Other</option><option value="unassigned">Unassigned</option></select><button id="refresh" class="btn">REFRESH</button><button id="exportExcel" class="btn" type="button">DOWNLOAD EXCEL</button></div><button id="addFoc" class="btn" type="button" aria-expanded="false" aria-controls="focPanel">FOC</button>
+<section id="focPanel" class="foc-card" hidden><h2>FOC Assignments</h2><p>Tap a role to view or change the assignment.</p><div id="focAssignments" class="foc-assignments"></div><hr><h2>Add FOC Guest</h2><p>Admin only. Saves an approved guest with a normal OKP code. No payment proof is required.</p>
+<form id="focForm"><div class="foc-grid">
+<label>GUEST NAME<input name="name" required maxlength="150" autocomplete="name"></label>
+<label>WHATSAPP<input name="whatsapp" type="tel" required placeholder="0551234567 or +971551234567" autocomplete="tel"></label>
+<label>FAMILY<select name="family" required><option value="">Choose family</option><option>Bride's Family</option><option>Groom's Family</option><option>Any</option></select></label>
+<label>ISTEDA CONTACT (C/O)<input name="care" maxlength="150"></label>
+<label>NEW TO COMMUNITY?<select name="new" required><option value="">Choose one</option><option>Yes</option><option>No</option></select></label>
+<label>HEARD ABOUT US<select name="heard" required><option>Isteda Member</option><option>Friend / Family</option><option>Instagram</option><option>WhatsApp</option><option>Other</option></select></label>
+</div><p><button id="saveFoc" class="btn" type="submit">SAVE & APPROVE</button> <button id="cancelFoc" class="btn reject" type="button">CLOSE</button></p>
+<p id="focResult" role="status" aria-live="polite"></p></form></section><div id="msg"></div><div class="tablewrap"><table class="guest-table"><thead><tr><th>#</th><th>NAME</th><th>C/O</th><th>TEAM</th><th>PAYMENT STATUS</th><th>RSVP NOTE</th><th>APPROVAL</th><th>DUE DATE</th><th>ACTIONS</th></tr></thead><tbody id="rows"></tbody></table></div></main></div><dialog id="focRoleDialog" class="pay-dialog"><h2>Set as FOC (Role)</h2><p id="focRoleGuest"></p><form id="focRoleForm"><label for="focRoleSelect">Select FOC role</label><select id="focRoleSelect" class="note-field" required><option value="">Select role</option><option>OKP Photographer</option><option>OKP Video Team</option><option>OKP Flower Girl</option><option>OKP Dance Team</option><option value="Other">Other (custom)</option></select><input id="focRoleOther" class="note-field" maxlength="100" placeholder="Enter custom role" hidden><p id="focRoleError" role="status"></p><button class="btn" id="focRoleSave" type="submit">SAVE ROLE</button><button class="btn reject" id="focRoleCancel" type="button">CANCEL</button></form></dialog><dialog id="guestTeamDialog" class="pay-dialog"><h2>Edit Assigned Team</h2><p id="guestTeamGuest"></p><select id="guestTeamSelect" class="note-field"></select><button type="button" class="btn" id="guestTeamSave">SAVE TEAM</button><button type="button" class="btn reject" onclick="document.getElementById('guestTeamDialog').close()">CANCEL</button></dialog><dialog id="guestDetailsDialog" class="pay-dialog"><h2 id="guestDetailsTitle">Guest Details</h2><div id="guestDetailsBody"></div><button class="btn reject" onclick="document.getElementById('guestDetailsDialog').close()">CLOSE</button></dialog><dialog id="adminPaymentNoteDialog" class="pay-dialog" aria-labelledby="adminPaymentNoteTitle"><h2 id="adminPaymentNoteTitle">Payment Due Date / Note</h2><p id="adminPaymentNoteGuest"></p><form id="adminPaymentNoteForm"><label for="adminPaymentNoteText">Payment note (optional)</label><textarea id="adminPaymentNoteText" class="note-field" maxlength="300" rows="3" placeholder="e.g. Payment by next week"></textarea><label for="adminPaymentNoteDate">Due date (optional)</label><input id="adminPaymentNoteDate" class="note-field" type="date"><p class="note-info">Admin-only note. This does not change payment status or the existing Pay Later arrangement.</p><button id="adminPaymentNoteSave" class="btn" type="submit">SAVE NOTE</button> <button id="adminPaymentNoteCancel" class="btn reject" type="button">CANCEL</button><p id="adminPaymentNoteError" role="status"></p></form></dialog><dialog id="payLaterDialog" class="pay-dialog" aria-labelledby="payLaterTitle"><h2 id="payLaterTitle">Confirm · Pay Later</h2><p id="payLaterGuest"></p><p>This confirms the guest and allows their admit card. Payment remains outstanding until you mark it paid.</p><form id="payLaterForm"><label for="payLaterDate">Payment due date</label><input id="payLaterDate" type="date" required><button class="btn" id="payLaterSave" type="submit">CONFIRM PAY LATER</button><button class="btn reject" id="payLaterCancel" type="button">CANCEL</button><p id="payLaterError" role="status"></p></form></dialog><dialog id="adminProofDialog" class="pay-dialog" aria-labelledby="adminProofTitle"><h2 id="adminProofTitle">Upload Payment Proof</h2><p id="adminProofGuest"></p><form id="adminProofForm"><label for="adminProofFile">Payment screenshot (optional internal record)</label><input id="adminProofFile" type="file" accept="image/jpeg,image/png,application/pdf" required style="width:100%;padding:12px;margin:10px 0 18px"><p>JPG, PNG or PDF · Maximum 5 MB. Uploading proof does not change payment status.</p><button id="adminProofSave" class="btn" type="submit">SAVE PROOF</button><button id="adminProofCancel" class="btn reject" type="button">CANCEL</button><p id="adminProofError" role="status"></p></form></dialog><dialog id="paymentModeDialog" class="pay-dialog" aria-labelledby="paymentModeTitle"><h2 id="paymentModeTitle">Record Payment</h2><p id="paymentModeGuest"></p><form id="paymentModeForm"><label for="paymentMode">Payment received via</label><select id="paymentMode" required style="width:100%;padding:12px;margin:10px 0 18px"><option value="">Choose payment method</option><option value="cash">Cash · AED 199.00</option><option value="bank">Bank Transfer · AED 199.00</option><option value="ziina">Ziina · AED 205.50</option></select><p>Save only after payment is received. This confirms the guest and clears any outstanding Pay Later payment.</p><button id="paymentModeSave" class="btn" type="submit">SAVE PAYMENT</button><button id="paymentModeCancel" class="btn reject" type="button">CANCEL</button><p id="paymentModeError" role="status"></p></form></dialog><script src="wedding-admin-2026-v2.js?v=20261029cleanicons2"></script><script>setInterval(()=>{const e=document.getElementById('heroPending'),p=document.getElementById('pending');if(e&&p)e.textContent=p.textContent},300)</script></body></html>
