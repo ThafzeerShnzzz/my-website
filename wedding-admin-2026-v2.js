@@ -162,7 +162,7 @@ function openGuestDetails(id){
  const x=data.find(v=>v.id===id);if(!x)return;
  q('guestDetailsTitle').textContent=x.Name+' · '+x.registration_code;
  q('guestDetailsBody').innerHTML=[
- ['WhatsApp',x.Whatsapp],['Care of',x.care_of],['RSVP preference',x.Preferred_family],
+ ['WhatsApp',x.Whatsapp],['Care of',x.care_of],['RSVP preference',x.Preferred_family],['Heard about us',x.how_u_heard_about_us],['New to community',x.new_to_our_Community],
  ['Assigned team',teamLabels[teams.get(x.registration_code)||'unassigned']||'Unassigned'],
  ['Payment reference',x.payment_reference],['Payment method',paymentMethods.get(x.registration_code)||'—'],
  ['Payment proof',x.payment_proof?'Uploaded — ready to review':'Not uploaded'],
