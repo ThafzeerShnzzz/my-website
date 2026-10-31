@@ -168,7 +168,7 @@ function openGuestDetails(id){
  const kind=rejected?'rejected':pending?'pending':foc?'foc':later?'later':paid?'paid':'approved';
  const symbol=rejected?'✕':pending?'♧':foc?'✧':later?'◷':'✓';
  const head=document.querySelector('#guestDetailsDialog .review-guest-card');
- head.innerHTML='<div class="review-guest-avatar">●</div><div class="review-guest-heading"><small>'+esc(x.registration_code)+'</small><h3 id="guestDetailsTitle">'+esc(x.Name)+'</h3><span class="guest-review-status">Guest profile</span></div><div class="review-profile-right"><div class="review-profile-badge '+kind+'"><span class="review-profile-symbol">'+symbol+'</span><strong>'+label+'</strong></div>'+(registered?'<small class="review-registered">Registered on<br>'+esc(registered)+'</small>':'')+(later&&due?'<small class="review-due-inline">Due '+esc(due)+'</small>':'')+'</div>';
+ head.innerHTML='<div class="review-guest-avatar review-avatar-'+kind+'">'+(rejected?'✕':pending?'♧':foc?'✧':later?'◷':'✓')+'</div><div class="review-guest-heading"><small>'+esc(x.registration_code)+'</small><h3 id="guestDetailsTitle">'+esc(x.Name)+'</h3><span class="guest-review-status">Guest profile</span></div><div class="review-profile-right"><div class="review-profile-badge '+kind+'"><span class="review-profile-symbol">'+symbol+'</span><strong>'+label+'</strong></div>'+(registered?'<small class="review-registered">Registered on<br>'+esc(registered)+'</small>':'')+(later&&due?'<small class="review-due-inline">Due '+esc(due)+'</small>':'')+'</div>';
  q('guestDetailsTitle').textContent=x.Name;
  q('guestDetailsBody').innerHTML=[
  ['WhatsApp',x.Whatsapp],['Care of',x.care_of],['RSVP preference',x.Preferred_family],['Heard about us',x.how_u_heard_about_us],['New to community',x.new_to_our_Community],
