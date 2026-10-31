@@ -165,9 +165,9 @@ function openGuestDetails(id){
  ['WhatsApp',x.Whatsapp],['Care of',x.care_of],['RSVP preference',x.Preferred_family],
  ['Assigned team',teamLabels[teams.get(x.registration_code)||'unassigned']||'Unassigned'],
  ['Payment reference',x.payment_reference],['Payment method',paymentMethods.get(x.registration_code)||'—'],
- ['Payment proof',x.payment_proof?'Saved':'Not uploaded'],
+ ['Payment proof',x.payment_proof?'Uploaded':'Not uploaded'],
  ['Payment note',adminPaymentNotes.get(x.registration_code)?.note||'—'],['Due date',adminPaymentNotes.get(x.registration_code)?.due_date||payLater.get(x.registration_code)?.due_date||'—'],['FOC role',focRoles.get(x.registration_code)||'—'],['Approval',x['Payment status']||'—']
- ].map(([k,v])=>'<div class="detail-row"><span>'+esc(k)+'</span><strong>'+esc(v||'—')+'</strong></div>').join('');
+ ].map(([k,v])=>'<div class="detail-row"><span>'+esc(k)+'</span><strong>'+esc(v||'—')+'</strong></div>').join('')+'<div class="detail-row"><span>Payment proof actions</span><strong>'+(x.payment_proof?'<button type="button" class="btn reject" onclick="proof(\''+encodeURIComponent(x.payment_proof)+'\')">VIEW PROOF</button> ':'')+'<button type="button" class="btn" onclick="openAdminProofUpload('+x.id+')">UPLOAD PROOF</button></strong></div>';
  q('guestDetailsDialog').showModal();
 }
 function focusGuestTeam(id){const row=[...document.querySelectorAll('#rows tr')].find(tr=>tr.querySelector('[data-guest-id="'+id+'"]'));const select=row?.querySelector('.assigned-team');if(select){select.scrollIntoView({block:'center',behavior:'smooth'});select.focus()}else alert('Use the assigned team dropdown for this guest.')}
