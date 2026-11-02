@@ -442,6 +442,6 @@ function openPayLaterReminder(id){
  const due=payLater.get(x.registration_code)?.due_date||adminPaymentNotes.get(x.registration_code)?.due_date;
  const dateText=due?displayOkpDate(due):'the agreed due date';
  const name=String(x.Name||'Guest').trim();
- const message='Hi '+name+'!\n\nThis is an urgent reminder regarding your pending payment of AED 199 for OKP – Oru Kalyanam Pole.\n\nName: '+name+'\nOKP No: '+String(x.registration_code||'—')+'\nDue Date: 05 Nov 2026\n\nPlease complete your payment urgently, by 05 Nov 2026, as we are finalising arrangements for the event on November 7.\n\nLooking forward to celebrating with you!\n\nTeam ISTEDA';
+ const message='Hi '+name+'!\n\nJust a reminder about your pending payment of AED 199 for OKP – Oru Kalyanam Pole.\n\nName: '+name+'\nOKP No: '+String(x.registration_code||'—')+'\nDue Date: '+dateText+'\n\nAs we’re finalising the arrangements for November 7, we kindly request you to complete your pending payment as soon as possible.\n\nLooking forward to celebrating with you!\n\nTeam ISTEDA';
  window.open('https://wa.me/'+phone+'?text='+encodeURIComponent(message),'_blank','noopener');
 }
