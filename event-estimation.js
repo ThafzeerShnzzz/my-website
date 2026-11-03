@@ -15,13 +15,14 @@ let incomeEntries=[],incomeEditing=null,forecastGuestCount=null,forecastReady={g
 const $f=id=>document.getElementById(id),cents=x=>Math.round(Number(x)*100),sumCents=rows=>rows.reduce((n,x)=>n+cents(x.amount),0);
 function renderForecast(){
  const ready=Object.values(forecastReady).every(Boolean);
- if(!ready){$f('forecastProfit').textContent='—';$f('forecastState').textContent='Waiting for complete forecast data';return}
+ if(!ready){$f('forecastProfit').textContent='—';$f('forecastState').textContent='Waiting for complete forecast data';$f('forecastRingPercent').textContent='—';$f('forecastRingArc').setAttribute('stroke-dasharray','0 427.26');$f('forecastRingHeadline').textContent='Awaiting forecast';$f('forecastRingDescription').textContent='Projected income compared with estimated expenses.';return}
  const ticket=forecastGuestCount*TICKET_CENTS,sponsor=sumCents(incomeEntries.filter(x=>x.income_type==='sponsorship')),other=sumCents(incomeEntries.filter(x=>x.income_type==='other')),expenses=sumCents(estimates),total=ticket+sponsor+other,profit=total-expenses;
  $f('forecastProfit').textContent=(profit<0?'−':'')+'AED '+money(Math.abs(profit));$f('forecastProfit').className=profit<0?'negative':'positive';
  $f('forecastState').textContent=profit<0?'Projected shortfall':profit===0?'Break-even forecast':'Projected surplus';
  $f('forecastIncome').textContent='AED '+money(total);$f('forecastTickets').textContent='AED '+money(ticket);$f('forecastGuests').textContent='· '+forecastGuestCount+' paying guests × AED 199';
  $f('forecastSponsor').textContent='AED '+money(sponsor);$f('forecastOther').textContent='AED '+money(other);$f('forecastExpenses').textContent='AED '+money(expenses);
  $f('forecastBreakEven').textContent=Math.max(0,Math.ceil((expenses-sponsor-other)/TICKET_CENTS))+' paying guests';
+ const coverage=expenses>0?total/expenses*100:(total>0?100:0),shown=Math.max(0,Math.min(100,coverage));$f('forecastRingPercent').textContent=coverage.toFixed(1)+'%';$f('forecastRingArc').setAttribute('stroke-dasharray',(427.26*shown/100).toFixed(2)+' 427.26');$f('forecastRingHeadline').textContent=profit<0?'AED '+money(-profit)+' remaining':profit>0?'AED '+money(profit)+' surplus':'Costs fully covered';$f('forecastRingDescription').textContent=expenses===0?'No estimated expenses entered yet.':coverage>=100?'Projected income covers all estimated expenses.':'Projected income covers '+coverage.toFixed(1)+'% of estimated expenses.';
 }
 async function loadForecastGuests(){
  forecastReady.guests=false;renderForecast();
