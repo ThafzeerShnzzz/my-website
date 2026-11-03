@@ -94,6 +94,20 @@ function activateScenario(){
  if(!Object.values(forecastReady).every(Boolean))return;
  scenarioActive=true;$f('scenarioMode').textContent='WHAT-IF MODE';$f('scenarioMode').classList.add('testing');renderForecast();
 }
+function stepScenarioGuests(delta){
+ if(!Object.values(forecastReady).every(Boolean))return;
+ const field=$f('scenarioGuestNumber');
+ const current=Math.max(0,Math.floor(Number(field.value)||0));
+ const next=Math.max(0,Math.min(10000,current+delta));
+ field.value=next;
+ $f('scenarioGuests').max=String(Math.max(150,next));
+ $f('scenarioGuests').value=next;
+ $f('scenarioGuestLabel').textContent=next;
+ $f('scenarioMaxLabel').textContent=$f('scenarioGuests').max+' guests';
+ activateScenario();
+}
+$f('scenarioPlusOne').addEventListener('click',()=>stepScenarioGuests(1));
+$f('scenarioMinusOne').addEventListener('click',()=>stepScenarioGuests(-1));
 $f('scenarioGuests').addEventListener('input',()=>{
  $f('scenarioGuestNumber').value=$f('scenarioGuests').value;$f('scenarioGuestLabel').textContent=$f('scenarioGuests').value;activateScenario();
 });
