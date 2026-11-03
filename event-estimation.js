@@ -62,7 +62,7 @@ $f('incomeForm').addEventListener('submit',async e=>{
 });
 
 function syncScenarioInputs(guests,sponsor,other,expenses){
- $f('scenarioGuests').max=String(Math.max(150,guests+30));
+ $f('scenarioGuests').max=String(Math.max(150,guests+30));$f('scenarioMaxLabel').textContent=$f('scenarioGuests').max+' guests';
  $f('scenarioGuests').value=guests;$f('scenarioGuestNumber').value=guests;$f('scenarioGuestLabel').textContent=guests;
  $f('scenarioSponsor').value=(sponsor/100).toFixed(2);$f('scenarioOther').value=(other/100).toFixed(2);$f('scenarioExpenses').value=(expenses/100).toFixed(2);
  $f('scenarioMode').textContent='LIVE DATA';$f('scenarioMode').classList.remove('testing');scenarioInitialized=true;
@@ -75,7 +75,7 @@ $f('scenarioGuests').addEventListener('input',()=>{
  $f('scenarioGuestNumber').value=$f('scenarioGuests').value;$f('scenarioGuestLabel').textContent=$f('scenarioGuests').value;activateScenario();
 });
 $f('scenarioGuestNumber').addEventListener('input',()=>{
- const n=Math.max(0,Math.min(10000,Math.floor(Number($f('scenarioGuestNumber').value)||0)));$f('scenarioGuests').max=String(Math.max(150,n));$f('scenarioGuests').value=n;$f('scenarioGuestLabel').textContent=n;activateScenario();
+ const n=Math.max(0,Math.min(10000,Math.floor(Number($f('scenarioGuestNumber').value)||0)));$f('scenarioGuests').max=String(Math.max(150,n));$f('scenarioMaxLabel').textContent=$f('scenarioGuests').max+' guests';$f('scenarioGuests').value=n;$f('scenarioGuestLabel').textContent=n;activateScenario();
 });
 for(const id of ['scenarioSponsor','scenarioOther','scenarioExpenses'])$f(id).addEventListener('input',()=>{if(Number($f(id).value)<0)$f(id).value='0';activateScenario()});
 $f('scenarioReset').onclick=()=>{scenarioActive=false;renderForecast()};
