@@ -7,8 +7,6 @@ function resetEstimate(){estimateEditing=null;document.getElementById('estimateF
 document.getElementById('estimateCancel').onclick=resetEstimate;
 document.getElementById('estimateRows').addEventListener('click',async e=>{const edit=e.target.closest('[data-est-edit]'),del=e.target.closest('[data-est-delete]');if(edit){const x=estimates.find(y=>y.id===Number(edit.dataset.estEdit));if(!x)return;estimateEditing=x.id;document.getElementById('estimatePurpose').value=x.purpose;document.getElementById('estimateAmount').value=x.amount;document.getElementById('estimateSave').textContent='SAVE ESTIMATE CHANGES';document.getElementById('estimateCancel').hidden=false;document.getElementById('estimateForm').scrollIntoView({behavior:'smooth'});return}if(del){const x=estimates.find(y=>y.id===Number(del.dataset.estDelete));if(!x||!confirm('Delete estimate for '+x.purpose+'?'))return;try{await request('/rest/v1/okp_expense_estimates?id=eq.'+x.id,{method:'DELETE',headers:{Prefer:'return=minimal'}});if(estimateEditing===x.id)resetEstimate();await loadEstimates()}catch(err){document.getElementById('estimateStatus').textContent=err.message}}});
 document.getElementById('estimateForm').addEventListener('submit',async e=>{e.preventDefault();const b=document.getElementById('estimateSave'),n=Number(document.getElementById('estimateAmount').value),purpose=document.getElementById('estimatePurpose').value.trim();if(!purpose||!Number.isFinite(n)||n<=0||Math.abs(n*100-Math.round(n*100))>1e-6)return;b.disabled=true;try{await request('/rest/v1/okp_expense_estimates'+(estimateEditing!==null?'?id=eq.'+estimateEditing:''),{method:estimateEditing!==null?'PATCH':'POST',headers:{Prefer:'return=minimal'},body:JSON.stringify({purpose,amount:n.toFixed(2)})});resetEstimate();await loadEstimates();document.getElementById('estimateStatus').textContent='Estimate saved. Actual balances unchanged.'}catch(err){document.getElementById('estimateStatus').textContent='Could not save estimate: '+err.message}finally{b.disabled=false}});
-loadEstimates();
-
 
 const TICKET_CENTS=19900;
 let incomeEntries=[],incomeEditing=null,forecastGuestCount=null,forecastReady={guests:false,estimates:false,income:false};
@@ -61,4 +59,4 @@ $f('incomeForm').addEventListener('submit',async e=>{
  b.disabled=true;try{await request('/rest/v1/okp_estimated_income'+(incomeEditing!==null?'?id=eq.'+incomeEditing:''),{method:incomeEditing!==null?'PATCH':'POST',headers:{Prefer:'return=minimal'},body:JSON.stringify({income_type,purpose,amount:amount.toFixed(2)})});resetIncome();await loadIncome();$f('incomeStatus').textContent='Planned income saved. Actual collections unchanged.'}catch(err){$f('incomeStatus').textContent='Could not save income: '+err.message}finally{b.disabled=false}
 });
 $f('forecastRefresh').onclick=()=>Promise.all([loadForecastGuests(),loadEstimates(),loadIncome()]);
-loadForecastGuests();loadIncome();
+Promise.all([loadForecastGuests(),loadEstimates(),loadIncome()]);
