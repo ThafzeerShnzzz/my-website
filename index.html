@@ -756,10 +756,40 @@ footer small{
 .hero .envelope-actions .button{margin:0}
 .hero .envelope-letter h1{font:400 clamp(45px,8vw,65px)/1.1 Allura,cursive;margin:18px 0 22px}
 @media(max-width:600px){.hero .envelope-letter h1{font-size:43px;margin:10px 0 12px}}
+
+/* Black celebration sky; original homepage content retained. */
+body{background:#000;color:#f4e5c8}
+body:before,body:after{display:none}
+#okpFireworks{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:0}
+.hero-kicker,.hero,.okp-countdown,.intro,.cards,.quote,footer{position:relative;z-index:1}
+nav{border-color:rgba(232,195,131,.3)}
+.links a,.topbar,.top-instagram,.staycation-line,.eyebrow,.date,.okp-countdown,.intro h2,.cards h3,.cards span,.quote p,footer,.footer-instagram,.home-call:hover,.okp-scroll-invite{color:#ecd29e}
+.links a:hover,.top-instagram:hover,.footer-instagram:hover{color:#fff1d6}
+.links .rsvp,.home-call,.button{background:#a22342;color:#fff1d6;border-color:#c98265}
+.button:hover{background:#851b37}
+.registration-match,.whatsapp-match{color:#f0d4a4;border-color:#b58a53;background:rgba(0,0,0,.5)}
+.registration-match:hover,.whatsapp-match:hover{background:#86213d;color:#fff1d6;border-color:#e1b778}
+.cards a{color:#f4e5c8;background:rgba(19,11,17,.84);border-color:rgba(232,195,131,.3)}
+.cards a:before{border-color:rgba(232,195,131,.14)}
+.cards a:hover{background:#26131e}
+.intro,.quote,footer{border-color:rgba(232,195,131,.25)}
+.hero:before,.hero:after{color:#bf9251}
+.stamp{color:#f0d4a4;border-color:#b58a53}
+.surprise-label{color:#ecd29e}
+.envelope-letter{color:#49372c}
+.envelope-letter h1,.envelope-letter .letter-dear,.letter-sign{color:#8f0c31}
+.envelope-letter .letter-shout{color:#b20f3b}
+.letter-heading{color:#8f0c31}
+.envelope-actions a{color:#f0d4a4;border-color:#b58a53;background:rgba(0,0,0,.65)}
+.envelope-actions .button{background:#a22342;color:#fff1d6}
+.envelope-closing{color:#ecd29e}
+@media(max-width:850px){nav{background:rgba(0,0,0,.95)}.menu{color:#ecd29e;border-color:#b58a53;background:#160e15}.links{background:#100b10;border-color:#b58a53}.links a{border-bottom-color:rgba(232,195,131,.18)}}
+
 </style>
 </head>
 
 <body>
+<canvas id="okpFireworks" aria-hidden="true"></canvas>
 
 <nav>
 
@@ -963,43 +993,6 @@ document.addEventListener("DOMContentLoaded", function () {
     }));
   }
 
-  // Minimal falling-petal effect.
-  const petals=document.createElement("div");
-  petals.className="falling-petals";
-  petals.setAttribute("aria-hidden","true");
-  document.body.appendChild(petals);
-
-  const symbols=["✿","❀","❁","·"];
-  for(let i=0;i<10;i++){
-    const petal=document.createElement("span");
-    petal.className="falling-petal";
-    petal.textContent=symbols[Math.floor(Math.random()*symbols.length)];
-    petal.style.left=(Math.random()*100)+"vw";
-    petal.style.animationDelay="0s";
-    petal.style.animationDuration=(13+Math.random()*10)+"s";
-    petal.style.fontSize=(7+Math.random()*7)+"px";
-    if(i>=7) petal.style.fontSize=(18+Math.random()*12)+"px";
-    petal.style.opacity=(0.18+Math.random()*0.28).toFixed(2);
-    petal.style.setProperty("--drift",(Math.random()*70-35)+"px");
-    petals.appendChild(petal);
-  }
-
-  // Subtle floating wedding-ring outlines.
-  const rings=document.createElement("div");
-  rings.className="wedding-rings";
-  rings.setAttribute("aria-hidden","true");
-  document.body.appendChild(rings);
-
-  for(let i=0;i<3;i++){
-    const ring=document.createElement("span");
-    ring.className="wedding-ring";
-    ring.style.left=(12+Math.random()*76)+"vw";
-    ring.style.top=(18+Math.random()*65)+"vh";
-    ring.style.animationDelay=(Math.random()*12)+"s";
-    ring.style.animationDuration=(17+Math.random()*8)+"s";
-    ring.style.transform="scale("+(0.75+Math.random()*0.5).toFixed(2)+") rotate(-25deg)";
-    rings.appendChild(ring);
-  }
 
 });
 </script>
@@ -1079,5 +1072,27 @@ document.addEventListener("DOMContentLoaded", function () {
 
 })();
 </script>
+
+<script>
+(function(){
+ const canvas=document.getElementById('okpFireworks'),ctx=canvas.getContext('2d');if(!ctx)return;
+ const motion=window.matchMedia('(prefers-reduced-motion: reduce)');
+ let w=0,h=0,particles=[],rockets=[],last=0,next=0,raf=0;
+ const colors=['#f5d795','#e7b95d','#ffe9ba','#d49a66'];
+ function resize(){w=window.innerWidth;h=window.innerHeight;const d=Math.min(window.devicePixelRatio||1,2);canvas.width=w*d;canvas.height=h*d;ctx.setTransform(d,0,0,d,0,0)}
+ function burst(x,y,c){const count=w<600?40:64;for(let i=0;i<count;i++){const a=i/count*Math.PI*2,s=45+Math.random()*85;particles.push({x,y,vx:Math.cos(a)*s,vy:Math.sin(a)*s,life:1.5+Math.random()*.7,c})}}
+ function frame(t){
+  if(document.hidden||motion.matches){raf=0;return}
+  const dt=Math.min((t-last)/1000||.016,.035);last=t;ctx.clearRect(0,0,w,h);
+  if(t>next){const left=Math.random()<.5,x=w*(left?.06+Math.random()*.17:.77+Math.random()*.17);rockets.push({x,y:h,target:60+Math.random()*h*.4,c:colors[Math.floor(Math.random()*colors.length)]});next=t+1300+Math.random()*800}
+  for(let i=rockets.length-1;i>=0;i--){const r=rockets[i];r.y-=290*dt;ctx.globalAlpha=.65;ctx.strokeStyle=r.c;ctx.lineWidth=1.3;ctx.beginPath();ctx.moveTo(r.x,r.y+25);ctx.lineTo(r.x,r.y);ctx.stroke();if(r.y<=r.target){burst(r.x,r.y,r.c);rockets.splice(i,1)}}
+  for(let i=particles.length-1;i>=0;i--){const p=particles[i],px=p.x,py=p.y;p.x+=p.vx*dt;p.y+=p.vy*dt;p.vx*=Math.pow(.985,dt*60);p.vy+=23*dt;p.life-=dt;ctx.globalAlpha=Math.max(0,p.life/2.2)*.8;ctx.strokeStyle=p.c;ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(px-p.vx*.045,py-p.vy*.045);ctx.lineTo(p.x,p.y);ctx.stroke();if(p.life<=0)particles.splice(i,1)}
+  ctx.globalAlpha=1;raf=requestAnimationFrame(frame);
+ }
+ function sync(){if(raf)cancelAnimationFrame(raf);raf=0;ctx.clearRect(0,0,w,h);if(!document.hidden&&!motion.matches){last=performance.now();next=last;raf=requestAnimationFrame(frame)}}
+ resize();window.addEventListener('resize',resize);document.addEventListener('visibilitychange',sync);motion.addEventListener('change',sync);sync();
+})();
+</script>
+
 </body>
 </html>
