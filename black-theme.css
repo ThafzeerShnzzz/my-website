@@ -1,0 +1,30 @@
+/* Shared public-page theme matching the black OKP homepage. */
+:root{color-scheme:dark;--paper:#000;--paper-deep:#160e15;--ink:#f4e5c8;--red:#ecd29e;--red-dark:#ecd29e;--dark:#ecd29e;--gold:#b99a57}
+body{background:#000!important;color:#f4e5c8}
+body:before,body:after{display:none!important}
+nav{background:rgba(0,0,0,.96)!important;border-color:#b58a5355}
+.links,.menu{background:#100b10!important;color:#ecd29e;border-color:#b58a53}
+.links a,.links a.active,.social-top .top-instagram{color:#ecd29e}
+.links .rsvp,.rsvp-form .button,.button,.album-button,button[type=submit]{background:#a22342!important;color:#fff1d6!important;border-color:#c98265!important}
+h1,h2,h3,h4,.page-head h1,.eyebrow,.script,.chapter-next a,.chapter-next b,footer{color:#ecd29e}
+.page-head,.chapter-next,.timeline,.event,.day>h2,footer{border-color:#b58a5355}
+.team-grid article,.menu-grid article,.house-box,.ticket,.card,.album-admin{background:#160e15!important;color:#f4e5c8;border-color:#b58a5366}
+.team-grid article:before,.menu-grid article:before,.card:before{border-color:#b58a5333}
+.house-hero-copy,.house-pool-copy{background:#000}
+.house-box.big,.team-photo.dark{background:#a22342!important;color:#fff1d6}
+.house-box.big h2,.house-box.big span,.team-photo.dark,.haldi-subprogram h4{color:#fff1d6}
+.haldi-highlights span{background:#211219;border-color:#b58a5366}
+.haldi-subprogram h4{background:#a22342}
+input,select,textarea,.rsvp-form input,.rsvp-form select,.rsvp-form textarea{background:#191419!important;color:#f4e5c8!important;border-color:#b58a5380!important}
+input::placeholder,textarea::placeholder{color:#bdb2a3}
+input[type=radio],input[type=checkbox]{accent-color:#b99a57}
+.memory,.album-dialog{background:#21191d;color:#f4e5c8}
+.memory p,.album-dialog p,.album-dialog button,.delete-photo{color:#f4e5c8}
+.album-admin,.album-dialog{border-color:#b58a5366}
+.okp-admit-note,.album-credit{color:#d7bf99}
+.gphoto,.photo-placeholder{background:#211219;border-color:#b58a5366;color:#ecd29e}
+.photo-placeholder-inner{background:#160e15;color:#ecd29e}
+@media(min-width:1001px){
+.photo-1:after,.photo-3:after,.photo-5:after,.photo-7:after{background:linear-gradient(90deg,transparent 0 48%,rgba(0,0,0,.72) 72%,#000 96%)!important}
+.photo-2:after,.photo-4:after,.photo-6:after,.photo-8:after{background:linear-gradient(270deg,transparent 0 48%,rgba(0,0,0,.72) 72%,#000 96%)!important}
+}
