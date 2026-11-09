@@ -7,6 +7,14 @@
 body{background:#faf5e9}.page-head{text-align:center;padding:35px 0 25px}.page-head h1{font-size:clamp(42px,7vw,78px);color:#a51d25;margin:12px 0}.page-head p{font-size:20px}.album-grid{columns:4 220px;column-gap:22px;padding:20px 4px}.memory{break-inside:avoid;background:#fffdf6;padding:10px 10px 16px;margin:0 0 24px;box-shadow:0 3px 12px #48341b18}.memory:nth-child(3n+1){transform:rotate(-1deg)}.memory:nth-child(3n+2){transform:rotate(1deg)}.memory img{display:block;width:100%;height:auto}.memory button.open-photo{border:0;padding:0;display:block;width:100%;background:transparent;cursor:zoom-in}.memory p{margin:12px 4px 0;font-size:15px;overflow-wrap:anywhere}.album-toolbar{text-align:center;margin:20px 0}.album-button{display:inline-block;padding:13px 23px;border:1px solid #a51d25;background:#a51d25;color:white;text-decoration:none;font:inherit;cursor:pointer}.album-button:disabled{opacity:.5;cursor:wait}.album-admin{border:1px solid #dacdb8;padding:24px;margin:20px auto;max-width:600px;background:#fffaf0}.album-admin label{display:block;margin:12px 0 6px}.album-admin input{box-sizing:border-box;width:100%;padding:10px}.album-message{text-align:center;line-height:1.6}.delete-photo{margin:12px 4px 0;background:transparent;color:#a51d25;border:1px solid #d8b5ad;padding:7px;cursor:pointer}.album-dialog{max-width:95vw;max-height:94vh;border:0;padding:12px;background:#fffdf6}.album-dialog::backdrop{background:#000c}.album-dialog img{display:block;max-width:85vw;max-height:75vh;object-fit:contain}.album-dialog .dialog-actions{display:flex;justify-content:space-between;gap:24px;padding:10px}.album-credit{text-align:center;font-size:14px;margin:35px 0}@media(max-width:600px){.album-grid{columns:2;column-gap:12px}.memory{padding:6px 6px 12px;margin-bottom:15px}.page-head{padding-top:15px}.page-head p{font-size:17px}.memory p{font-size:13px}.album-admin{padding:16px}}
 </style>
 
+<section class="album-admin" id="guestMemories">
+<h2>Were you there? 👀</h2><p>Add your memories from the wedding. Photos appear after ISTEDA approves them.</p>
+<form id="guestUnlock"><label for="guestCode">Your OKP No.</label><input id="guestCode" required maxlength="20" placeholder="OKP21" autocapitalize="characters">
+<fieldset style="margin:18px 0;border:1px solid #dacdb8"><legend>When did the foam party start?</legend>
+<label style="display:flex;gap:10px;align-items:center"><input style="width:auto" type="radio" name="foamAnswer" value="1" required>11:00 PM</label><label style="display:flex;gap:10px;align-items:center"><input style="width:auto" type="radio" name="foamAnswer" value="2" required>11:45 PM</label><label style="display:flex;gap:10px;align-items:center"><input style="width:auto" type="radio" name="foamAnswer" value="3" required>12:00–1:00 AM</label><label style="display:flex;gap:10px;align-items:center"><input style="width:auto" type="radio" name="foamAnswer" value="4" required>1:00–3:00 AM</label>
+</fieldset><button class="album-button">Unlock Photo Upload</button></form>
+<form id="guestUpload" hidden><label for="guestFiles">Choose up to 10 photos</label><input id="guestFiles" type="file" accept="image/jpeg,image/png,image/webp" multiple required><label for="guestCaption">Caption (optional)</label><input id="guestCaption" maxlength="80"><p>Photos are compressed automatically. JPG, PNG or WebP · Up to 20 MB per original. Export iPhone HEIC photos as JPG first.</p><button class="album-button">Submit for approval</button></form>
+<p id="guestMessage" role="status" aria-live="polite"></p></section>
 <p id="albumMessage" class="album-message" role="status" aria-live="polite">Loading memories…</p><div id="albumGrid" class="album-grid"></div>
 <div class="album-toolbar"><button id="albumMore" class="album-button" hidden>More memories</button></div>
 <p class="album-credit">One celebration. A thousand memories.<br>Curated with love by ISTEDA.</p>
@@ -25,6 +33,25 @@ function card(file){const url=bucket.getPublicUrl('photos/'+file.name).data.publ
 async function load(reset=false){if(loading)return;loading=true;more.disabled=true;if(reset){offset=0;grid.replaceChildren();}try{const {data,error}=await bucket.list('photos',{limit:24,offset,sortBy:{column:'name',order:'desc'}});if(error)throw error;const photos=(data||[]).filter(f=>/\.jpg$/i.test(f.name));photos.forEach(card);offset+=(data||[]).length;more.hidden=(data||[]).length<24;message.textContent=grid.children.length?'':'Our Memory Wall is waiting for its first memories.';}catch{message.textContent='The Memory Wall is not available yet. Please check back soon.';more.hidden=true;}finally{loading=false;more.disabled=false;}}
 async function compress(file){if(!['image/jpeg','image/png','image/webp'].includes(file.type))throw new Error('Choose JPG, PNG or WebP photos. For iPhone HEIC files, export as JPG first.');if(file.size>20*1024*1024)throw new Error('Each source photo must be under 20 MB.');const bitmap=await createImageBitmap(file);try{const scale=Math.min(1,1800/Math.max(bitmap.width,bitmap.height)),canvas=document.createElement('canvas');canvas.width=Math.max(1,Math.round(bitmap.width*scale));canvas.height=Math.max(1,Math.round(bitmap.height*scale));const ctx=canvas.getContext('2d');ctx.fillStyle='#fff';ctx.fillRect(0,0,canvas.width,canvas.height);ctx.drawImage(bitmap,0,0,canvas.width,canvas.height);const blob=await new Promise(resolve=>canvas.toBlob(resolve,'image/jpeg',.8));if(!blob||blob.size>3*1024*1024)throw new Error('This photo is too large after resizing. Please choose a smaller version.');return blob;}finally{bitmap.close();}}
 more.onclick=()=>load();byId('albumClose').onclick=()=>byId('albumDialog').close();byId('albumDialog').onclick=event=>{if(event.target===byId('albumDialog'))byId('albumDialog').close();};
+
+let guestToken=null;
+byId('guestUnlock').onsubmit=async event=>{
+ event.preventDefault();const button=event.currentTarget.querySelector('button'),status=byId('guestMessage');button.disabled=true;status.textContent='Checking your guest access…';
+ try{const {data,error}=await db.rpc('unlock_okp_memories',{p_code:byId('guestCode').value.trim(),p_answer:Number(new FormData(event.currentTarget).get('foamAnswer'))});if(error)throw error;guestToken=data;byId('guestUnlock').hidden=true;byId('guestUpload').hidden=false;status.textContent='You’re in! Share your favourite moments.';}
+ catch(error){status.textContent=error.code==='PGRST202'?'Guest uploads are being set up. Please try again soon.':error.message;}
+ finally{button.disabled=false;}
+};
+byId('guestUpload').onsubmit=async event=>{
+ event.preventDefault();const form=event.currentTarget,button=form.querySelector('button'),status=byId('guestMessage'),files=[...byId('guestFiles').files];
+ if(!guestToken||!files.length||files.length>10){status.textContent='Choose between 1 and 10 photos.';return;}
+ button.disabled=true;let uploaded=0;
+ try{for(const file of files){status.textContent='Submitting photo '+(uploaded+1)+' of '+files.length+'…';const blob=await compress(file),cap=byId('guestCaption').value.trim().normalize('NFKD').replace(/[^a-zA-Z0-9 _-]/g,'').slice(0,80);
+ const {error}=await db.storage.from('memory-pending').upload(guestToken+'/'+crypto.randomUUID()+'__'+cap+'.jpg',blob,{contentType:'image/jpeg',upsert:false});if(error)throw error;uploaded++;}
+ form.reset();status.textContent=uploaded+' photo(s) submitted! They will appear after ISTEDA approves them.';
+ }catch(error){status.textContent=uploaded+' photo(s) submitted. '+error.message;}
+ finally{guestToken=null;byId('guestUpload').hidden=true;byId('guestUnlock').hidden=false;button.disabled=false;}
+};
+
 load(true);
 })();
 </script>
