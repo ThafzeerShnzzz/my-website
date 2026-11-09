@@ -6,7 +6,7 @@
  document.body.appendChild(canvas);const ctx=canvas.getContext('2d');if(!ctx)return;
  const motion=window.matchMedia('(prefers-reduced-motion: reduce)');
  let w=0,h=0,particles=[],rockets=[],last=0,next=0,raf=0;
- const colors=['#b20f3b','#b88b3e','#a66436','#8f0c31'];
+ const colors=['#f5d795','#e7b95d','#ffe9ba','#d49a66'];
  function resize(){w=window.innerWidth;h=window.innerHeight;const d=Math.min(window.devicePixelRatio||1,2);canvas.width=w*d;canvas.height=h*d;ctx.setTransform(d,0,0,d,0,0)}
  function burst(x,y,c){const count=w<600?60:90;for(let i=0;i<count;i++){const a=i/count*Math.PI*2,s=55+Math.random()*105;particles.push({x,y,vx:Math.cos(a)*s,vy:Math.sin(a)*s,life:1.5+Math.random()*.7,c})}}
  function frame(t){
