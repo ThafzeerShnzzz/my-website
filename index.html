@@ -785,6 +785,20 @@ nav{border-color:rgba(232,195,131,.3)}
 .envelope-closing{color:#ecd29e}
 @media(max-width:850px){nav{background:rgba(0,0,0,.95)}.menu{color:#ecd29e;border-color:#b58a53;background:#160e15}.links{background:#100b10;border-color:#b58a53}.links a{border-bottom-color:rgba(232,195,131,.18)}}
 
+
+/* Separate community invitation */
+.community-connect{width:min(600px,100%);margin:0 auto 34px;padding:26px 24px 28px;background:#211219;border:1px solid #b58a53;text-align:center;animation:communityNudge 5s ease-in-out infinite;transform-origin:center center}
+.hero .community-connect h2{font:500 clamp(25px,4vw,34px)/1.2 'Cormorant Garamond',Georgia,serif;color:#ecd29e;margin:0 0 12px}
+.community-connect p{font:400 19px/1.5 'Cormorant Garamond',Georgia,serif;color:#f4e5c8;margin:0 auto 20px;max-width:480px}
+.community-connect-actions{display:flex;justify-content:center;flex-wrap:wrap;gap:10px}
+.community-connect-actions a{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:13px 16px;border:1px solid #b58a53;text-decoration:none;color:#f0d4a4;font:500 9px/1.5 Montserrat,sans-serif;letter-spacing:1px;max-width:100%}
+.community-connect-actions .button{color:#fff1d6;background:#a22342;box-shadow:none}
+.community-connect-actions a:hover{background:#851b37;color:#fff1d6}
+.community-connect:hover,.community-connect:focus-within{animation-play-state:paused}
+@keyframes communityNudge{0%,78%,100%{transform:translateX(0) rotate(0)}82%{transform:translateX(-2px) rotate(-.5deg)}86%{transform:translateX(2px) rotate(.5deg)}90%{transform:translateX(-2px) rotate(-.4deg)}94%{transform:translateX(1px) rotate(.3deg)}}
+@media(max-width:500px){.community-connect{padding:23px 16px;margin-bottom:28px}.community-connect p{font-size:17px}.community-connect-actions{flex-direction:column}.community-connect-actions a{width:100%}}
+@media(prefers-reduced-motion:reduce){.community-connect{animation:none}}
+
 </style>
 </head>
 
@@ -841,7 +855,7 @@ nav{border-color:rgba(232,195,131,.3)}
       <p>Thank you to everyone who came to our wedding. You guys made it one for the books!</p>
       <p>The energy, the madness, the memories… thanks for an unforgettable day, guys. ❤️</p>
       <p>The wedding is over. The memories stay. We’ll be sharing some photos on the Memory Wall, and this website will stay live so you can always come back.</p>
-      <p>Stay connected. More to come.<br>Join our WhatsApp community, or DM us on Instagram. There’s a lot more waiting with ISTEDA.</p>
+
       <div class="letter-sign">With love, Isteda</div>
     </article>
     <div class="envelope-front" aria-hidden="true"></div>
@@ -850,10 +864,18 @@ nav{border-color:rgba(232,195,131,.3)}
   </div>
   <div class="envelope-actions">
     <a class="button" href="gallery.html">MEMORY WALL →</a>
-    <a href="https://chat.whatsapp.com/CG7gAa0MuvIFUJe5VDZWWJ" target="_blank" rel="noopener">JOIN WHATSAPP</a>
-    <a href="https://www.instagram.com/isteda_community/" target="_blank" rel="noopener">FOLLOW INSTAGRAM</a>
+
+
   </div>
   <p class="envelope-closing">THE WEDDING ENDED. THE FAMILY DIDN’T.</p>
+</section>
+<section class="community-connect" aria-labelledby="communityConnectTitle">
+  <h2 id="communityConnectTitle">Stay connected. More to come.</h2>
+  <p>Join our WhatsApp community, or DM us on Instagram.<br>There’s a lot more waiting with ISTEDA.</p>
+  <div class="community-connect-actions">
+    <a class="button" href="https://chat.whatsapp.com/CG7gAa0MuvIFUJe5VDZWWJ" target="_blank" rel="noopener">JOIN WHATSAPP COMMUNITY</a>
+    <a href="https://www.instagram.com/isteda_community/" target="_blank" rel="noopener">FOLLOW @ISTEDA_COMMUNITY</a>
+  </div>
 </section>
 
     <a class="button" href="story.html">
