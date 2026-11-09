@@ -25,7 +25,7 @@ body{background:#faf5e9}.page-head{text-align:center;padding:35px 0 25px}.page-h
 <section class="album-admin" id="guestMemories">
 <div id="guestInvite" style="text-align:center"><h2>Want to upload your memories?</h2><p>Your moments belong on this wall.<br>Log in with your OKP number to share them.</p><button type="button" class="album-button" id="guestShowLogin" aria-expanded="false" aria-controls="guestLoginPanel">Yes, let me in →</button></div>
 <div id="guestLoginPanel" hidden><h2>Were you there? 👀</h2><p>Enter your OKP number and answer this little throwback to unlock uploads.</p>
-<form id="guestUnlock"><label for="guestCode">Your OKP No.</label><div class="guest-code-wrap"><input id="guestCode" required maxlength="20" placeholder="OKP21" autocapitalize="characters" aria-describedby="guestCodeError"><span id="guestCodeCross" class="guest-code-cross" aria-hidden="true" hidden>✕</span></div><p id="guestCodeError" class="guest-field-error" hidden></p>
+<form id="guestUnlock" novalidate><label for="guestCode">Your OKP No.</label><div class="guest-code-wrap"><input id="guestCode" required maxlength="20" placeholder="OKP21" autocapitalize="characters" aria-describedby="guestCodeError"><span id="guestCodeCross" class="guest-code-cross" aria-hidden="true" hidden>✕</span></div><p id="guestCodeError" class="guest-field-error" hidden></p>
 <fieldset id="guestAnswerGroup" aria-describedby="guestAnswerError" style="margin:18px 0;border:1px solid #dacdb8"><legend>When did the foam party start?</legend>
 <label style="display:flex;gap:10px;align-items:center"><input style="width:auto" type="radio" name="foamAnswer" value="1" required>11:00 PM</label><label style="display:flex;gap:10px;align-items:center"><input style="width:auto" type="radio" name="foamAnswer" value="2" required>11:45 PM</label><label style="display:flex;gap:10px;align-items:center"><input style="width:auto" type="radio" name="foamAnswer" value="3" required>12:00–1:00 AM</label><label style="display:flex;gap:10px;align-items:center"><input style="width:auto" type="radio" name="foamAnswer" value="4" required>1:00–3:00 AM</label>
 </fieldset><p id="guestAnswerError" class="guest-field-error" hidden></p><button class="album-button">Unlock Photo Upload</button></form>
@@ -71,16 +71,23 @@ byId('guestUnlock').querySelectorAll('[name="foamAnswer"]').forEach(el=>el.addEv
 
 byId('guestUnlock').onsubmit=async event=>{
  event.preventDefault();clearGuestErrors();const button=event.currentTarget.querySelector('button'),status=byId('guestMessage');button.disabled=true;status.textContent='Checking your guest access…';
- try{const {data,error}=await db.rpc('unlock_okp_memories',{p_code:byId('guestCode').value.trim(),p_answer:Number(new FormData(event.currentTarget).get('foamAnswer'))});if(error)throw error;guestToken=data;byId('guestUnlock').hidden=true;byId('guestUpload').hidden=false;status.textContent='You’re in! Share your favourite moments.';}
+ try{
+ const code=byId('guestCode').value.trim(),answer=Number(new FormData(event.currentTarget).get('foamAnswer'));
+ if(!/^OKP[0-9]+$/i.test(code.replace(/[\s-]/g,''))||answer!==4)throw {code:'GUEST_INVALID',message:'Check your OKP number and foam party answer.'};
+ button.textContent='CHECKING…';
+ const {data,error}=await db.rpc('unlock_okp_memories',{p_code:code,p_answer:answer});
+ if(error)throw error;
+ if(typeof data!=='string'||!/^[a-f0-9-]{36}$/i.test(data))throw {code:'GUEST_INVALID',message:'Check your OKP number and foam party answer.'};
+ guestToken=data;byId('guestUnlock').hidden=true;byId('guestUpload').hidden=false;status.textContent='You’re in! Share your favourite moments.';}
  catch(error){
  const message=String(error.message||'');
  const invalid=/check your okp number and foam party answer/i.test(message);
  status.classList.add('guest-login-error');status.setAttribute('role','alert');
  if(invalid){
   const answer=byId('guestUnlock').querySelector('[name="foamAnswer"]:checked');
-  if(answer&&answer.value!=='4'){
-   answer.setAttribute('aria-invalid','true');answer.closest('label').classList.add('guest-answer-wrong');
-   byId('guestAnswerError').textContent='✕ That’s not the right answer. Try again!';byId('guestAnswerError').hidden=false;
+  if(!answer||answer.value!=='4'){
+   if(answer){answer.setAttribute('aria-invalid','true');answer.closest('label').classList.add('guest-answer-wrong');}
+   byId('guestAnswerError').textContent=answer?'✕ That’s not the right answer. Try again!':'✕ Please choose your foam party answer.';byId('guestAnswerError').hidden=false;
   }else{
    byId('guestCode').setAttribute('aria-invalid','true');byId('guestCodeCross').hidden=false;
    byId('guestCodeError').textContent='✕ We couldn’t verify this OKP number for guest access. Please check and try again.';byId('guestCodeError').hidden=false;
