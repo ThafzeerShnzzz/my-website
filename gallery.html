@@ -8,13 +8,14 @@ body{background:#faf5e9}.page-head{text-align:center;padding:35px 0 25px}.page-h
 </style>
 
 <section class="album-admin" id="guestMemories">
-<h2>Were you there? 👀</h2><p>Add your memories from the wedding. Photos appear after ISTEDA approves them.</p>
+<div id="guestInvite" style="text-align:center"><h2>Want to upload your memories?</h2><p>Your moments belong on this wall.<br>Log in with your OKP number to share them.</p><button type="button" class="album-button" id="guestShowLogin" aria-expanded="false" aria-controls="guestLoginPanel">Yes, let me in →</button></div>
+<div id="guestLoginPanel" hidden><h2>Were you there? 👀</h2><p>Enter your OKP number and answer this little throwback to unlock uploads.</p>
 <form id="guestUnlock"><label for="guestCode">Your OKP No.</label><input id="guestCode" required maxlength="20" placeholder="OKP21" autocapitalize="characters">
 <fieldset style="margin:18px 0;border:1px solid #dacdb8"><legend>When did the foam party start?</legend>
 <label style="display:flex;gap:10px;align-items:center"><input style="width:auto" type="radio" name="foamAnswer" value="1" required>11:00 PM</label><label style="display:flex;gap:10px;align-items:center"><input style="width:auto" type="radio" name="foamAnswer" value="2" required>11:45 PM</label><label style="display:flex;gap:10px;align-items:center"><input style="width:auto" type="radio" name="foamAnswer" value="3" required>12:00–1:00 AM</label><label style="display:flex;gap:10px;align-items:center"><input style="width:auto" type="radio" name="foamAnswer" value="4" required>1:00–3:00 AM</label>
 </fieldset><button class="album-button">Unlock Photo Upload</button></form>
 <form id="guestUpload" hidden><label for="guestFiles">Choose up to 10 photos</label><input id="guestFiles" type="file" accept="image/jpeg,image/png,image/webp" multiple required><label for="guestCaption">Caption (optional)</label><input id="guestCaption" maxlength="80"><p>Photos are compressed automatically. JPG, PNG or WebP · Up to 20 MB per original. Export iPhone HEIC photos as JPG first.</p><button class="album-button">Submit for approval</button></form>
-<p id="guestMessage" role="status" aria-live="polite"></p></section>
+<p id="guestMessage" role="status" aria-live="polite"></p><p style="font-size:14px">Photos appear after ISTEDA approves them.</p></div></section>
 <p id="albumMessage" class="album-message" role="status" aria-live="polite">Loading memories…</p><div id="albumGrid" class="album-grid"></div>
 <div class="album-toolbar"><button id="albumMore" class="album-button" hidden>More memories</button></div>
 <p class="album-credit">One celebration. A thousand memories.<br>Curated with love by ISTEDA.</p>
@@ -34,6 +35,12 @@ async function load(reset=false){if(loading)return;loading=true;more.disabled=tr
 async function compress(file){if(!['image/jpeg','image/png','image/webp'].includes(file.type))throw new Error('Choose JPG, PNG or WebP photos. For iPhone HEIC files, export as JPG first.');if(file.size>20*1024*1024)throw new Error('Each source photo must be under 20 MB.');const bitmap=await createImageBitmap(file);try{const scale=Math.min(1,1800/Math.max(bitmap.width,bitmap.height)),canvas=document.createElement('canvas');canvas.width=Math.max(1,Math.round(bitmap.width*scale));canvas.height=Math.max(1,Math.round(bitmap.height*scale));const ctx=canvas.getContext('2d');ctx.fillStyle='#fff';ctx.fillRect(0,0,canvas.width,canvas.height);ctx.drawImage(bitmap,0,0,canvas.width,canvas.height);const blob=await new Promise(resolve=>canvas.toBlob(resolve,'image/jpeg',.8));if(!blob||blob.size>3*1024*1024)throw new Error('This photo is too large after resizing. Please choose a smaller version.');return blob;}finally{bitmap.close();}}
 more.onclick=()=>load();byId('albumClose').onclick=()=>byId('albumDialog').close();byId('albumDialog').onclick=event=>{if(event.target===byId('albumDialog'))byId('albumDialog').close();};
 
+byId('guestShowLogin').onclick=()=>{
+ byId('guestLoginPanel').hidden=false;
+ byId('guestShowLogin').setAttribute('aria-expanded','true');
+ byId('guestInvite').hidden=true;
+ byId('guestCode').focus();
+};
 let guestToken=null;
 byId('guestUnlock').onsubmit=async event=>{
  event.preventDefault();const button=event.currentTarget.querySelector('button'),status=byId('guestMessage');button.disabled=true;status.textContent='Checking your guest access…';
