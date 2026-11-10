@@ -25,6 +25,13 @@ function renderPaymentSheet(){
  const search=el('search').value.trim().toLowerCase(),method=el('methodFilter').value;
  const list=paidCollection.filter(x=>(method==='all'||x.method===method)&&[x.Name,x.registration_code].some(v=>String(v??'').toLowerCase().includes(search)));
  el('guests').innerHTML=list.map(x=>'<tr><td>'+htmlEscape(x.registration_code)+'</td><td>'+htmlEscape(x.Name)+'</td><td>'+paymentLabels[x.method]+'</td><td class="number">'+(x.method==='unassigned'?'Not assigned':formatMoney(paymentRates[x.method]))+'</td></tr>').join('')||'<tr><td colspan="4">No paid guests match this filter.</td></tr>';
+ const total=list.reduce((sum,x)=>sum+(paymentRates[x.method]||0),0);
+ const unassigned=list.filter(x=>x.method==='unassigned').length;
+ if(el('sheetTotalLabel')){
+  el('sheetTotalLabel').textContent='TOTAL · '+(method==='all'?'All paid guests':paymentLabels[method])+' · '+list.length+' guest'+(list.length===1?'':'s');
+  el('sheetTotalAmount').textContent=method==='unassigned'&&list.length?'Not assigned':'AED '+formatMoney(total);
+  el('sheetTotalNote').textContent=unassigned&&method!=='unassigned'?unassigned+' guest(s) without a payment method are excluded from this amount.':'';
+ }
 }
 async function loadCollection(){
  if(!collectionToken){location.replace('admin-v2.html');return}
