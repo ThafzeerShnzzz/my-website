@@ -31,7 +31,7 @@ function renderMethodBalances(){
  const names=[['bank','Bank Account'],['ziina','Ziina'],['cash','Cash'],['other','Other']];
  $('methodBalances').innerHTML=names.map(([k,label])=>{const incoming=methodRevenue[k]||0,spent=out[k],balance=incoming-spent;return '<article class="method-card"><h3>'+label+'</h3><div class="method-line in"><span>+ Amount IN</span><b>AED '+money(incoming)+'</b></div><div class="method-line out"><span>− Amount OUT</span><b>AED '+money(spent)+'</b></div><div class="method-line method-total"><span>Balance</span><b class="'+(balance<0?'negative':'')+'">'+(balance<0?'−':'')+'AED '+money(Math.abs(balance))+'</b></div></article>'}).join('');
 }
-function render(){renderProgress();renderMethodBalances();renderReimbursements();
+function render(){renderExpenseCategories();renderProgress();renderMethodBalances();renderReimbursements();
 const direct=items.reduce((a,x)=>a+Math.round(Number(x.amount)*100),0);
 const personalTotal=reimbursements.reduce((a,x)=>a+Math.round(Number(x.amount)*100),0);
 const settled=reimbursements.filter(r=>r.settled_at).reduce((a,r)=>a+Math.round(Number(r.amount)*100),0);
@@ -54,3 +54,22 @@ $('rows').addEventListener('click',async e=>{const edit=e.target.closest('button
 $('export').onclick=()=>{const columns=['Date','Category','Description','Paid via','Amount AED','Paid by','Reimbursement status'],csv=[columns,...items.map(x=>[x.expense_date,x.category,x.description,x.paid_via,Number(x.amount).toFixed(2),'','']),...reimbursements.map(x=>[x.expense_date,x.category,x.description,x.settled_via||'Personal Money',Number(x.amount).toFixed(2),x.paid_by,x.settled_at?'Settled':'Pending'])].map(row=>row.map(v=>'"'+String(v??'').replace(/^([=+@-])/,'\'$1').replace(/"/g,'""')+'"').join(',')).join('\r\n');const link=document.createElement('a'),url=URL.createObjectURL(new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8'}));link.href=url;link.download='OKP-expenses.csv';link.click();URL.revokeObjectURL(url)};
 $('search').oninput=render;$('categoryFilter').onchange=render;$('refresh').onclick=load;$('logout').onclick=()=>{sessionStorage.removeItem('okp_admin_token');location.replace('admin-v2.html')};$('date').value=new Date(Date.now()-new Date().getTimezoneOffset()*60000).toISOString().slice(0,10);togglePersonal();load();
 
+
+function expenseCategoryTotals(rows){
+ const totals=new Map();
+ for(const row of rows){const amount=Math.round(Number(row.amount)*100);if(!Number.isFinite(amount))continue;const category=String(row.category||'Other').trim()||'Other';totals.set(category,(totals.get(category)||0)+amount)}
+ return [...totals].sort((a,b)=>b[1]-a[1]||a[0].localeCompare(b[0]));
+}
+function renderExpenseCategories(){
+ if(!$('expenseCategoryChart'))return;
+ const groups=expenseCategoryTotals([...items,...reimbursements]),total=groups.reduce((sum,x)=>sum+x[1],0);
+ const colors=['#8f1739','#bd8d55','#587d78','#9382ad','#d08765','#7287a3','#8d965b','#b9afb0'];
+ let offset=0;
+ const slices=groups.filter(x=>x[1]>0).map(([name,value],i)=>{const start=offset;offset+=value/total*100;return colors[i%colors.length]+' '+start+'% '+offset+'%'});
+ const valid=total>0&&groups.every(x=>x[1]>=0);
+ $('expenseCategoryChart').style.background=valid?'conic-gradient('+slices.join(',')+')':'#e7ddd2';
+ $('expenseCategoryChart').setAttribute('aria-label',valid?'Expense categories: '+groups.map(([name,value])=>name+' AED '+money(value)).join(', '):'No positive expense breakdown available');
+ $('expenseCategoryTotal').textContent=money(total);
+ $('expenseCategoryLegend').innerHTML=groups.length?groups.map(([name,value],i)=>'<div class="expense-category-row"><span class="expense-category-name"><i style="background:'+colors[i%colors.length]+'" aria-hidden="true"></i>'+esc(name)+'</span><strong>AED '+money(value)+'</strong><span>'+ (valid?(value/total*100).toFixed(1)+'%':'—')+'</span></div>').join(''):'<p class="note">No expenses recorded yet.</p>';
+ $('expenseCategoryNote').textContent=(reimbursementsReady?'Includes event-funded and member-paid expenses, counted once.':'Member records unavailable; breakdown includes event-funded expenses only.')+(!valid&&groups.length?' Percentage breakdown requires positive total expenses and no negative category totals.':'');
+}
