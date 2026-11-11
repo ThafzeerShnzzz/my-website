@@ -801,7 +801,26 @@ nav{border-color:rgba(232,195,131,.3)}
 
 </style>
 <style>
-.okp-photo-trigger { cursor: pointer; }
+.okp-photo-placement {
+  display: flex;
+  justify-content: flex-end;
+  position: relative;
+  z-index: 2;
+  margin: -24px 0 6px;
+}
+.hero .okp-photo-placement .okp-photo-trigger {
+  cursor: pointer;
+  margin: 0;
+  min-height: 44px;
+  max-width: 100%;
+}
+@media (max-width: 600px) {
+  .okp-photo-placement { margin: -12px 0 6px; }
+  .hero .okp-photo-placement .okp-photo-trigger {
+    padding: 10px 12px;
+    letter-spacing: 1px;
+  }
+}
 #okpPhotoPopup {
   box-sizing: border-box; position: fixed; inset: 0; margin: auto;
   width: min(430px, calc(100% - 32px)); max-height: calc(100% - 32px);
@@ -879,6 +898,10 @@ nav{border-color:rgba(232,195,131,.3)}
       <img class="hero-logo" src="okp1.png" alt="O.K.P — Oru Kalyanam Pole">
       </div>
 
+<div class="okp-photo-placement">
+    <button class="button okp-photo-trigger" id="okpPhotoTrigger" type="button" aria-haspopup="dialog" aria-controls="okpPhotoPopup">📸 Click to open photo link</button>
+</div>
+
 <section class="envelope-home" aria-label="A thank-you note from ISTEDA">
   <div class="envelope-stage">
     <div class="envelope-back" aria-hidden="true"></div>
@@ -900,7 +923,6 @@ nav{border-color:rgba(232,195,131,.3)}
   </div>
   <div class="envelope-actions">
     <a class="button" href="gallery.html">MEMORY WALL →</a>
-    <button class="button okp-photo-trigger" id="okpPhotoTrigger" type="button" aria-haspopup="dialog" aria-controls="okpPhotoPopup">📸 Click to open photo link</button>
 
 
   </div>
