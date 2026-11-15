@@ -81,7 +81,7 @@ legend { font-weight: 700; padding-inline: .35rem; max-width: 100%; }
 .choices input { margin: 0; accent-color: var(--accent); flex-shrink: 0; }
 :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
 .masthead a:focus-visible { outline-color: #fff8ee; }
-.fun-answer, textarea {
+.respondent-name, .fun-answer, textarea {
   display: block;
   width: 100%;
   min-height: 44px;
@@ -161,6 +161,10 @@ button:disabled { opacity: .6; cursor: wait; }
       <a href="#staycation-ratings">Ratings</a>
     </nav>
     <p id="preview-note" class="poll-note">Preview only. Feedback collection will open once response storage is ready.</p>
+    <div class="poll-section">
+      <label for="respondent-name"><strong>Your name (optional)</strong></label>
+      <input class="respondent-name" id="respondent-name" name="respondent-name" type="text" autocomplete="name" maxlength="100">
+    </div>
     <section class="poll-section" id="review" aria-labelledby="questionTitle">
       <h2 id="questionTitle">Staycation review</h2>
       <div id="questions"></div>
@@ -376,6 +380,7 @@ if (collectionEnabled) {
           submission_id: submissionId,
           poll_answers: answers,
           poll_ratings: scores,
+          poll_name: data.get('respondent-name').trim() || null,
           poll_suggestion: data.get('suggestion').trim()
         })
       });
