@@ -41,19 +41,15 @@ h1 { font-size: clamp(3.1rem, 8vw, 6rem); margin: 0; text-wrap: balance; }
 h2 { font-size: clamp(2.1rem, 5vw, 3rem); margin: 0 0 .75rem; color: var(--wine); }
 h3 { font-size: 1.8rem; margin: 0 0 .9rem; color: var(--wine); }
 main { position: relative; width: min(calc(100% - 2rem), 880px); margin: -2.75rem auto 3.5rem; }
-#poll-access, .poll-section {
+.poll-section {
   border: 1px solid var(--line);
   background: var(--paper);
   border-radius: 16px;
   padding: clamp(1rem, 4vw, 2.25rem);
   box-shadow: 0 10px 32px #3514210b;
 }
-#poll-access { max-width: 420px; margin-inline: auto; }
-#poll-access h2 { font-size: 2.35rem; }
-#poll-access label, .suggestion label { color: var(--muted); font-weight: 600; }
-#poll-access button { width: 100%; }
-#access-error { margin: .75rem 0 0; color: #92223c; }
-#access-error:empty, #status:empty { display: none; }
+.suggestion label { color: var(--muted); font-weight: 600; }
+#status:empty { display: none; }
 .poll-section { margin: 0 0 1rem; scroll-margin-top: 1rem; }
 .poll-nav {
   display: flex;
@@ -85,7 +81,7 @@ legend { font-weight: 700; padding-inline: .35rem; max-width: 100%; }
 .choices input { margin: 0; accent-color: var(--accent); flex-shrink: 0; }
 :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
 .masthead a:focus-visible { outline-color: #fff8ee; }
-#poll-password, .fun-answer, textarea {
+.fun-answer, textarea {
   display: block;
   width: 100%;
   min-height: 44px;
@@ -96,7 +92,6 @@ legend { font-weight: 700; padding-inline: .35rem; max-width: 100%; }
   color: var(--text);
   font: inherit;
 }
-#poll-password { margin: .4rem 0 1rem; }
 .fun-round { padding: 1rem; border: 1px solid var(--line); border-radius: 12px; min-width: 0; }
 .fun-round label { display: block; font-weight: 600; }
 .fun-answer { margin: .35rem 0 .95rem; }
@@ -157,21 +152,15 @@ button:disabled { opacity: .6; cursor: wait; }
   <h1 tabindex="-1">OKP Staycation Poll</h1>
 </header>
 <main>
-  <form id="poll-access">
-    <h2>Enter the poll password</h2>
-    <label for="poll-password">Password</label>
-    <input id="poll-password" type="password" inputmode="numeric" maxlength="4" required>
-    <button type="submit">Unlock Poll</button>
-    <p id="access-error" role="status"></p>
-  </form>
-  <form id="poll-feedback" hidden>
+
+  <form id="poll-feedback">
     <nav class="poll-nav" aria-label="Poll sections">
       <a href="#review">Review</a>
       <a href="#fun">Just for fun</a>
       <a href="#suggestions">Suggestions</a>
       <a href="#staycation-ratings">Ratings</a>
     </nav>
-    <p id="preview-note" class="poll-note" hidden>Preview only. Feedback collection will open once response storage is ready.</p>
+    <p id="preview-note" class="poll-note">Preview only. Feedback collection will open once response storage is ready.</p>
     <section class="poll-section" id="review" aria-labelledby="questionTitle">
       <h2 id="questionTitle">Staycation review</h2>
       <div id="questions"></div>
@@ -246,9 +235,6 @@ const ratings = [
   ['expectation', 'How well did OKP meet your expectations?']
 ];
 
-const access = document.querySelector('#poll-access');
-const password = document.querySelector('#poll-password');
-const accessError = document.querySelector('#access-error');
 const form = document.querySelector('#poll-feedback');
 const status = document.querySelector('#status');
 const submit = document.querySelector('#submit');
@@ -353,19 +339,8 @@ ratings.forEach(([id, title]) => {
   ratingList.append(row);
 });
 
-access.addEventListener('submit', event => {
-  event.preventDefault();
-  if (password.value !== '1010') {
-    accessError.textContent = 'Incorrect password. Try again.';
-    password.select();
-    return;
-  }
-  access.hidden = true;
-  form.hidden = false;
-  submit.hidden = !collectionEnabled;
-  document.querySelector('#preview-note').hidden = collectionEnabled;
-  document.querySelector('h1').focus();
-});
+submit.hidden = !collectionEnabled;
+document.querySelector('#preview-note').hidden = collectionEnabled;
 
 if (collectionEnabled) {
   let submissionId;
