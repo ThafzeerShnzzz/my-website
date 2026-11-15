@@ -20,6 +20,8 @@ legend{font-weight:700;padding:0 .35rem}
 .choices label{display:flex;align-items:center;gap:.5rem;border:1px solid #d9bfb8;border-radius:8px;padding:.65rem;min-height:44px;cursor:pointer}
 .choices label:has(:checked){background:#f2dce3;border-color:#781e3e}
 input{accent-color:#781e3e}
+#poll-password{display:block;margin:.5rem 0 1rem;padding:.65rem;font:inherit;border:1px solid #a78888;border-radius:8px}
+#access-error{color:#8b1538}
 .stars{grid-template-columns:repeat(5,minmax(0,1fr))}
 .stars label{justify-content:center;padding:.4rem .15rem;position:relative}
 .stars input{position:absolute;opacity:0}
@@ -34,11 +36,18 @@ button:disabled{opacity:.6;cursor:wait}
 <header>
   <a href="index.html">← Back to OKP</a>
   <img src="okp1.png" alt="Oru Kalyanam Pole">
-  <h1>OKP Staycation Poll</h1>
+  <h1 tabindex="-1">OKP Staycation Poll</h1>
 </header>
 <main>
-  <form hidden>
-    <section aria-labelledby="questionTitle">
+  <form id="poll-access">
+    <h2>Enter the poll password</h2>
+    <label for="poll-password">Password</label>
+    <input id="poll-password" type="password" inputmode="numeric" maxlength="4" required>
+    <button type="submit">Unlock Poll</button>
+    <p id="access-error" role="status"></p>
+  </form>
+  <form id="poll-feedback" hidden>
+    <section id="poll-questions" aria-labelledby="questionTitle" hidden>
       <h2 id="questionTitle">The fun questions</h2>
       <div id="questions"></div>
     </section>
@@ -52,9 +61,9 @@ button:disabled{opacity:.6;cursor:wait}
       <p>Choose a rating from 1 (poor) to 5 (excellent).</p>
       <div id="ratings"></div>
     </section>
-    <button id="submit" type="submit">Submit Feedback</button>
+    <button id="submit" type="submit" hidden>Submit Feedback</button>
   </form>
-  <p id="status" role="status" tabindex="-1">The poll will open once the questions are ready.</p>
+  <p id="status" role="status" tabindex="-1"></p>
 </main>
 <script>
 const SUPABASE_URL='https://fbdkfzstxufvmjnkzzif.supabase.co';
@@ -73,7 +82,10 @@ const ratings = [
   ['expectation', 'How well did OKP meet your expectations?']
 ];
 
-const form = document.querySelector('form');
+const access = document.querySelector('#poll-access');
+const password = document.querySelector('#poll-password');
+const accessError = document.querySelector('#access-error');
+const form = document.querySelector('#poll-feedback');
 const status = document.querySelector('#status');
 const submit = document.querySelector('#submit');
 
@@ -100,18 +112,36 @@ function addChoices(container, name, title, options, stars = false) {
   container.append(group);
 }
 
-if (questions.length >= 10 && questions.length <= 15) {
+// Enable submissions after the Supabase migration has been applied and tested.
+const collectionEnabled = false;
+const questionsReady = questions.length >= 10 && questions.length <= 15;
+if (questionsReady) {
+  document.querySelector('#poll-questions').hidden = false;
   const questionList = document.querySelector('#questions');
-  const ratingList = document.querySelector('#ratings');
   questions.forEach(({id, title, options}, index) => {
     addChoices(questionList, 'question-' + id, (index + 1) + '. ' + title, options);
   });
-  ratings.forEach(([id, title]) => {
+}
+const ratingList = document.querySelector('#ratings');
+ratings.forEach(([id, title]) => {
     addChoices(ratingList, 'rating-' + id, title, [1, 2, 3, 4, 5], true);
-  });
-  status.textContent = '';
-  form.hidden = false;
+});
 
+access.addEventListener('submit', event => {
+  event.preventDefault();
+  if (password.value !== '1010') {
+    accessError.textContent = 'Incorrect password. Try again.';
+    password.select();
+    return;
+  }
+  access.hidden = true;
+  form.hidden = false;
+  submit.hidden = !collectionEnabled;
+  status.textContent = collectionEnabled ? '' : 'Preview only. Feedback will open once the questions and response storage are ready.';
+  document.querySelector('h1').focus();
+});
+
+if (collectionEnabled) {
   let submissionId;
   form.addEventListener('submit', async event => {
     event.preventDefault();
