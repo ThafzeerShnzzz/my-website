@@ -83,11 +83,7 @@ legend { font-weight: 700; padding-inline: .35rem; max-width: 100%; }
 }
 .choices label:has(:checked) { border-color: var(--accent); background: #f5e2e9; color: var(--wine-dark); }
 .choices input { margin: 0; accent-color: var(--accent); flex-shrink: 0; }
-.stars { grid-template-columns: repeat(5, minmax(0, 1fr)); }
-.stars label { justify-content: center; gap: .25rem; padding-inline: .15rem; position: relative; font-variant-numeric: tabular-nums; }
-.stars label::before { content: ""; inline-size: .78em; block-size: .78em; background: currentColor; clip-path: polygon(50% 0%, 62% 35%, 100% 38%, 71% 61%, 80% 98%, 50% 76%, 20% 98%, 29% 61%, 0% 38%, 38% 35%); }
-.stars input { position: absolute; opacity: 0; }
-.stars label:focus-within, :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
 .masthead a:focus-visible { outline-color: #fff8ee; }
 #poll-password, .fun-answer, textarea {
   display: block;
@@ -111,9 +107,46 @@ button:hover { background: var(--wine-dark); }
 button:disabled { opacity: .6; cursor: wait; }
 .poll-note { padding: .75rem 1rem; margin: 0 0 1rem; border-left: 3px solid var(--accent); border-radius: 4px; background: #f2e4e6; color: var(--wine-dark); }
 #status { padding: .75rem 1rem; background: #f2e4e6; border-radius: 8px; }
-#ratings + p, #ratingTitle + p { color: var(--muted); }
+
+#staycation-ratings {
+  background: #1e191a;
+  border-color: #433638;
+  color: #fffaf6;
+}
+#ratingTitle { color: inherit; font-family: "DM Sans", system-ui, sans-serif; font-weight: 700; letter-spacing: -.045em; }
+.rating-intro { display: flex; justify-content: space-between; align-items: end; gap: .75rem; flex-wrap: wrap; margin-bottom: 1.25rem; }
+.rating-intro p { margin: 0; color: #dbcbd0; }
+#rating-progress { font-size: .875rem; font-variant-numeric: tabular-nums; }
+#ratings { grid-template-columns: minmax(0, 1fr); gap: .65rem; }
+.rating-row { border-color: #57494d; background: #2c2527; padding: .75rem; }
+.rating-row legend { color: #fffaf6; }
+.rating-controls { display: grid; gap: .45rem 1rem; }
+.rating-stars { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: .25rem; max-width: 285px; }
+.rating-stars label {
+  position: relative;
+  display: grid;
+  place-items: center;
+  min-height: 48px;
+  border: 1px solid #615156;
+  border-radius: 8px;
+  color: #dccbd0;
+  cursor: pointer;
+}
+.rating-stars input { position: absolute; opacity: 0; inset: 0; margin: 0; width: 100%; height: 100%; cursor: pointer; }
+.rating-stars span { font-size: 1.45rem; line-height: 1; pointer-events: none; }
+.rating-stars label:has(input:checked), .rating-stars label:has(~ label input:checked) { color: #ffd395; border-color: #cc995d; background: #513726; }
+.rating-stars label:has(input:focus-visible) { outline: 2px solid #ffd395; outline-offset: 3px; }
+@media (hover: hover) {
+  .rating-stars label:hover { border-color: #ffd395; }
+}
+.rating-value { margin: 0; color: #dbcbd0; font-size: .875rem; min-height: 1.55em; }
 @media (min-width: 700px) {
-  #questions, #ratings { grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start; }
+  .rating-row { padding: .8rem 1rem 1rem; }
+  .rating-controls { grid-template-columns: minmax(240px, 285px) 1fr; align-items: center; }
+}
+
+@media (min-width: 700px) {
+  #questions { grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start; }
 }
 </style>
 </head>
@@ -154,7 +187,10 @@ button:disabled { opacity: .6; cursor: wait; }
     </section>
     <section class="poll-section" id="staycation-ratings" aria-labelledby="ratingTitle">
       <h2 id="ratingTitle">Rate your staycation</h2>
-      <p>Choose a rating from 1 (poor) to 5 (excellent).</p>
+      <div class="rating-intro">
+        <p>Tap a star to rate each part, from 1 to 5.</p>
+        <p id="rating-progress" role="status">0 of 8 rated</p>
+      </div>
       <div id="ratings"></div>
     </section>
     <button id="submit" type="submit" hidden>Submit Feedback</button>
@@ -217,13 +253,13 @@ const form = document.querySelector('#poll-feedback');
 const status = document.querySelector('#status');
 const submit = document.querySelector('#submit');
 
-function addChoices(container, name, title, options, stars = false) {
+function addChoices(container, name, title, options) {
   const group = document.createElement('fieldset');
   const legend = document.createElement('legend');
   legend.textContent = title;
   group.append(legend);
   const choices = document.createElement('div');
-  choices.className = stars ? 'choices stars' : 'choices';
+  choices.className = 'choices';
   options.forEach((option, index) => {
     const label = document.createElement('label');
     const input = document.createElement('input');
@@ -232,7 +268,6 @@ function addChoices(container, name, title, options, stars = false) {
     input.value = String(index + 1);
     const caption = document.createElement('span');
     caption.textContent = option;
-    if (stars) input.setAttribute('aria-label', option + ' out of 5');
     label.append(input, caption);
     choices.append(label);
   });
@@ -276,8 +311,46 @@ funRounds.forEach(([id, title, prompts]) => {
 });
 
 const ratingList = document.querySelector('#ratings');
+const ratingProgress = document.querySelector('#rating-progress');
+const ratingLabels = ['Poor', 'Fair', 'Good', 'Very good', 'Excellent'];
+const expectationLabels = ['Far below expectations', 'Below expectations', 'Met expectations', 'Exceeded expectations', 'Far exceeded expectations'];
+
 ratings.forEach(([id, title]) => {
-    addChoices(ratingList, 'rating-' + id, title, [1, 2, 3, 4, 5], true);
+  const row = document.createElement('fieldset');
+  row.className = 'rating-row';
+  const legend = document.createElement('legend');
+  legend.textContent = title;
+  const controls = document.createElement('div');
+  controls.className = 'rating-controls';
+  const stars = document.createElement('div');
+  stars.className = 'rating-stars';
+  const value = document.createElement('p');
+  value.className = 'rating-value';
+  value.textContent = 'Select a rating';
+  const labels = id === 'expectation' ? expectationLabels : ratingLabels;
+
+  labels.forEach((description, index) => {
+    const score = index + 1;
+    const label = document.createElement('label');
+    const input = document.createElement('input');
+    input.type = 'radio';
+    input.name = 'rating-' + id;
+    input.value = String(score);
+    input.setAttribute('aria-label', score + ' out of 5, ' + description);
+    const icon = document.createElement('span');
+    icon.textContent = '★';
+    icon.setAttribute('aria-hidden', 'true');
+    label.append(input, icon);
+    stars.append(label);
+    input.addEventListener('change', () => {
+      value.textContent = description + ' · ' + score + '/5';
+      ratingProgress.textContent = ratingList.querySelectorAll('input:checked').length + ' of ' + ratings.length + ' rated';
+    });
+  });
+
+  controls.append(stars, value);
+  row.append(legend, controls);
+  ratingList.append(row);
 });
 
 access.addEventListener('submit', event => {
