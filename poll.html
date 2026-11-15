@@ -26,6 +26,8 @@ input{accent-color:#781e3e}
 .stars label{justify-content:center;padding:.4rem .15rem;position:relative}
 .stars input{position:absolute;opacity:0}
 .stars label:focus-within{outline:2px solid #781e3e;outline-offset:2px}
+.fun-answer{display:block;margin:.4rem 0 1rem;width:100%;min-height:44px;padding:.65rem;font:inherit;border:1px solid #a78888;border-radius:8px}
+.fun-round{margin:0 0 1rem;padding:1rem;border:1px solid #d9bfb8;border-radius:14px;background:#fffaf4}
 textarea{display:block;margin-top:.5rem;width:100%;min-height:110px;padding:.65rem;font:inherit;border:1px solid #a78888;border-radius:8px}
 button{background:#661c36;border:0;border-radius:8px;color:#fff;padding:.85rem 1.2rem;min-height:44px;font:inherit;font-weight:700;cursor:pointer}
 button:disabled{opacity:.6;cursor:wait}
@@ -47,9 +49,13 @@ button:disabled{opacity:.6;cursor:wait}
     <p id="access-error" role="status"></p>
   </form>
   <form id="poll-feedback" hidden>
-    <section id="poll-questions" aria-labelledby="questionTitle" hidden>
-      <h2 id="questionTitle">The fun questions</h2>
+    <section aria-labelledby="questionTitle">
+      <h2 id="questionTitle">Staycation review</h2>
       <div id="questions"></div>
+    </section>
+    <section aria-labelledby="funTitle">
+      <h2 id="funTitle">Just for fun</h2>
+      <div id="fun-questions"></div>
     </section>
     <section class="suggestion" aria-labelledby="suggestionTitle">
       <h2 id="suggestionTitle">Suggestions</h2>
@@ -69,7 +75,39 @@ button:disabled{opacity:.6;cursor:wait}
 const SUPABASE_URL='https://fbdkfzstxufvmjnkzzif.supabase.co';
 const KEY='sb_publishable_X1jt3-YBCSZ0Pmk0cMV4ng_TqN9LNYm';
 const questions = [
-  // Add 10–15 entries with id, title, and an options array once supplied.
+  ["staycation","How was Staycation 3.0 — OKP?",["Insane","Just OK","Below average","Very bad"]],
+  ["expectations","Did OKP meet your expectations?",["Yes","No","No comments"]],
+  ["favorite-event","What did you like most at OKP?",["Sangeeth Night","Foam Party","Pool Party","Nothing"]],
+  ["biggest-surprise","What surprised you the most?",["The villa","The people around me","The vibe","The food","All of the above"]],
+  ["favorite-meal","Which meal did you like most?",["Breakfast","Dinner","Both","I didn’t like anything","I didn’t get any food","I don’t remember what I ate"]],
+  ["breakfast-pick","Which did you like more?",["Uppumav","Puttu","What is all this?","Both"]],
+  ["more-time","What did you want more time for?",["Pool Party","Foam Party","Sangeeth dancing","All of the above"]],
+  ["sound-lighting","How were the sound and lights? Should we keep the setup for our next event?",["Loved both. Bring them back!","Keep the sound, change the lights","Keep the lights, change the sound","Try a different setup","I didn’t notice"]]
+];
+const funRounds = [
+  ["sangeeth", "Sangeeth", [
+    "Who was the best-dressed girl?",
+    "Who was the best-dressed boy?",
+    "Who spent the most time getting ready?",
+    "Who was the Michael alias Jackson alias Dance Master Vikram of OKP?",
+    "Who was the Bindu Panicker of OKP? (School dance-um paattum first kittunna aal)",
+    "Who was the biggest show-off?",
+    "Which team shocked you with their dance, Bride or Groom?",
+    "Who was the best Coat-Man? (Anyone who wore a blazer)"
+  ]],
+  ["foam", "Foam Party", [
+    "What did the foam taste like?",
+    "Who force-fed you foam like your granny?",
+    "Who got lost in the foam?",
+    "Do you want a foam party at the next event?"
+  ]],
+  ["pool", "Pool Party", [
+    "Did you attend the pool party?",
+    "Who was the Naran in the pool? (Rakshakan)",
+    "Did you find Sharjah–Dubai traffic in the pool?",
+    "Would you want a foam party in the pool next time?",
+    "How many bites did you get from Maneesha?"
+  ]]
 ];
 const ratings = [
   ['staycation', 'OKP Staycation'],
@@ -114,14 +152,39 @@ function addChoices(container, name, title, options, stars = false) {
 
 // Enable submissions after the Supabase migration has been applied and tested.
 const collectionEnabled = false;
-const questionsReady = questions.length >= 10 && questions.length <= 15;
-if (questionsReady) {
-  document.querySelector('#poll-questions').hidden = false;
-  const questionList = document.querySelector('#questions');
-  questions.forEach(({id, title, options}, index) => {
-    addChoices(questionList, 'question-' + id, (index + 1) + '. ' + title, options);
+const questionList = document.querySelector('#questions');
+questions.forEach(([id, title, options], index) => {
+  addChoices(questionList, 'question-' + id, (index + 1) + '. ' + title, options);
+});
+
+const funList = document.querySelector('#fun-questions');
+const funAnswerKeys = [];
+let funNumber = 0;
+funRounds.forEach(([id, title, prompts]) => {
+  const round = document.createElement('section');
+  round.className = 'fun-round';
+  const heading = document.createElement('h3');
+  heading.textContent = title;
+  heading.id = 'round-' + id;
+  round.setAttribute('aria-labelledby', heading.id);
+  round.append(heading);
+  prompts.forEach((prompt, index) => {
+    const key = 'fun-' + id + '-' + (index + 1);
+    funAnswerKeys.push(key);
+    const label = document.createElement('label');
+    label.htmlFor = key;
+    label.textContent = (++funNumber) + '. ' + prompt;
+    const answer = document.createElement('input');
+    answer.type = 'text';
+    answer.className = 'fun-answer';
+    answer.id = key;
+    answer.name = key;
+    answer.maxLength = 240;
+    round.append(label, answer);
   });
-}
+  funList.append(round);
+});
+
 const ratingList = document.querySelector('#ratings');
 ratings.forEach(([id, title]) => {
     addChoices(ratingList, 'rating-' + id, title, [1, 2, 3, 4, 5], true);
@@ -137,7 +200,7 @@ access.addEventListener('submit', event => {
   access.hidden = true;
   form.hidden = false;
   submit.hidden = !collectionEnabled;
-  status.textContent = collectionEnabled ? '' : 'Preview only. Feedback will open once the questions and response storage are ready.';
+  status.textContent = collectionEnabled ? '' : 'Preview only. Feedback collection will open once response storage is ready.';
   document.querySelector('h1').focus();
 });
 
@@ -147,10 +210,14 @@ if (collectionEnabled) {
     event.preventDefault();
     if (submit.disabled) return;
     const data = new FormData(form);
-    const answers = Object.fromEntries(questions.flatMap(({id}) => {
+    const answers = Object.fromEntries(questions.flatMap(([id]) => {
       const option = data.get('question-' + id);
       return option ? [[id, Number(option)]] : [];
     }));
+    funAnswerKeys.forEach(key => {
+      const answer = data.get(key).trim();
+      if (answer) answers[key] = answer;
+    });
     const scores = Object.fromEntries(ratings.flatMap(([id]) => {
       const score = data.get('rating-' + id);
       return score ? [[id, Number(score)]] : [];
