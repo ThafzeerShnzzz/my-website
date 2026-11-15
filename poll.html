@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OKP Staycation Poll</title>
+<style>
+*{box-sizing:border-box}
+:root{color-scheme:light;font-family:system-ui,sans-serif;background:#f8eee5;color:#351821}
+body{margin:0}
+header{background:#481627;color:#fff4e5;text-align:center;padding:1.4rem 1rem 2rem}
+header img{display:block;width:100px;height:auto;margin:0 auto 1rem}
+header a{color:inherit}
+h1,h2{font-family:Georgia,serif}
+h1{font-size:clamp(2.2rem,8vw,3.6rem);margin:.7rem 0 0}
+main{width:min(100% - 2rem,660px);margin:1.5rem auto 3rem}
+fieldset, .suggestion{margin:0 0 1rem;padding:1rem;border:1px solid #d9bfb8;border-radius:14px;background:#fffaf4;min-width:0}
+legend{font-weight:700;padding:0 .35rem}
+.choices{display:grid;gap:.5rem}
+.choices label{display:flex;align-items:center;gap:.5rem;border:1px solid #d9bfb8;border-radius:8px;padding:.65rem;min-height:44px;cursor:pointer}
+.choices label:has(:checked){background:#f2dce3;border-color:#781e3e}
+input{accent-color:#781e3e}
+#poll-password{display:block;margin:.5rem 0 1rem;padding:.65rem;font:inherit;border:1px solid #a78888;border-radius:8px}
+#access-error{color:#8b1538}
+.stars{grid-template-columns:repeat(5,minmax(0,1fr))}
+.stars label{justify-content:center;padding:.4rem .15rem;position:relative}
+.stars input{position:absolute;opacity:0}
+.stars label:focus-within{outline:2px solid #781e3e;outline-offset:2px}
+textarea{display:block;margin-top:.5rem;width:100%;min-height:110px;padding:.65rem;font:inherit;border:1px solid #a78888;border-radius:8px}
+button{background:#661c36;border:0;border-radius:8px;color:#fff;padding:.85rem 1.2rem;min-height:44px;font:inherit;font-weight:700;cursor:pointer}
+button:disabled{opacity:.6;cursor:wait}
+#status:empty{display:none}
+</style>
+</head>
+<body>
+<header>
+  <a href="index.html">← Back to OKP</a>
+  <img src="okp1.png" alt="Oru Kalyanam Pole">
+  <h1 tabindex="-1">OKP Staycation Poll</h1>
+</header>
+<main>
+  <form id="poll-access">
+    <h2>Enter the poll password</h2>
+    <label for="poll-password">Password</label>
+    <input id="poll-password" type="password" inputmode="numeric" maxlength="4" required>
+    <button type="submit">Unlock Poll</button>
+    <p id="access-error" role="status"></p>
+  </form>
+  <form id="poll-feedback" hidden>
+    <section id="poll-questions" aria-labelledby="questionTitle" hidden>
+      <h2 id="questionTitle">The fun questions</h2>
+      <div id="questions"></div>
+    </section>
+    <section class="suggestion" aria-labelledby="suggestionTitle">
+      <h2 id="suggestionTitle">Suggestions</h2>
+      <label for="suggestion">What should we do differently next time?</label>
+      <textarea id="suggestion" name="suggestion" maxlength="2000"></textarea>
+    </section>
+    <section aria-labelledby="ratingTitle">
+      <h2 id="ratingTitle">Rate your staycation</h2>
+      <p>Choose a rating from 1 (poor) to 5 (excellent).</p>
+      <div id="ratings"></div>
+    </section>
+    <button id="submit" type="submit" hidden>Submit Feedback</button>
+  </form>
+  <p id="status" role="status" tabindex="-1"></p>
+</main>
+<script>
+const SUPABASE_URL='https://fbdkfzstxufvmjnkzzif.supabase.co';
+const KEY='sb_publishable_X1jt3-YBCSZ0Pmk0cMV4ng_TqN9LNYm';
+const questions = [
+  // Add 10–15 entries with id, title, and an options array once supplied.
+];
+const ratings = [
+  ['staycation', 'OKP Staycation'],
+  ['villa', 'Stay villa'],
+  ['decorations', 'Decorations'],
+  ['dinner', 'Dinner'],
+  ['breakfast', 'Breakfast'],
+  ['vibe', 'Vibe at the villa'],
+  ['dj', 'DJ system'],
+  ['expectation', 'How well did OKP meet your expectations?']
+];
+
+const access = document.querySelector('#poll-access');
+const password = document.querySelector('#poll-password');
+const accessError = document.querySelector('#access-error');
+const form = document.querySelector('#poll-feedback');
+const status = document.querySelector('#status');
+const submit = document.querySelector('#submit');
+
+function addChoices(container, name, title, options, stars = false) {
+  const group = document.createElement('fieldset');
+  const legend = document.createElement('legend');
+  legend.textContent = title;
+  group.append(legend);
+  const choices = document.createElement('div');
+  choices.className = stars ? 'choices stars' : 'choices';
+  options.forEach((option, index) => {
+    const label = document.createElement('label');
+    const input = document.createElement('input');
+    input.type = 'radio';
+    input.name = name;
+    input.value = String(index + 1);
+    const caption = document.createElement('span');
+    caption.textContent = option;
+    if (stars) input.setAttribute('aria-label', option + ' out of 5');
+    label.append(input, caption);
+    choices.append(label);
+  });
+  group.append(choices);
+  container.append(group);
+}
+
+// Enable submissions after the Supabase migration has been applied and tested.
+const collectionEnabled = false;
+const questionsReady = questions.length >= 10 && questions.length <= 15;
+if (questionsReady) {
+  document.querySelector('#poll-questions').hidden = false;
+  const questionList = document.querySelector('#questions');
+  questions.forEach(({id, title, options}, index) => {
+    addChoices(questionList, 'question-' + id, (index + 1) + '. ' + title, options);
+  });
+}
+const ratingList = document.querySelector('#ratings');
+ratings.forEach(([id, title]) => {
+    addChoices(ratingList, 'rating-' + id, title, [1, 2, 3, 4, 5], true);
+});
+
+access.addEventListener('submit', event => {
+  event.preventDefault();
+  if (password.value !== '1010') {
+    accessError.textContent = 'Incorrect password. Try again.';
+    password.select();
+    return;
+  }
+  access.hidden = true;
+  form.hidden = false;
+  submit.hidden = !collectionEnabled;
+  status.textContent = collectionEnabled ? '' : 'Preview only. Feedback will open once the questions and response storage are ready.';
+  document.querySelector('h1').focus();
+});
+
+if (collectionEnabled) {
+  let submissionId;
+  form.addEventListener('submit', async event => {
+    event.preventDefault();
+    if (submit.disabled) return;
+    const data = new FormData(form);
+    const answers = Object.fromEntries(questions.flatMap(({id}) => {
+      const option = data.get('question-' + id);
+      return option ? [[id, Number(option)]] : [];
+    }));
+    const scores = Object.fromEntries(ratings.flatMap(([id]) => {
+      const score = data.get('rating-' + id);
+      return score ? [[id, Number(score)]] : [];
+    }));
+    if (!Object.keys(answers).length && !Object.keys(scores).length && !data.get('suggestion').trim()) {
+      status.textContent = 'Add at least one answer, rating, or suggestion before submitting.';
+      status.focus();
+      return;
+    }
+    submit.disabled = true;
+    status.textContent = 'Sending your feedback…';
+    try {
+      submissionId ||= crypto.randomUUID();
+      const response = await fetch(SUPABASE_URL + '/rest/v1/rpc/submit_okp_staycation_poll', {
+        method: 'POST',
+        headers: {apikey: KEY, 'Content-Type': 'application/json'},
+        body: JSON.stringify({
+          submission_id: submissionId,
+          poll_answers: answers,
+          poll_ratings: scores,
+          poll_suggestion: data.get('suggestion').trim()
+        })
+      });
+      if (!response.ok) throw new Error('Submission failed');
+      form.hidden = true;
+      status.textContent = 'Feedback submitted. Thanks for being part of OKP!';
+    } catch {
+      status.textContent = 'We couldn’t confirm your submission. Please try again.';
+      submit.disabled = false;
+    }
+    status.focus();
+  });
+}
+</script>
+</body>
+</html>
