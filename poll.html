@@ -352,8 +352,7 @@ function addChoices(container, name, title, options) {
   container.append(group);
 }
 
-// Enable submissions after the Supabase migration has been applied and tested.
-const collectionEnabled = false;
+const collectionEnabled = true;
 const questionList = document.querySelector('#questions');
 questions.forEach(([id, title, options], index) => {
   addChoices(questionList, 'question-' + id, (index + 1) + '. ' + title, options);
