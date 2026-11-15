@@ -4,39 +4,122 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>OKP Staycation Poll</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;family=Instrument+Serif&amp;display=swap" rel="stylesheet">
 <style>
-*{box-sizing:border-box}
-:root{color-scheme:light;font-family:system-ui,sans-serif;background:#f8eee5;color:#351821}
-body{margin:0}
-header{background:#481627;color:#fff4e5;text-align:center;padding:1.4rem 1rem 2rem}
-header img{display:block;width:100px;height:auto;margin:0 auto 1rem}
-header a{color:inherit}
-h1,h2{font-family:Georgia,serif}
-h1{font-size:clamp(2.2rem,8vw,3.6rem);margin:.7rem 0 0}
-main{width:min(100% - 2rem,660px);margin:1.5rem auto 3rem}
-fieldset, .suggestion{margin:0 0 1rem;padding:1rem;border:1px solid #d9bfb8;border-radius:14px;background:#fffaf4;min-width:0}
-legend{font-weight:700;padding:0 .35rem}
-.choices{display:grid;gap:.5rem}
-.choices label{display:flex;align-items:center;gap:.5rem;border:1px solid #d9bfb8;border-radius:8px;padding:.65rem;min-height:44px;cursor:pointer}
-.choices label:has(:checked){background:#f2dce3;border-color:#781e3e}
-input{accent-color:#781e3e}
-#poll-password{display:block;margin:.5rem 0 1rem;padding:.65rem;font:inherit;border:1px solid #a78888;border-radius:8px}
-#access-error{color:#8b1538}
-.stars{grid-template-columns:repeat(5,minmax(0,1fr))}
-.stars label{justify-content:center;padding:.4rem .15rem;position:relative}
-.stars input{position:absolute;opacity:0}
-.stars label:focus-within{outline:2px solid #781e3e;outline-offset:2px}
-.fun-answer{display:block;margin:.4rem 0 1rem;width:100%;min-height:44px;padding:.65rem;font:inherit;border:1px solid #a78888;border-radius:8px}
-.fun-round{margin:0 0 1rem;padding:1rem;border:1px solid #d9bfb8;border-radius:14px;background:#fffaf4}
-textarea{display:block;margin-top:.5rem;width:100%;min-height:110px;padding:.65rem;font:inherit;border:1px solid #a78888;border-radius:8px}
-button{background:#661c36;border:0;border-radius:8px;color:#fff;padding:.85rem 1.2rem;min-height:44px;font:inherit;font-weight:700;cursor:pointer}
-button:disabled{opacity:.6;cursor:wait}
-#status:empty{display:none}
+:root {
+  color-scheme: light;
+  --wine: #4c1729;
+  --wine-dark: #2e0c18;
+  --text: #301d23;
+  --muted: #6b525a;
+  --paper: #fffdf9;
+  --line: #e8d8d6;
+  --accent: #8a3551;
+  --serif: "Instrument Serif", Georgia, serif;
+  background: #f8f2ed;
+  color: var(--text);
+  font: 16px/1.55 "DM Sans", system-ui, sans-serif;
+}
+*, *::before, *::after { box-sizing: border-box; }
+[hidden] { display: none !important; }
+body { margin: 0; }
+header {
+  position: relative;
+  text-align: center;
+  padding: 1rem max(1.25rem, env(safe-area-inset-left)) 5rem;
+  background: radial-gradient(ellipse at 50% 0%, #702940, var(--wine) 48%, var(--wine-dark));
+  color: #fff8ee;
+}
+.masthead { width: min(100%, 880px); margin: auto; text-align: left; }
+.masthead a { color: inherit; display: inline-flex; align-items: center; min-height: 44px; text-decoration: none; font-size: .875rem; }
+.masthead a:hover { text-decoration: underline; }
+header img { display: block; width: 88px; height: auto; margin: .5rem auto .75rem; }
+h1, h2, h3 { font-family: var(--serif); font-weight: 400; line-height: 1.03; }
+h1 { font-size: clamp(3.1rem, 8vw, 6rem); margin: 0; text-wrap: balance; }
+h2 { font-size: clamp(2.1rem, 5vw, 3rem); margin: 0 0 .75rem; color: var(--wine); }
+h3 { font-size: 1.8rem; margin: 0 0 .9rem; color: var(--wine); }
+main { position: relative; width: min(calc(100% - 2rem), 880px); margin: -2.75rem auto 3.5rem; }
+#poll-access, .poll-section {
+  border: 1px solid var(--line);
+  background: var(--paper);
+  border-radius: 16px;
+  padding: clamp(1rem, 4vw, 2.25rem);
+  box-shadow: 0 10px 32px #3514210b;
+}
+#poll-access { max-width: 420px; margin-inline: auto; }
+#poll-access h2 { font-size: 2.35rem; }
+#poll-access label, .suggestion label { color: var(--muted); font-weight: 600; }
+#poll-access button { width: 100%; }
+#access-error { margin: .75rem 0 0; color: #92223c; }
+#access-error:empty, #status:empty { display: none; }
+.poll-section { margin: 0 0 1rem; scroll-margin-top: 1rem; }
+.poll-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .25rem .75rem;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  margin-bottom: 1rem;
+  padding: .35rem .85rem;
+}
+.poll-nav a { display: inline-flex; align-items: center; min-height: 44px; color: var(--wine); font-weight: 700; font-size: .875rem; text-underline-offset: .22em; }
+#questions, #ratings, #fun-questions { display: grid; gap: 1rem; }
+fieldset { border: 1px solid var(--line); border-radius: 12px; margin: 0; padding: .8rem; min-width: 0; }
+legend { font-weight: 700; padding-inline: .35rem; max-width: 100%; }
+.choices { display: grid; gap: .45rem; }
+.choices label {
+  display: flex;
+  align-items: center;
+  gap: .55rem;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  min-height: 44px;
+  padding: .55rem .7rem;
+  background: #fcf7f4;
+  cursor: pointer;
+}
+.choices label:has(:checked) { border-color: var(--accent); background: #f5e2e9; color: var(--wine-dark); }
+.choices input { margin: 0; accent-color: var(--accent); flex-shrink: 0; }
+.stars { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+.stars label { justify-content: center; gap: .25rem; padding-inline: .15rem; position: relative; font-variant-numeric: tabular-nums; }
+.stars label::before { content: ""; inline-size: .78em; block-size: .78em; background: currentColor; clip-path: polygon(50% 0%, 62% 35%, 100% 38%, 71% 61%, 80% 98%, 50% 76%, 20% 98%, 29% 61%, 0% 38%, 38% 35%); }
+.stars input { position: absolute; opacity: 0; }
+.stars label:focus-within, :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+.masthead a:focus-visible { outline-color: #fff8ee; }
+#poll-password, .fun-answer, textarea {
+  display: block;
+  width: 100%;
+  min-height: 44px;
+  border: 1px solid #bea9ad;
+  border-radius: 8px;
+  padding: .65rem .75rem;
+  background: #fff;
+  color: var(--text);
+  font: inherit;
+}
+#poll-password { margin: .4rem 0 1rem; }
+.fun-round { padding: 1rem; border: 1px solid var(--line); border-radius: 12px; min-width: 0; }
+.fun-round label { display: block; font-weight: 600; }
+.fun-answer { margin: .35rem 0 .95rem; }
+.fun-answer:last-child { margin-bottom: 0; }
+textarea { margin-top: .5rem; min-height: 112px; resize: vertical; }
+button { border: 0; border-radius: 8px; background: var(--wine); color: #fff; padding: .7rem 1.1rem; min-height: 44px; font: inherit; font-weight: 700; cursor: pointer; }
+button:hover { background: var(--wine-dark); }
+button:disabled { opacity: .6; cursor: wait; }
+.poll-note { padding: .75rem 1rem; margin: 0 0 1rem; border-left: 3px solid var(--accent); border-radius: 4px; background: #f2e4e6; color: var(--wine-dark); }
+#status { padding: .75rem 1rem; background: #f2e4e6; border-radius: 8px; }
+#ratings + p, #ratingTitle + p { color: var(--muted); }
+@media (min-width: 700px) {
+  #questions, #ratings { grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start; }
+}
 </style>
 </head>
 <body>
 <header>
-  <a href="index.html">← Back to OKP</a>
+  <div class="masthead"><a href="index.html">← Back to OKP</a></div>
   <img src="okp1.png" alt="Oru Kalyanam Pole">
   <h1 tabindex="-1">OKP Staycation Poll</h1>
 </header>
@@ -49,20 +132,27 @@ button:disabled{opacity:.6;cursor:wait}
     <p id="access-error" role="status"></p>
   </form>
   <form id="poll-feedback" hidden>
-    <section aria-labelledby="questionTitle">
+    <nav class="poll-nav" aria-label="Poll sections">
+      <a href="#review">Review</a>
+      <a href="#fun">Just for fun</a>
+      <a href="#suggestions">Suggestions</a>
+      <a href="#staycation-ratings">Ratings</a>
+    </nav>
+    <p id="preview-note" class="poll-note" hidden>Preview only. Feedback collection will open once response storage is ready.</p>
+    <section class="poll-section" id="review" aria-labelledby="questionTitle">
       <h2 id="questionTitle">Staycation review</h2>
       <div id="questions"></div>
     </section>
-    <section aria-labelledby="funTitle">
+    <section class="poll-section" id="fun" aria-labelledby="funTitle">
       <h2 id="funTitle">Just for fun</h2>
       <div id="fun-questions"></div>
     </section>
-    <section class="suggestion" aria-labelledby="suggestionTitle">
+    <section class="poll-section suggestion" id="suggestions" aria-labelledby="suggestionTitle">
       <h2 id="suggestionTitle">Suggestions</h2>
       <label for="suggestion">What should we do differently next time?</label>
       <textarea id="suggestion" name="suggestion" maxlength="2000"></textarea>
     </section>
-    <section aria-labelledby="ratingTitle">
+    <section class="poll-section" id="staycation-ratings" aria-labelledby="ratingTitle">
       <h2 id="ratingTitle">Rate your staycation</h2>
       <p>Choose a rating from 1 (poor) to 5 (excellent).</p>
       <div id="ratings"></div>
@@ -200,7 +290,7 @@ access.addEventListener('submit', event => {
   access.hidden = true;
   form.hidden = false;
   submit.hidden = !collectionEnabled;
-  status.textContent = collectionEnabled ? '' : 'Preview only. Feedback collection will open once response storage is ready.';
+  document.querySelector('#preview-note').hidden = collectionEnabled;
   document.querySelector('h1').focus();
 });
 
