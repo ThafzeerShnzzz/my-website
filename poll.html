@@ -186,7 +186,7 @@ button:disabled { opacity: .6; cursor: wait; }
       </div>
       <div id="ratings"></div>
     </section>
-    <button id="submit" type="submit" hidden>Submit Feedback</button>
+    <button id="submit" type="submit" disabled>Submit Review</button>
   </form>
   <p id="status" role="status" tabindex="-1"></p>
 </main>
@@ -194,39 +194,126 @@ button:disabled { opacity: .6; cursor: wait; }
 const SUPABASE_URL='https://fbdkfzstxufvmjnkzzif.supabase.co';
 const KEY='sb_publishable_X1jt3-YBCSZ0Pmk0cMV4ng_TqN9LNYm';
 const questions = [
-  ["staycation","How was Staycation 3.0 — OKP?",["Insane","Just OK","Below average","Very bad"]],
-  ["expectations","Did OKP meet your expectations?",["Yes","No","No comments"]],
-  ["favorite-event","What did you like most at OKP?",["Sangeeth Night","Foam Party","Pool Party","Nothing"]],
-  ["biggest-surprise","What surprised you the most?",["The villa","The people around me","The vibe","The food","All of the above"]],
-  ["favorite-meal","Which meal did you like most?",["Breakfast","Dinner","Both","I didn’t like anything","I didn’t get any food","I don’t remember what I ate"]],
-  ["breakfast-pick","Which did you like more?",["Uppumav","Puttu","What is all this?","Both"]],
-  ["more-time","What did you want more time for?",["Pool Party","Foam Party","Sangeeth dancing","All of the above"]],
-  ["sound-lighting","How were the sound and lights? Should we keep the setup for our next event?",["Loved both. Bring them back!","Keep the sound, change the lights","Keep the lights, change the sound","Try a different setup","I didn’t notice"]]
+  [
+    "staycation",
+    "🎬 OKP Staycation 3.0 in one review. What are we saying?",
+    [
+      "Insane. When’s the sequel? 🔥",
+      "Just OK 🙂",
+      "Below average. I expected more 👀",
+      "Very bad. Roll the credits 😭"
+    ]
+  ],
+  [
+    "expectations",
+    "👀 Did this wedding with no bride or groom live up to the hype?",
+    [
+      "Yes, you actually pulled it off 🙌",
+      "No, I expected more 😬",
+      "No comments. My lawyer said so 🤐"
+    ]
+  ],
+  [
+    "favorite-event",
+    "🏆 Which part of OKP gets your personal trophy?",
+    [
+      "Sangeeth Night 💃",
+      "Foam Party 🫧",
+      "Pool Party 🏊",
+      "Nothing. Keep the trophy 😌"
+    ]
+  ],
+  [
+    "biggest-surprise",
+    "😳 What made you stop and go ‘Ayyo, ithentha?’",
+    [
+      "The villa 🏡",
+      "The people around me 👀",
+      "The vibe ✨",
+      "The food 🍽️",
+      "All of it. Where do I start? 😂"
+    ]
+  ],
+  [
+    "favorite-meal",
+    "🍽️ Which meal deserved a second plate?",
+    [
+      "Breakfast ☕",
+      "Dinner 🍛",
+      "Both. I was there for the food 😌",
+      "Neither. My plate and I had issues 🥲",
+      "I didn’t get any food. Aarodu parayaan? 😭",
+      "I ate something. Details are blurry 🤔"
+    ]
+  ],
+  [
+    "breakfast-pick",
+    "🥊 Breakfast face-off. Team Uppumav or Team Puttu?",
+    [
+      "Uppumav, obviously 😎",
+      "Puttu supremacy 🙌",
+      "Ithokke entha? 🤨",
+      "Both. Don’t drag me into this 🤝"
+    ]
+  ],
+  [
+    "more-time",
+    "⏳ If checkout could wait, what would you do for one more hour?",
+    [
+      "Pool Party 🏊",
+      "Foam Party 🫧",
+      "Sangeeth dance floor 💃",
+      "All of it. Tell the villa we’re staying 😂"
+    ]
+  ],
+  [
+    "sound-lighting",
+    "🎛️ The sound and lights. Same crew next time?",
+    [
+      "Bring both back. Scene set! 🔥",
+      "Keep the sound, switch up the lights 🔊",
+      "Keep the lights, switch up the sound 💡",
+      "New setup next time 🔄",
+      "I was too busy dancing to notice 🕺"
+    ]
+  ]
 ];
 const funRounds = [
-  ["sangeeth", "Sangeeth", [
-    "Who was the best-dressed girl?",
-    "Who was the best-dressed boy?",
-    "Who spent the most time getting ready?",
-    "Who was the Michael alias Jackson alias Dance Master Vikram of OKP?",
-    "Who was the Bindu Panicker of OKP? (School dance-um paattum first kittunna aal)",
-    "Who was the biggest show-off?",
-    "Which team shocked you with their dance, Bride or Groom?",
-    "Who was the best Coat-Man? (Anyone who wore a blazer)"
-  ]],
-  ["foam", "Foam Party", [
-    "What did the foam taste like?",
-    "Who force-fed you foam like your granny?",
-    "Who got lost in the foam?",
-    "Do you want a foam party at the next event?"
-  ]],
-  ["pool", "Pool Party", [
-    "Did you attend the pool party?",
-    "Who was the Naran in the pool? (Rakshakan)",
-    "Did you find Sharjah–Dubai traffic in the pool?",
-    "Would you want a foam party in the pool next time?",
-    "How many bites did you get from Maneesha?"
-  ]]
+  [
+    "sangeeth",
+    "💃 Sangeeth",
+    [
+      "Who won Best Dressed Girl without an official award? 👗",
+      "Who won Best Dressed Boy and knew it? 😎",
+      "Who said ‘five minutes’ and came out an hour later? ⏰",
+      "Who was OKP’s Michael alias Jackson alias Dance Master Vikram? 🕺",
+      "Who was our Bindu Panicker? School dance-um paattum first kittunna aal 🎤",
+      "Who turned the whole Sangeeth into their personal stage? 🎭",
+      "Bride Team or Groom Team: whose dance made you go ‘Ivar ithokke eppo padichu?’ 👀",
+      "Who was the Coat-Man of the night? Blazer owners, assemble 🧥"
+    ]
+  ],
+  [
+    "foam",
+    "🫧 Foam Party",
+    [
+      "If foam had a menu description, what would yours say? 🫧",
+      "Who turned into your granny and force-fed you foam? 👵",
+      "Who vanished into the foam and came back like nothing happened? 🔍",
+      "Foam party again next time? Give us your official verdict 🫧"
+    ]
+  ],
+  [
+    "pool",
+    "🏊 Pool Party",
+    [
+      "Did you actually get in, or were you on poolside spectator duty? 🏊",
+      "Who was the Naran of the pool, our unofficial Rakshakan? 🛟",
+      "Did you get stuck in Sharjah–Dubai traffic inside the pool too? 🚗",
+      "Foam party inside the pool next time: genius idea or full chaos? 🫧",
+      "How many bites did you get from Maneesha? Give us the official count 😂"
+    ]
+  ]
 ];
 const ratings = [
   ['staycation', 'OKP Staycation'],
@@ -343,11 +430,26 @@ ratings.forEach(([id, title]) => {
   ratingList.append(row);
 });
 
-submit.hidden = !collectionEnabled;
+submit.disabled = !collectionEnabled;
 document.querySelector('#preview-note').hidden = collectionEnabled;
 
 if (collectionEnabled) {
-  let submissionId;
+  const reviewKey = 'okp-staycation-review-v1';
+  const submittedKey = reviewKey + '-submitted';
+
+  function showSubmitted(message) {
+    form.hidden = true;
+    status.textContent = message;
+    status.focus();
+  }
+
+  try {
+    if (localStorage.getItem(submittedKey) === 'yes') {
+      showSubmitted('You’ve already submitted your review. Thanks for being part of OKP!');
+    }
+  } catch {
+    // The form reports unavailable storage on submit.
+  }
   form.addEventListener('submit', async event => {
     event.preventDefault();
     if (submit.disabled) return;
@@ -372,7 +474,15 @@ if (collectionEnabled) {
     submit.disabled = true;
     status.textContent = 'Sending your feedback…';
     try {
-      submissionId ||= crypto.randomUUID();
+      if (localStorage.getItem(submittedKey) === 'yes') {
+        showSubmitted('You’ve already submitted your review. Thanks for being part of OKP!');
+        return;
+      }
+      let submissionId = localStorage.getItem(reviewKey);
+      if (!submissionId) {
+        localStorage.setItem(reviewKey, crypto.randomUUID());
+        submissionId = localStorage.getItem(reviewKey);
+      }
       const response = await fetch(SUPABASE_URL + '/rest/v1/rpc/submit_okp_staycation_poll', {
         method: 'POST',
         headers: {apikey: KEY, 'Content-Type': 'application/json'},
@@ -385,8 +495,12 @@ if (collectionEnabled) {
         })
       });
       if (!response.ok) throw new Error('Submission failed');
-      form.hidden = true;
-      status.textContent = 'Feedback submitted. Thanks for being part of OKP!';
+      try {
+        localStorage.setItem(submittedKey, 'yes');
+      } catch {
+        // Supabase still rejects a duplicate row for this submission ID.
+      }
+      showSubmitted('Review submitted. Thanks for being part of OKP!');
     } catch {
       status.textContent = 'We couldn’t confirm your submission. Please try again.';
       submit.disabled = false;
