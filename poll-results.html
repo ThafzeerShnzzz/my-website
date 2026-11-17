@@ -146,7 +146,7 @@ button:disabled { opacity: .6; cursor: wait; }
 
 .results-tools { display: flex; flex-wrap: wrap; gap: .65rem; align-items: center; }
 .results-tools button[aria-pressed="false"] { background: #f2e4e6; color: var(--wine); }
-#guest-picker { margin-top: 1rem; }
+#guest-picker { margin-bottom: 1rem; }
 #guest-picker select { margin-top: .4rem; }
 #total { margin: 0 0 .8rem; color: var(--muted); }
 .question-result { margin: 1rem 0; }
@@ -169,17 +169,17 @@ button:disabled { opacity: .6; cursor: wait; }
   <div id="results" hidden>
     <section class="poll-section" aria-label="Results view">
       <p id="total"></p>
-      <div class="results-tools">
-        <button id="by-question" type="button" aria-pressed="true">By question</button>
-        <button id="by-guest" type="button" aria-pressed="false">By guest</button>
-        <button id="refresh" type="button">Refresh</button>
-      </div>
-      <div id="guest-picker" hidden>
-        <label for="guest"><strong>Choose a respondent</strong></label>
+      <div id="guest-picker">
+        <label for="guest"><strong>Select a member</strong></label>
         <select id="guest" class="respondent-name"></select>
       </div>
+      <div class="results-tools">
+        <button id="by-question" type="button" aria-pressed="false">By question</button>
+        <button id="by-guest" type="button" aria-pressed="true">By member</button>
+        <button id="refresh" type="button">Refresh</button>
+      </div>
     </section>
-    <nav class="poll-nav" aria-label="Poll sections">
+    <nav id="section-nav" class="poll-nav" aria-label="Poll sections">
       <a href="#review">Review</a>
       <a href="#fun">Just for fun</a>
       <a href="#suggestions">Suggestions</a>
@@ -358,7 +358,7 @@ const guest = byId('guest');
 const refresh = byId('refresh');
 const db = window.supabase?.createClient(SUPABASE_URL, KEY);
 let responses = [];
-let guestView = false;
+let guestView = true;
 let requestId = 0;
 
 function element(tag, value) {
@@ -370,9 +370,22 @@ function element(tag, value) {
 function render() {
   byId('by-question').setAttribute('aria-pressed', String(!guestView));
   byId('by-guest').setAttribute('aria-pressed', String(guestView));
-  byId('guest-picker').hidden = !guestView;
   display.replaceChildren();
-  const rows = guestView ? responses.filter(row => row.id === guest.value) : responses;
+  const member = responses.find(row => row.id === guest.value);
+  byId('section-nav').hidden = guestView && !member;
+  if (guestView && !member) {
+    const message = element('p', responses.length ? 'Select a member to see their answers, ratings and suggestion.' : 'No submissions yet.');
+    message.className = 'poll-section';
+    display.append(message);
+    return;
+  }
+  const rows = guestView ? [member] : responses;
+  if (guestView) {
+    const heading = element('section');
+    heading.className = 'poll-section';
+    heading.append(element('h2', member.label));
+    display.append(heading);
+  }
   for (const [id, title, items] of sections) {
     const section = element('section');
     section.className = 'poll-section';
@@ -447,6 +460,12 @@ async function loadResults() {
       cursor = data.at(-1).id;
     }
     rows.sort((left, right) => Date.parse(right.submitted_at) - Date.parse(left.submitted_at));
+    const placeholder = element('option', 'Choose a member…');
+    placeholder.value = '';
+    placeholder.disabled = true;
+    placeholder.selected = true;
+    guest.append(placeholder);
+    guest.disabled = !rows.length;
     const counts = new Map();
     for (const row of rows) {
       const name = row.respondent_name?.trim() || 'Anonymous';
@@ -460,7 +479,7 @@ async function loadResults() {
     if (rows.some(row => row.id === selected)) guest.value = selected;
     byId('total').textContent = rows.length === 1 ? '1 submission' : rows.length + ' submissions';
     byId('by-guest').disabled = !rows.length;
-    if (!rows.length) guestView = false;
+    if (!rows.length) guestView = true;
     render();
     status.textContent = '';
     results.hidden = false;
@@ -473,7 +492,7 @@ async function loadResults() {
 
 byId('by-question').onclick = () => { guestView = false; render(); };
 byId('by-guest').onclick = () => { guestView = true; render(); };
-guest.onchange = render;
+guest.onchange = () => { guestView = true; render(); };
 refresh.onclick = loadResults;
 db?.auth.onAuthStateChange(event => {
   if (event === 'SIGNED_OUT') {
