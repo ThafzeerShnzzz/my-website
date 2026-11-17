@@ -1,0 +1,489 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OKP Poll Results</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;family=Instrument+Serif&amp;display=swap" rel="stylesheet">
+<style>
+:root {
+  color-scheme: light;
+  --wine: #4c1729;
+  --wine-dark: #2e0c18;
+  --text: #301d23;
+  --muted: #6b525a;
+  --paper: #fffdf9;
+  --line: #e8d8d6;
+  --accent: #8a3551;
+  --serif: "Instrument Serif", Georgia, serif;
+  background: #f8f2ed;
+  color: var(--text);
+  font: 16px/1.55 "DM Sans", system-ui, sans-serif;
+}
+*, *::before, *::after { box-sizing: border-box; }
+[hidden] { display: none !important; }
+body { margin: 0; }
+header {
+  position: relative;
+  text-align: center;
+  padding: 1rem max(1.25rem, env(safe-area-inset-left)) 5rem;
+  background: radial-gradient(ellipse at 50% 0%, #702940, var(--wine) 48%, var(--wine-dark));
+  color: #fff8ee;
+}
+.masthead { width: min(100%, 880px); margin: auto; text-align: left; }
+.masthead a { color: inherit; display: inline-flex; align-items: center; min-height: 44px; text-decoration: none; font-size: .875rem; }
+.masthead a:hover { text-decoration: underline; }
+header img { display: block; width: 88px; height: auto; margin: .5rem auto .75rem; }
+h1, h2, h3 { font-family: var(--serif); font-weight: 400; line-height: 1.03; }
+h1 { font-size: clamp(3.1rem, 8vw, 6rem); margin: 0; text-wrap: balance; }
+h2 { font-size: clamp(2.1rem, 5vw, 3rem); margin: 0 0 .75rem; color: var(--wine); }
+h3 { font-size: 1.8rem; margin: 0 0 .9rem; color: var(--wine); }
+main { position: relative; width: min(calc(100% - 2rem), 880px); margin: -2.75rem auto 3.5rem; }
+.poll-section {
+  border: 1px solid var(--line);
+  background: var(--paper);
+  border-radius: 16px;
+  padding: clamp(1rem, 4vw, 2.25rem);
+  box-shadow: 0 10px 32px #3514210b;
+}
+.suggestion label { color: var(--muted); font-weight: 600; }
+#status:empty { display: none; }
+.poll-section { margin: 0 0 1rem; scroll-margin-top: 1rem; }
+.poll-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .25rem .75rem;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  margin-bottom: 1rem;
+  padding: .35rem .85rem;
+}
+.poll-nav a { display: inline-flex; align-items: center; min-height: 44px; color: var(--wine); font-weight: 700; font-size: .875rem; text-underline-offset: .22em; }
+#questions, #ratings, #fun-questions { display: grid; gap: 1rem; }
+fieldset { border: 1px solid var(--line); border-radius: 12px; margin: 0; padding: .8rem; min-width: 0; }
+legend { font-weight: 700; padding-inline: .35rem; max-width: 100%; }
+.choices { display: grid; gap: .45rem; }
+.choices label {
+  display: flex;
+  align-items: center;
+  gap: .55rem;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  min-height: 44px;
+  padding: .55rem .7rem;
+  background: #fcf7f4;
+  cursor: pointer;
+}
+.choices label:has(:checked) { border-color: var(--accent); background: #f5e2e9; color: var(--wine-dark); }
+.choices input { margin: 0; accent-color: var(--accent); flex-shrink: 0; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+.masthead a:focus-visible { outline-color: #fff8ee; }
+.respondent-name, .fun-answer, textarea {
+  display: block;
+  width: 100%;
+  min-height: 44px;
+  border: 1px solid #bea9ad;
+  border-radius: 8px;
+  padding: .65rem .75rem;
+  background: #fff;
+  color: var(--text);
+  font: inherit;
+}
+.fun-round { padding: 1rem; border: 1px solid var(--line); border-radius: 12px; min-width: 0; }
+.fun-round label { display: block; font-weight: 600; }
+.fun-answer { margin: .35rem 0 .95rem; }
+.fun-answer:last-child { margin-bottom: 0; }
+textarea { margin-top: .5rem; min-height: 112px; resize: vertical; }
+button { border: 0; border-radius: 8px; background: var(--wine); color: #fff; padding: .7rem 1.1rem; min-height: 44px; font: inherit; font-weight: 700; cursor: pointer; }
+button:hover { background: var(--wine-dark); }
+button:disabled { opacity: .6; cursor: wait; }
+.poll-note { padding: .75rem 1rem; margin: 0 0 1rem; border-left: 3px solid var(--accent); border-radius: 4px; background: #f2e4e6; color: var(--wine-dark); }
+#status { padding: .75rem 1rem; background: #f2e4e6; border-radius: 8px; }
+
+#staycation-ratings {
+  background: #1e191a;
+  border-color: #433638;
+  color: #fffaf6;
+}
+#ratingTitle { color: inherit; font-family: "DM Sans", system-ui, sans-serif; font-weight: 700; letter-spacing: -.045em; }
+.rating-intro { display: flex; justify-content: space-between; align-items: end; gap: .75rem; flex-wrap: wrap; margin-bottom: 1.25rem; }
+.rating-intro p { margin: 0; color: #dbcbd0; }
+#rating-progress { font-size: .875rem; font-variant-numeric: tabular-nums; }
+#ratings { grid-template-columns: minmax(0, 1fr); gap: .65rem; }
+.rating-row { border-color: #57494d; background: #2c2527; padding: .75rem; }
+.rating-row legend { color: #fffaf6; }
+.rating-controls { display: grid; gap: .45rem 1rem; }
+.rating-stars { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: .25rem; max-width: 285px; }
+.rating-stars label {
+  position: relative;
+  display: grid;
+  place-items: center;
+  min-height: 48px;
+  border: 1px solid #615156;
+  border-radius: 8px;
+  color: #dccbd0;
+  cursor: pointer;
+}
+.rating-stars input { position: absolute; opacity: 0; inset: 0; margin: 0; width: 100%; height: 100%; cursor: pointer; }
+.rating-stars span { font-size: 1.45rem; line-height: 1; pointer-events: none; }
+.rating-stars label:has(input:checked), .rating-stars label:has(~ label input:checked) { color: #ffd395; border-color: #cc995d; background: #513726; }
+.rating-stars label:has(input:focus-visible) { outline: 2px solid #ffd395; outline-offset: 3px; }
+@media (hover: hover) {
+  .rating-stars label:hover { border-color: #ffd395; }
+}
+.rating-value { margin: 0; color: #dbcbd0; font-size: .875rem; min-height: 1.55em; }
+@media (min-width: 700px) {
+  .rating-row { padding: .8rem 1rem 1rem; }
+  .rating-controls { grid-template-columns: minmax(240px, 285px) 1fr; align-items: center; }
+}
+
+@media (min-width: 700px) {
+  #questions { grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start; }
+}
+
+.results-tools { display: flex; flex-wrap: wrap; gap: .65rem; align-items: center; }
+.results-tools button[aria-pressed="false"] { background: #f2e4e6; color: var(--wine); }
+#guest-picker { margin-top: 1rem; }
+#guest-picker select { margin-top: .4rem; }
+#total { margin: 0 0 .8rem; color: var(--muted); }
+.question-result { margin: 1rem 0; }
+.question-result ul { list-style: none; padding: 0; margin: 0; }
+.question-result li { padding: .6rem .15rem; border-bottom: 1px solid var(--line); overflow-wrap: anywhere; white-space: pre-wrap; }
+.question-result li:last-child { border-bottom: 0; }
+.question-result li strong { display: block; }
+.skipped { color: var(--muted); margin: .25rem 0; }
+</style>
+</head>
+<body>
+<header>
+  <div class="masthead"><a href="admin.html">← Back to OKP Admin</a></div>
+  <img src="okp1.png" alt="Oru Kalyanam Pole">
+  <h1>OKP Poll Results</h1>
+</header>
+<main>
+  <p id="status" class="poll-section" role="status">Checking admin access…</p>
+  <a id="sign-in" class="poll-section" href="admin.html" hidden>Sign in to OKP Admin</a>
+  <div id="results" hidden>
+    <section class="poll-section" aria-label="Results view">
+      <p id="total"></p>
+      <div class="results-tools">
+        <button id="by-question" type="button" aria-pressed="true">By question</button>
+        <button id="by-guest" type="button" aria-pressed="false">By guest</button>
+        <button id="refresh" type="button">Refresh</button>
+      </div>
+      <div id="guest-picker" hidden>
+        <label for="guest"><strong>Choose a respondent</strong></label>
+        <select id="guest" class="respondent-name"></select>
+      </div>
+    </section>
+    <nav class="poll-nav" aria-label="Poll sections">
+      <a href="#review">Review</a>
+      <a href="#fun">Just for fun</a>
+      <a href="#suggestions">Suggestions</a>
+      <a href="#staycation-ratings">Ratings</a>
+    </nav>
+    <div id="questions-display"></div>
+  </div>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" crossorigin="anonymous"></script>
+<script>
+const SUPABASE_URL='https://fbdkfzstxufvmjnkzzif.supabase.co';
+const KEY='sb_publishable_X1jt3-YBCSZ0Pmk0cMV4ng_TqN9LNYm';
+const ADMIN_UIDS=['465f75b4-9e4d-4f41-9fd7-37aa91175874','edd5746f-c472-4e01-8fa8-cf62adaeaeed'];
+const questions = [
+  [
+    "staycation",
+    "🎬 OKP Staycation 3.0 in one review. What are we saying?",
+    [
+      "Insane. When’s the sequel? 🔥",
+      "Just OK 🙂",
+      "Below average. I expected more 👀",
+      "Very bad. Roll the credits 😭"
+    ]
+  ],
+  [
+    "expectations",
+    "👀 Did this wedding with no bride or groom live up to the hype?",
+    [
+      "Yes, you actually pulled it off 🙌",
+      "No, I expected more 😬",
+      "No comments. My lawyer said so 🤐"
+    ]
+  ],
+  [
+    "favorite-event",
+    "🏆 Which part of OKP gets your personal trophy?",
+    [
+      "Sangeeth Night 💃",
+      "Foam Party 🫧",
+      "Pool Party 🏊",
+      "Nothing. Keep the trophy 😌"
+    ]
+  ],
+  [
+    "biggest-surprise",
+    "😳 What made you stop and go ‘Ayyo, ithentha?’",
+    [
+      "The villa 🏡",
+      "The people around me 👀",
+      "The vibe ✨",
+      "The food 🍽️",
+      "All of it. Where do I start? 😂"
+    ]
+  ],
+  [
+    "favorite-meal",
+    "🍽️ Which meal deserved a second plate?",
+    [
+      "Breakfast ☕",
+      "Dinner 🍛",
+      "Both. I was there for the food 😌",
+      "Neither. My plate and I had issues 🥲",
+      "I didn’t get any food. Aarodu parayaan? 😭",
+      "I ate something. Details are blurry 🤔"
+    ]
+  ],
+  [
+    "breakfast-pick",
+    "🥊 Breakfast face-off. Team Uppumav or Team Puttu?",
+    [
+      "Uppumav, obviously 😎",
+      "Puttu supremacy 🙌",
+      "Ithokke entha? 🤨",
+      "Both. Don’t drag me into this 🤝"
+    ]
+  ],
+  [
+    "more-time",
+    "⏳ If checkout could wait, what would you do for one more hour?",
+    [
+      "Pool Party 🏊",
+      "Foam Party 🫧",
+      "Sangeeth dance floor 💃",
+      "All of it. Tell the villa we’re staying 😂"
+    ]
+  ],
+  [
+    "sound-lighting",
+    "🎛️ The sound and lights. Same crew next time?",
+    [
+      "Bring both back. Scene set! 🔥",
+      "Keep the sound, switch up the lights 🔊",
+      "Keep the lights, switch up the sound 💡",
+      "New setup next time 🔄",
+      "I was too busy dancing to notice 🕺"
+    ]
+  ]
+];
+const funRounds = [
+  [
+    "sangeeth",
+    "💃 Sangeeth",
+    [
+      "Who won Best Dressed Girl without an official award? 👗",
+      "Who won Best Dressed Boy and knew it? 😎",
+      "Who said ‘five minutes’ and came out an hour later? ⏰",
+      "Who was OKP’s Michael alias Jackson alias Dance Master Vikram? 🕺",
+      "Who was our Bindu Panicker? School dance-um paattum first kittunna aal 🎤",
+      "Who turned the whole Sangeeth into their personal stage? 🎭",
+      "Bride Team or Groom Team: whose dance made you go ‘Ivar ithokke eppo padichu?’ 👀",
+      "Who was the Coat-Man of the night? Blazer owners, assemble 🧥"
+    ]
+  ],
+  [
+    "foam",
+    "🫧 Foam Party",
+    [
+      "If foam had a menu description, what would yours say? 🫧",
+      "Who turned into your granny and force-fed you foam? 👵",
+      "Who vanished into the foam and came back like nothing happened? 🔍",
+      "Foam party again next time? Give us your official verdict 🫧"
+    ]
+  ],
+  [
+    "pool",
+    "🏊 Pool Party",
+    [
+      "Did you actually get in, or were you on poolside spectator duty? 🏊",
+      "Who was the Naran of the pool, our unofficial Rakshakan? 🛟",
+      "Did you get stuck in Sharjah–Dubai traffic inside the pool too? 🚗",
+      "Foam party inside the pool next time: genius idea or full chaos? 🫧",
+      "How many bites did you get from Maneesha? Give us the official count 😂"
+    ]
+  ]
+];
+const ratings = [
+  ['staycation', 'OKP Staycation'],
+  ['villa', 'Stay villa'],
+  ['decorations', 'Decorations'],
+  ['dinner', 'Dinner'],
+  ['breakfast', 'Breakfast'],
+  ['vibe', 'Vibe at the villa'],
+  ['dj', 'DJ system'],
+  ['expectation', 'How well did OKP meet your expectations?']
+];
+
+
+const ratingLabels = ['Poor', 'Fair', 'Good', 'Very good', 'Excellent'];
+const expectationLabels = ['Far below expectations', 'Below expectations', 'Met expectations', 'Exceeded expectations', 'Far exceeded expectations'];
+
+const sections = [
+  ['review', 'Staycation review', questions.map(([key, prompt, options]) => [
+    prompt, row => {
+      const answer = row.answers[key];
+      return options[answer - 1] ?? answer;
+    }
+  ])],
+  ['fun', 'Just for fun', funRounds.flatMap(([round, title, prompts]) => prompts.map((prompt, index) => [
+    title + ' · ' + prompt, row => row.answers['fun-' + round + '-' + (index + 1)]
+  ]))],
+  ['suggestions', 'Suggestions', [['What should we do differently next time?', row => row.suggestion]]],
+  ['staycation-ratings', 'Rate your staycation', ratings.map(([key, prompt]) => [
+    prompt, row => {
+      const score = row.ratings[key];
+      const labels = key === 'expectation' ? expectationLabels : ratingLabels;
+      return score == null ? null : score + '/5 · ' + labels[score - 1];
+    }
+  ])]
+];
+
+const byId = id => document.getElementById(id);
+const status = byId('status');
+const results = byId('results');
+const display = byId('questions-display');
+const guest = byId('guest');
+const refresh = byId('refresh');
+const db = window.supabase?.createClient(SUPABASE_URL, KEY);
+let responses = [];
+let guestView = false;
+let requestId = 0;
+
+function element(tag, value) {
+  const node = document.createElement(tag);
+  if (value != null) node.textContent = value;
+  return node;
+}
+
+function render() {
+  byId('by-question').setAttribute('aria-pressed', String(!guestView));
+  byId('by-guest').setAttribute('aria-pressed', String(guestView));
+  byId('guest-picker').hidden = !guestView;
+  display.replaceChildren();
+  const rows = guestView ? responses.filter(row => row.id === guest.value) : responses;
+  for (const [id, title, items] of sections) {
+    const section = element('section');
+    section.className = 'poll-section';
+    section.id = id;
+    section.append(element('h2', title));
+    for (const [prompt, answerFor] of items) {
+      const question = element('fieldset');
+      question.className = 'question-result';
+      question.append(element('legend', prompt));
+      const replies = element('ul');
+      for (const row of rows) {
+        const answer = answerFor(row);
+        if (answer == null || String(answer).trim() === '') continue;
+        const reply = element('li');
+        if (!guestView) reply.append(element('strong', row.label));
+        reply.append(document.createTextNode(String(answer)));
+        replies.append(reply);
+      }
+      if (replies.children.length) {
+        question.append(replies);
+      } else {
+        const skipped = element('p', guestView ? 'Skipped' : 'No answers yet');
+        skipped.className = 'skipped';
+        question.append(skipped);
+      }
+      section.append(question);
+    }
+    display.append(section);
+  }
+}
+
+function clearResults() {
+  results.hidden = true;
+  responses = [];
+  guest.replaceChildren();
+  display.replaceChildren();
+}
+
+async function loadResults() {
+  const current = ++requestId;
+  const selected = guest.value;
+  clearResults();
+  byId('sign-in').hidden = true;
+  refresh.disabled = true;
+  status.textContent = 'Checking admin access…';
+  try {
+    if (!db) throw new Error('The sign-in service could not load. Refresh to try again.');
+    const { data: { user } } = await db.auth.getUser();
+    if (current !== requestId) return;
+    if (!user || !ADMIN_UIDS.includes(user.id)) {
+      byId('sign-in').hidden = false;
+      status.textContent = 'Sign in with an authorized OKP admin account to see responses.';
+      return;
+    }
+    status.textContent = 'Loading poll responses…';
+    const rows = [];
+    let cursor;
+    while (true) {
+      let query = db.from('okp_staycation_poll_responses')
+        .select('id,submitted_at,answers,ratings,respondent_name,suggestion')
+        .order('id').limit(200);
+      if (cursor) query = query.gt('id', cursor);
+      const { data, error } = await query;
+      if (current !== requestId) return;
+      if (error) {
+        throw new Error(error.code === '42501'
+          ? 'Poll results access is unavailable. Apply the admin access SQL in Supabase and refresh.'
+          : 'Responses could not be loaded. Refresh to try again.');
+      }
+      if (!data.length) break;
+      rows.push(...data);
+      cursor = data.at(-1).id;
+    }
+    rows.sort((left, right) => Date.parse(right.submitted_at) - Date.parse(left.submitted_at));
+    const counts = new Map();
+    for (const row of rows) {
+      const name = row.respondent_name?.trim() || 'Anonymous';
+      counts.set(name, (counts.get(name) || 0) + 1);
+      row.label = counts.get(name) === 1 && name !== 'Anonymous' ? name : name + ' #' + counts.get(name);
+      const option = element('option', row.label);
+      option.value = row.id;
+      guest.append(option);
+    }
+    responses = rows;
+    if (rows.some(row => row.id === selected)) guest.value = selected;
+    byId('total').textContent = rows.length === 1 ? '1 submission' : rows.length + ' submissions';
+    byId('by-guest').disabled = !rows.length;
+    if (!rows.length) guestView = false;
+    render();
+    status.textContent = '';
+    results.hidden = false;
+  } catch (error) {
+    if (current === requestId) status.textContent = error.message;
+  } finally {
+    if (current === requestId) refresh.disabled = false;
+  }
+}
+
+byId('by-question').onclick = () => { guestView = false; render(); };
+byId('by-guest').onclick = () => { guestView = true; render(); };
+guest.onchange = render;
+refresh.onclick = loadResults;
+db?.auth.onAuthStateChange(event => {
+  if (event === 'SIGNED_OUT') {
+    ++requestId;
+    clearResults();
+    byId('sign-in').hidden = false;
+    status.textContent = 'Sign in with an authorized OKP admin account to see responses.';
+  }
+});
+loadResults();
+</script>
+</body>
+</html>
