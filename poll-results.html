@@ -150,6 +150,9 @@ button:disabled { opacity: .6; cursor: wait; }
 #guest-picker select { margin-top: .4rem; }
 #total { margin: 0 0 .8rem; color: var(--muted); }
 .question-result { margin: 1rem 0; }
+.question-options { margin: .25rem 0 .8rem; padding-left: 1.65rem; color: var(--muted); }
+.question-result .question-options li { border: 0; padding: .2rem 0; }
+.answer-heading { display: block; color: var(--wine); }
 .question-result ul { list-style: none; padding: 0; margin: 0; }
 .question-result li { padding: .6rem .15rem; border-bottom: 1px solid var(--line); overflow-wrap: anywhere; white-space: pre-wrap; }
 .question-result li:last-child { border-bottom: 0; }
@@ -335,7 +338,7 @@ const sections = [
     prompt, row => {
       const answer = row.answers[key];
       return options[answer - 1] ?? answer;
-    }
+    }, options
   ])],
   ['fun', 'Just for fun', funRounds.flatMap(([round, title, prompts]) => prompts.map((prompt, index) => [
     title + ' · ' + prompt, row => row.answers['fun-' + round + '-' + (index + 1)]
@@ -391,10 +394,18 @@ function render() {
     section.className = 'poll-section';
     section.id = id;
     section.append(element('h2', title));
-    for (const [prompt, answerFor] of items) {
+    for (const [prompt, answerFor, options] of items) {
       const question = element('fieldset');
       question.className = 'question-result';
       question.append(element('legend', prompt));
+      if (options) {
+        const choices = element('ol');
+        choices.className = 'question-options';
+        for (const option of options) choices.append(element('li', option));
+        const answerHeading = element('strong', guestView ? 'Selected answer' : 'Submitted answers');
+        answerHeading.className = 'answer-heading';
+        question.append(choices, answerHeading);
+      }
       const replies = element('ul');
       for (const row of rows) {
         const answer = answerFor(row);
